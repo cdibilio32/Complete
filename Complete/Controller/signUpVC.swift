@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class signUpVC: UIViewController {
     
@@ -36,6 +37,8 @@ class signUpVC: UIViewController {
                 // Sign Up
                 AuthService.instance.registerUser(withEmail: emailTxtLbl.text!, andPassword: passwordTxtLbl.text!) { (registered, error) in
                     if registered {
+                        userID = (Auth.auth().currentUser?.uid)!
+                        isNewUser = true
                         self.view.window!.rootViewController?.dismiss(animated: false, completion: nil)
                     }
                     else {
