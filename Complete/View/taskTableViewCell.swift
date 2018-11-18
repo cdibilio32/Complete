@@ -22,9 +22,8 @@ class taskTableViewCell: UITableViewCell {
         
         // Format
         // Border
-        self.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        self.layer.borderWidth = 5
         self.layer.cornerRadius = 5
+        self.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
     }
 
 }

@@ -350,14 +350,15 @@
                                 </constraints>
                             </view>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="NSQ-o7-J3E">
-                                <rect key="frame" x="0.0" y="186" width="375" height="481"/>
+                                <rect key="frame" x="10" y="186" width="355" height="481"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="separatorColor" red="0.96862745098039216" green="0.96078431372549022" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TaskTableCell" rowHeight="55" id="pRv-U1-mnv" customClass="taskTableViewCell" customModule="Complete" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="55"/>
+                                        <rect key="frame" x="0.0" y="28" width="355" height="55"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="pRv-U1-mnv" id="64F-24-BYb">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="54.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="355" height="54.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="if5-gZ-0jl">
@@ -374,6 +375,29 @@
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="taskTitleLbl" destination="if5-gZ-0jl" id="1ae-vo-5PT"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TaskHeaderTableCell" rowHeight="55" id="6LX-eH-2Rs" customClass="taskHeaderTableViewCell" customModule="Complete" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="83" width="355" height="55"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="6LX-eH-2Rs" id="cOo-2H-iRn" customClass="taskHeaderTableViewCell" customModule="Complete" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="0.0" width="355" height="54.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="H52-Kc-Ax2">
+                                                    <rect key="frame" x="156.5" y="17" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="H52-Kc-Ax2" firstAttribute="centerX" secondItem="cOo-2H-iRn" secondAttribute="centerX" id="56X-hS-YJi"/>
+                                                <constraint firstItem="H52-Kc-Ax2" firstAttribute="centerY" secondItem="cOo-2H-iRn" secondAttribute="centerY" id="wxL-CM-cW1"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="sectionTitle" destination="H52-Kc-Ax2" id="AW4-pP-OTh"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -396,16 +420,16 @@
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" red="0.96862745098039216" green="0.96078431372549022" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="xFQ-Hg-LtR" firstAttribute="centerX" secondItem="KUN-jY-4j6" secondAttribute="centerX" id="1p0-Gl-U9c"/>
                             <constraint firstItem="NSQ-o7-J3E" firstAttribute="top" secondItem="tXw-fu-ewh" secondAttribute="bottom" constant="16" id="3YU-TB-rGk"/>
                             <constraint firstItem="tXw-fu-ewh" firstAttribute="centerX" secondItem="KUN-jY-4j6" secondAttribute="centerX" id="6bk-ga-tqk"/>
                             <constraint firstItem="xr0-dl-XN3" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="BaB-ou-wzZ"/>
-                            <constraint firstItem="NSQ-o7-J3E" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="IyD-ZS-Ywx"/>
+                            <constraint firstItem="NSQ-o7-J3E" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" constant="10" id="IyD-ZS-Ywx"/>
                             <constraint firstItem="NSQ-o7-J3E" firstAttribute="bottom" secondItem="N0d-iL-s4S" secondAttribute="bottom" id="VPM-JE-9Rd"/>
                             <constraint firstItem="xFQ-Hg-LtR" firstAttribute="top" secondItem="xr0-dl-XN3" secondAttribute="bottom" constant="15" id="Yca-bV-nx9"/>
-                            <constraint firstItem="NSQ-o7-J3E" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="bgb-Kf-mrm"/>
+                            <constraint firstItem="NSQ-o7-J3E" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" constant="-10" id="bgb-Kf-mrm"/>
                             <constraint firstItem="tXw-fu-ewh" firstAttribute="top" secondItem="xFQ-Hg-LtR" secondAttribute="bottom" constant="5" id="ixe-x8-E9l"/>
                             <constraint firstItem="xr0-dl-XN3" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="oLm-8E-tPO"/>
                             <constraint firstItem="xr0-dl-XN3" firstAttribute="top" secondItem="N0d-iL-s4S" secondAttribute="top" id="xdV-3m-Gud"/>
@@ -422,7 +446,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0sO-gx-xFJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1414" y="542"/>
+            <point key="canvasLocation" x="1413.5999999999999" y="541.97901049475263"/>
         </scene>
         <!--Create New Task Pop UpVC-->
         <scene sceneID="nJn-sx-n4y">

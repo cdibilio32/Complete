@@ -134,6 +134,15 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return categories[section]
     }
+    
+    // Format of section
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let  header = tableView.dequeueReusableCell(withIdentifier: "TaskHeaderTableCell") as! taskHeaderTableViewCell
+        
+        header.updateSection(title:categories[section])
+        return header
+    }
+    
         
     // Cells
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -221,6 +230,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         }
         return [delete]
     }
+    
+    
     
     
     
