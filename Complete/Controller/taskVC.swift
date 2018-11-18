@@ -142,6 +142,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         return (currentTaskArray?.count)!
     }
     
+    // Configure Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // If there is a cell, return it

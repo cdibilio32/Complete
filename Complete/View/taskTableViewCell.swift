@@ -17,7 +17,14 @@ class taskTableViewCell: UITableViewCell {
     
     
     func updateViews(task: Task) {
-       taskTitleLbl.text = task._name
+        // Data
+        taskTitleLbl.text = task._name
+        
+        // Format
+        // Border
+        self.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        self.layer.borderWidth = 5
+        self.layer.cornerRadius = 5
     }
 
 }
