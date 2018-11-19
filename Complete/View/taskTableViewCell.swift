@@ -12,6 +12,7 @@ class taskTableViewCell: UITableViewCell {
     
     // --- Outlets ---
     @IBOutlet var taskTitleLbl: UILabel!
+    @IBOutlet var mocCellView: UIView!
     
     
     
@@ -19,11 +20,9 @@ class taskTableViewCell: UITableViewCell {
     func updateViews(task: Task) {
         // Data
         taskTitleLbl.text = task._name
-        
         // Format
         // Border
-        self.layer.cornerRadius = 5
-        self.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        self.mocCellView.layer.cornerRadius = 10
     }
 
 }

@@ -143,6 +143,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         return header
     }
     
+    
         
     // Cells
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -183,7 +184,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             return CGFloat(0)
         }
         else {
-            return CGFloat(40)
+            return CGFloat(45)
         }
     }
     
