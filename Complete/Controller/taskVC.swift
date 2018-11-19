@@ -131,18 +131,17 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         return categories.count
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return categories[section]
+    // Height of section
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(40)
     }
     
     // Format of section
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let  header = tableView.dequeueReusableCell(withIdentifier: "TaskHeaderTableCell") as! taskHeaderTableViewCell
-        
-        header.updateSection(title:categories[section])
-        return header
+       let cell = Bundle.main.loadNibNamed("SectionHeader", owner: self, options: nil)?.first as! taskSectionHeaderFooterView
+        cell.updateSection(title: categories[section])
+        return cell
     }
-    
     
         
     // Cells
@@ -352,7 +351,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
                 }
             }
             if !inAllChannels {
-                debugPrint(self.channelVC.allChannels)
                 self.channelVC.allChannels.append(channel)
             }
         })

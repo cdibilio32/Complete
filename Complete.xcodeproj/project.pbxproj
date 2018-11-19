@@ -11,6 +11,8 @@
 		5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F251216D6E460044880E /* channelTableViewCell.swift */; };
 		5152799021A219C5000D199B /* taskHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */; };
 		515E6E062177D7130038C142 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515E6E052177D7130038C142 /* constants.swift */; };
+		516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */; };
+		516FABEF21A364110095E23F /* SectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516FABEE21A364110095E23F /* SectionHeader.xib */; };
 		51786874216837C1004CEFAD /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51786873216837C1004CEFAD /* Channel.swift */; };
 		51786876216837CA004CEFAD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51786875216837CA004CEFAD /* Task.swift */; };
 		5178687921683978004CEFAD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178687821683978004CEFAD /* DataService.swift */; };
@@ -61,6 +63,8 @@
 		5144F251216D6E460044880E /* channelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelTableViewCell.swift; sourceTree = "<group>"; };
 		5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		515E6E052177D7130038C142 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
+		516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderFooterView.swift; sourceTree = "<group>"; };
+		516FABEE21A364110095E23F /* SectionHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeader.xib; sourceTree = "<group>"; };
 		51786873216837C1004CEFAD /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		51786875216837CA004CEFAD /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		5178687821683978004CEFAD /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
@@ -165,6 +169,7 @@
 				517E74F321586677005CC8A5 /* Main.storyboard */,
 				517E74F921586679005CC8A5 /* Assets.xcassets */,
 				517E74FB21586679005CC8A5 /* LaunchScreen.storyboard */,
+				51C24B0721A36B9F00F7BE37 /* Xib Files */,
 				517E74FE21586679005CC8A5 /* Info.plist */,
 				51C5527421769F25006FD951 /* GoogleService-Info.plist */,
 				517E74F621586677005CC8A5 /* Complete.xcdatamodeld */,
@@ -220,8 +225,9 @@
 			isa = PBXGroup;
 			children = (
 				5178687A2168411E004CEFAD /* taskTableViewCell.swift */,
-				5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */,
 				5144F251216D6E460044880E /* channelTableViewCell.swift */,
+				5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */,
+				516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -233,6 +239,14 @@
 				51786875216837CA004CEFAD /* Task.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		51C24B0721A36B9F00F7BE37 /* Xib Files */ = {
+			isa = PBXGroup;
+			children = (
+				516FABEE21A364110095E23F /* SectionHeader.xib */,
+			);
+			path = "Xib Files";
 			sourceTree = "<group>";
 		};
 		B47FE1097CD70E7CD055885D /* Pods */ = {
@@ -363,6 +377,7 @@
 			files = (
 				517E74FD21586679005CC8A5 /* LaunchScreen.storyboard in Resources */,
 				517E74FA21586679005CC8A5 /* Assets.xcassets in Resources */,
+				516FABEF21A364110095E23F /* SectionHeader.xib in Resources */,
 				517E74F521586677005CC8A5 /* Main.storyboard in Resources */,
 				51C5527521769F26006FD951 /* GoogleService-Info.plist in Resources */,
 			);
@@ -449,6 +464,7 @@
 				51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */,
 				51786876216837CA004CEFAD /* Task.swift in Sources */,
 				517E74F821586677005CC8A5 /* Complete.xcdatamodeld in Sources */,
+				516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */,
 				517E752921586D47005CC8A5 /* channelVC.swift in Sources */,
 				51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */,
 				517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */,

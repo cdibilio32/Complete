@@ -19,8 +19,7 @@ class taskHeaderTableViewCell: UITableViewCell {
         sectionTitle.text = title
         
         // Format
-        self.layer.backgroundColor = #colorLiteral(red: 0.968627451, green: 0.9607843137, blue: 0.968627451, alpha: 1)
-        
+        self.clipsToBounds = false
         
     }
 
