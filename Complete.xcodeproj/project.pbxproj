@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51191A222160304900E247CB /* createNewChannelPopUpVC.swift */; };
 		5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F251216D6E460044880E /* channelTableViewCell.swift */; };
-		5152799021A219C5000D199B /* taskHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */; };
 		515E6E062177D7130038C142 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515E6E052177D7130038C142 /* constants.swift */; };
 		516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */; };
 		516FABEF21A364110095E23F /* SectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516FABEE21A364110095E23F /* SectionHeader.xib */; };
@@ -61,7 +60,6 @@
 		4A40451720A70F8082AF2979 /* Pods-Complete.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.debug.xcconfig"; sourceTree = "<group>"; };
 		51191A222160304900E247CB /* createNewChannelPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewChannelPopUpVC.swift; sourceTree = "<group>"; };
 		5144F251216D6E460044880E /* channelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelTableViewCell.swift; sourceTree = "<group>"; };
-		5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		515E6E052177D7130038C142 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
 		516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderFooterView.swift; sourceTree = "<group>"; };
 		516FABEE21A364110095E23F /* SectionHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeader.xib; sourceTree = "<group>"; };
@@ -226,7 +224,6 @@
 			children = (
 				5178687A2168411E004CEFAD /* taskTableViewCell.swift */,
 				5144F251216D6E460044880E /* channelTableViewCell.swift */,
-				5152798F21A219C5000D199B /* taskHeaderTableViewCell.swift */,
 				516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */,
 			);
 			path = View;
@@ -469,7 +466,6 @@
 				51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */,
 				517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */,
 				515E6E062177D7130038C142 /* constants.swift in Sources */,
-				5152799021A219C5000D199B /* taskHeaderTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

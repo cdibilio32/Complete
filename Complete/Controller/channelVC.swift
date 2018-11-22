@@ -16,8 +16,10 @@ protocol ToLogInDelegate {
 class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC {
     
     // --- Outlets ---
-    @IBOutlet var channelTitle: UILabel!
     @IBOutlet var channelTbl: UITableView!
+    @IBOutlet var searchViewContainer: UIView!
+    @IBOutlet var searchBar: UISearchBar!
+    @IBOutlet var allTasksButton: UIButton!
     
     
     // --- Instance Variables ---

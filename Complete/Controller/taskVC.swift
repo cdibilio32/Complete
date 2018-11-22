@@ -117,6 +117,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         taskTblView.delegate = self   // table
         channelVC.delegate = self     // To Log In VC Delegate
         
+        // Hide navigation bar
+        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        
         // Load All Data
         loadApplicationData()
     }
