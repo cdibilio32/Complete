@@ -14,6 +14,7 @@ class channelTableViewCell: UITableViewCell {
     @IBOutlet var channelCellTitle: UILabel!
     
     
+    
     // --- Helper Functions ---
     // Update View of Channel Cell
     func updateViews(channel: Channel) {

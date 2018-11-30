@@ -77,6 +77,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         delegate.toLogIn()
     }
     
+    // View All Tasks Button Pressed
+    @IBAction func viewAllTaksBtnPressed(_ sender: Any) {
+        selectedChannel = allChannels[0]
+        updateChannelDatainTaskVC()
+        self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
+    }
+    
+    
     // --- Load Functions ---
     // view did appear
     override func viewDidAppear(_ animated: Bool) {
@@ -102,6 +110,31 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     // --- Table View Delegate Functions ---
+    // Sections
+    // Number of Sections
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    // Height of Section
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(40)
+    }
+    
+    // Format of Section
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "channelSectionHeader") as? channelSectionHeaderViewCell {
+            
+            // Update Cell
+            cell.updateViews(title: "Channel")
+            return cell
+        }
+        else {
+            return channelSectionHeaderViewCell()
+        }
+    }
+    
+    // Cells
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allChannels.count
     }
@@ -115,7 +148,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             return cell
         }
         else {
-            return taskTableViewCell()
+            return channelTableViewCell()
         }
     }
 
