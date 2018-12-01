@@ -17,6 +17,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     @IBOutlet var taskTblView: UITableView!
     @IBOutlet var currentChannelLbl: UILabel!
     @IBOutlet var laneSegmentControl: UISegmentedControl!
+    @IBOutlet var blackOutView: UIView!
     
     
     
@@ -94,6 +95,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             loadApplicationData()
             isNewUser = false
         }
+        
+        // Hide black out view
+        blackOutView.isHidden = true
     }
     override func viewDidLoad() {
         super.viewDidLoad()

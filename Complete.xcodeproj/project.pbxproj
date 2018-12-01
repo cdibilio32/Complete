@@ -210,8 +210,8 @@
 			isa = PBXGroup;
 			children = (
 				517E752821586D47005CC8A5 /* channelVC.swift */,
-				517E752A21586D59005CC8A5 /* taskVC.swift */,
 				51191A222160304900E247CB /* createNewChannelPopUpVC.swift */,
+				517E752A21586D59005CC8A5 /* taskVC.swift */,
 				51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */,
 				51C1CB1F2161845F00570639 /* taskDetailVC.swift */,
 				51C1CB232161903500570639 /* signUpVC.swift */,

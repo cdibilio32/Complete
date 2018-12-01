@@ -126,7 +126,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         if let cell = tableView.dequeueReusableCell(withIdentifier: "channelSectionHeader") as? channelSectionHeaderViewCell {
             
             // Update Cell
-            cell.updateViews(title: "Channel")
+            cell.updateViews(title: "Channels")
             return cell
         }
         else {
@@ -135,10 +135,12 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     }
     
     // Cells
+    // Numbers of Cells in Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allChannels.count
     }
-
+    
+    // Content of Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "channelTblCell", for: indexPath) as? channelTableViewCell {
 
@@ -150,6 +152,11 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         else {
             return channelTableViewCell()
         }
+    }
+    
+    // Height of Cell
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(40)
     }
 
     // When table item selected
@@ -213,5 +220,16 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     func toTaskVC() {
         // go to task VC
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
+    }
+    
+    // Make ChannelVC Full Screen
+    func blackenTaskVC() {
+        taskVC.blackOutView.backgroundColor =  UIColor.black.withAlphaComponent(0.5)
+        taskVC.blackOutView.isHidden = false
+    }
+    
+    // Have ChannelVC back to normal view
+    func brightenTaskVC() {
+        taskVC.blackOutView.isHidden = true
     }
 }
