@@ -22,8 +22,7 @@ protocol deleteTaskUpdate {
 class taskDetailVC: UIViewController {
 
     // --- Outlets ---
-    @IBOutlet var notesTextView: UITextView!
-    @IBOutlet var taskTitleLbl: UILabel!
+    @IBOutlet var taskTitleLbl: UITextField!
     @IBOutlet var taskSegControlBar: UISegmentedControl!
     @IBOutlet var taskNotes: UITextView!
     
@@ -36,6 +35,7 @@ class taskDetailVC: UIViewController {
     var currentTask:Task!
     var lanes:[String]!
     var delegate:deleteTaskUpdate!
+    var selectedLane:String!
     
     
     
@@ -45,7 +45,7 @@ class taskDetailVC: UIViewController {
     // When Segmentation Control Changed
     @IBAction func segControlChanged(_ sender: UISegmentedControl) {
         let selectedIndex = taskSegControlBar.selectedSegmentIndex
-        let selectedLane = lanes[selectedIndex]
+        selectedLane = lanes[selectedIndex]
     }
     // Back Button Pressed
     @IBAction func backBtnPressed(_ sender: Any) {
@@ -53,54 +53,69 @@ class taskDetailVC: UIViewController {
     }
     // Save Button Pressed
     @IBAction func saveBtnPressed(_ sender: Any) {
-        // If task changed
-        let currentLane = lanes[taskSegControlBar.selectedSegmentIndex]
-        if currentTask.didTaskChange(lane: currentLane, description: taskNotes.text) {
-            var updatedData = ["lane": currentLane,
-                               "description":taskNotes.text] as [String : Any]
-            // Update in Database
-            DataService.instance.editTask(updatedData: updatedData, taskId: currentTask._id!)
-            
-            // Update in taskVC
-            currentTask._description = taskNotes.text
-            currentTask._lane = currentLane
+        // If task changed - Put in Dict to send to database and send
+        var updatedData = [String:String]()
+        
+        // By Lane
+        if currentTask.didTaskChange(byLane: selectedLane) {
+            updatedData["lane"] = selectedLane
         }
+        
+        // By Name
+        if currentTask.didTaskChange(byName: taskTitleLbl.text!) {
+            updatedData["name"] = taskTitleLbl.text
+        }
+        
+        // By Description
+        if currentTask.didTaskChange(byDescription: taskNotes.text) {
+            updatedData["description"] = taskNotes.text
+        }
+        
+        // Update in Database
+        if currentTask.didTaskChange(byLane: selectedLane) || currentTask.didTaskChange(byName: taskTitleLbl.text!) || currentTask.didTaskChange(byDescription: taskNotes.text) {
+            DataService.instance.editTask(updatedData: updatedData, taskId: currentTask._id!)
+        }
+        
+        // Update in taskVC -> Doesn't Matter to repeat - low computation
+        currentTask._name = taskTitleLbl.text!
+        currentTask._description = taskNotes.text
+        currentTask._lane = selectedLane
         
         // Dismiss back to taskVC
         dismiss(animated: true, completion: nil)
     }
-    // Delete Button Pressed
-    @IBAction func delteBtnPressed(_ sender: Any) {
-        // Delete from database
-        DataService.instance.deleteTaskForUser(task: currentTask)
-        
-        // Delegate - delete from taskVC
-        delegate.deleteTaskAndUpdateTable(task: currentTask)
-        
-        dismiss(animated: true, completion: nil)
-    }
-    
-    
     
     
     // --- Load Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Put border around Note Text Field
-        self.notesTextView.layer.borderColor = #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
-        self.notesTextView.layer.borderWidth = CGFloat(Float(1.0))
         
         // Update Fields
         taskTitleLbl.text = currentTask._name
         taskNotes.text = currentTask._description
         if currentTask._lane == "To Do" {
             taskSegControlBar.selectedSegmentIndex = 0
+            selectedLane = lanes[taskSegControlBar.selectedSegmentIndex]
         }
         else if currentTask._lane == "In Progress" {
             taskSegControlBar.selectedSegmentIndex = 1
+            selectedLane = lanes[taskSegControlBar.selectedSegmentIndex]
         }
         else {
             taskSegControlBar.selectedSegmentIndex = 2
+            selectedLane = lanes[taskSegControlBar.selectedSegmentIndex]
         }
+        
+        // Disable Keyboard When User clicks out of it
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+    }
+    
+    
+    
+    
+    // --- Helper Functions ---
+    // Close Keyboard
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
     }
 }

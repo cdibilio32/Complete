@@ -13,14 +13,13 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
     // --- Outlets ---
     @IBOutlet var taskNameTxtField: UITextField!
     @IBOutlet var taskDescriptionTxtField: UITextView!
-    @IBOutlet var categorySegController: UISegmentedControl!
     @IBOutlet var taskNameErrorMessage: UILabel!
     
     
     
     
     // --- Instance Variables ---
-    var currentCategory = "Short Term"
+    var currentCategory:String!
     var currentChannel:Channel!
     let categories = ["Short Term", "Medium Term", "Long Term"]
     
@@ -62,12 +61,6 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         closePopUp()
     }
     
-    // Category Seg Controll Changed
-    @IBAction func catSegControllDidChange(_ sender: Any) {
-        let selectedIndex = categorySegController.selectedSegmentIndex
-        currentCategory = categories[selectedIndex]
-    }
-    
     
     
     
@@ -79,14 +72,15 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         // Delegates
         taskDescriptionTxtField.delegate = self
         taskNameTxtField.delegate = self
+        
+        // Display Keyboard
+        taskNameTxtField.becomeFirstResponder()
 
         // Blur background VC
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         
         // Segment Controller Format
         let font = UIFont.systemFont(ofSize: 10)
-        categorySegController.setTitleTextAttributes([NSAttributedStringKey.font: font],
-                                               for: .normal)
         
         // Description Text Placeholder
         taskDescriptionTxtField.text = taskDescriptionPlaceHolder

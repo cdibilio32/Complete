@@ -10,7 +10,7 @@ import UIKit
 import FirebaseDatabase
 
 // --- Main taskVC Class ---
-class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, deleteTaskUpdate, ToLogInDelegate {
+class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,deleteTaskUpdate, ToLogInDelegate {
     
     // --- Outlets ---
     @IBOutlet weak var menuBtn: UIButton!
@@ -18,7 +18,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     @IBOutlet var currentChannelLbl: UILabel!
     @IBOutlet var laneSegmentControl: UISegmentedControl!
     @IBOutlet var blackOutView: UIView!
-    
     
     
     
@@ -42,9 +41,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     
     
     // --- Actions ---
-    // Pop Up to add task
-    @IBAction func addNewTaskPopUp(_ sender: Any) {
-        
+    // Pop up to add Task - in section
+    @objc func addTaskInTableBtnPressed(sender:UIButton) {
         // If all channels is selected -> show error message
         if channelVC.selectedChannel._id == "allTasks" {
             let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
@@ -53,12 +51,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             
             self.present(alert, animated: true)
         }
-        // If not allow user to create a new task
+            // If not allow user to create a new task
         else {
             guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
             
             // Pass Data Over to Child View
             createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
+            createNewTaskPopUpVC.currentCategory = categories[sender.tag]
             
             // Start Pop Up
             self.addChildViewController(createNewTaskPopUpVC)
@@ -67,6 +66,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             createNewTaskPopUpVC.didMove(toParentViewController: self)
         }
     }
+    
     
      // When User Changes Lane
     @IBAction func laneSegControlDidChange(_ sender: UISegmentedControl) {
@@ -106,7 +106,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         channelVC = self.revealViewController()?.rearViewController as? channelVC
         
         // Placeholder for current channel
-        let allChannelPlaceHolder = Channel(name: "All", id: "allTasks", date: Date().description)
+        let allChannelPlaceHolder = Channel(name: "All Tasks", id: "allTasks", date: Date().description)
         channelVC.selectedChannel = allChannelPlaceHolder
         channelVC.allChannels.append(allChannelPlaceHolder)
         
@@ -122,7 +122,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
         channelVC.delegate = self     // To Log In VC Delegate
         
         // Hide navigation bar
-        self.navigationController?.setNavigationBarHidden(true, animated: true)
+        self.navigationController?.setNavigationBarHidden(true  , animated: true)
+        
+        // Lane Segment Control font
+        formatSegmentControl()
+        
         
         // Load All Data
         loadApplicationData()
@@ -133,6 +137,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     
     
     // --- Table View Delegates ---
+    @objc func Print() {
+        debugPrint("button worked")
+    }
     // Sections
     func numberOfSections(in tableView: UITableView) -> Int {
         return categories.count
@@ -145,9 +152,21 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
     
     // Format of section
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-       let cell = Bundle.main.loadNibNamed("SectionHeader", owner: self, options: nil)?.first as! taskSectionHeaderFooterView
-        cell.updateSection(title: categories[section])
-        return cell
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "taskSectionHeader") as? taskSectionHeaderViewCell {
+            // Update Cell
+            cell.updateCell(category: categories[section], categoryIndex: section)
+            // Attach category section to button
+            cell.addTaskSectionBtn.tag = section
+            
+            // Add Listener to button
+            cell.addTaskSectionBtn.addTarget(self, action: #selector(addTaskInTableBtnPressed(sender:)), for: .touchUpInside)
+            
+            return cell
+        }
+        else {
+            debugPrint("else")
+            return taskSectionHeaderViewCell()
+        }
     }
     
         
@@ -236,6 +255,33 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             self.taskTblView.deleteRows(at: [indexPath], with: .fade)
         }
         return [delete]
+    }
+    
+    // Drag and Drop Feature
+    // Allows Table to drag and drop
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+//        // Allow if Not in All tasks
+//        if channelVC.selectedChannel._id == "allTasks" {
+//            return false
+//        }
+//
+//        else {
+//            return true
+//        }
+        return true
+    }
+    
+    // Drag and Drop Functionality
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        // Check For Section
+        // If they are in the same section swap them
+        if sourceIndexPath.section == destinationIndexPath.section {
+            let currentCategory = categories[sourceIndexPath.section]
+            var sourceArray = allTasks[currentCategory]
+            let currentTask = sourceArray?[sourceIndexPath.row]
+            sourceArray?.insert(currentTask!, at: sourceIndexPath.row)
+            sourceArray?.remove(at: sourceIndexPath.row)
+        }
     }
     
     
@@ -381,6 +427,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, dele
             self.updateTaskTable()
         })
     }
+    
+    // --- Helper Function For segment control view
+    func formatSegmentControl() {
+        let font: [AnyHashable : Any] = [NSAttributedStringKey.font : UIFont(name: "Helvetica Neue", size: 10.0) ,  NSAttributedStringKey.foregroundColor : UIColor.white]
+    }
+    
+
     
     
     
