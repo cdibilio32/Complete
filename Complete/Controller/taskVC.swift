@@ -18,6 +18,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var currentChannelLbl: UILabel!
     @IBOutlet var laneSegmentControl: UISegmentedControl!
     @IBOutlet var blackOutView: UIView!
+    @IBOutlet var topConstraint: NSLayoutConstraint!
     
     
     
@@ -430,7 +431,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // --- Helper Function For segment control view
     func formatSegmentControl() {
-        let font: [AnyHashable : Any] = [NSAttributedStringKey.font : UIFont(name: "Helvetica Neue", size: 10.0) ,  NSAttributedStringKey.foregroundColor : UIColor.white]
+        let titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributes, for: .normal)
+        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributes, for: .selected)
     }
     
 

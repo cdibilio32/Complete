@@ -18,5 +18,5 @@ var isNewUser = true       // Keeps track if a new user logged in
 
 // --- Global Constants ---
 // Placeholder text for task description
-let taskDescriptionPlaceHolder = "Type in any additional information in association with this task."
+let taskDescriptionPlaceHolder = "Task Description"
 let channelVCMargin:Double = 0.1
