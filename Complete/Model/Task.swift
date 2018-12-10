@@ -94,12 +94,27 @@ class Task {
     }
     
     // Did the task change
-    func didTaskChange(lane: String, description: String) -> Bool {
-        var taskChanged = false
-        if lane != self._lane || description != self._description {
-            taskChanged = true
+    // By Lane
+    func didTaskChange(byLane: String) -> Bool {
+        if byLane != self._lane {
+            return true
         }
-        
-        return taskChanged
+        return false
+    }
+    
+    // By Name
+    func didTaskChange(byName: String) -> Bool {
+        if byName != self._name {
+            return true
+        }
+        return false
+    }
+    
+    // By Description
+    func didTaskChange(byDescription: String) -> Bool {
+        if byDescription != self._description {
+            return true
+        }
+        return false
     }
 }

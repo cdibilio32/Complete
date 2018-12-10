@@ -10,18 +10,26 @@ import UIKit
 
 protocol ToTaskVCFromChannelVC {
     func toTaskVC()
+    func blackenTaskVC()
+    func brightenTaskVC()
 }
+
 
 class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
     // --- Outlets ---
+    @IBOutlet var menuView: UIView!
     @IBOutlet var newChannelNameField: UITextField!
     @IBOutlet var channelNameErrorMsg: UILabel!
+    @IBOutlet var saveBtn: UIButton!
+    @IBOutlet var rightMenuConstraint: NSLayoutConstraint!
     
+    @IBOutlet var bottomMenuConstraint: NSLayoutConstraint!
     
     
     
     // --- Instance Variables ---
     var delegate:ToTaskVCFromChannelVC!
+
     
     
     
@@ -73,23 +81,49 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
     
     
     // --- Load Functions ---
+    // View Did Appear
+    override func viewDidAppear(_ animated: Bool) {
+        super .viewDidAppear(animated)
+        delegate.blackenTaskVC()
+    }
+    // View Did Load
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Configure Keyboard
+        // Show Keyboard
+        newChannelNameField.becomeFirstResponder()
+        
+        // Dismiss Keyboard
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
+        // Set Up Notifications for Keyboard
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         // Delegates
         newChannelNameField.delegate = self
         
         // Blur background VC
-        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
+        self.view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
+        
+        // Update Views
+        updateMenuView()
+        updateWidthMenuPositioning()
+        updateSaveButton()
+        
         
         // Hide Hidden Error Message
         channelNameErrorMsg.isHidden = true
     }
     
     
+    
+    
+    
     // --- Helper Functions ---
     // Close out of pop up box
     func closePopUp() {
+        delegate.brightenTaskVC()
         self.view.removeFromSuperview()
     }
     
@@ -100,4 +134,66 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
         }
     }
     
+    
+    
+    
+    
+    // --- Keyboard ---
+    // Fire When Keyboard Appears
+    @objc func keyboardWillShow(notification:NSNotification) {
+        updateHeightMenuPositioning(notification: notification)
+    }
+    
+    // Fire to get rid of keyboard
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+        closePopUp()
+    }
+    
+    
+    
+    
+    
+    // -- Edit Views and Positioning ---
+    // Update Menu View
+    func updateMenuView() {
+        menuView.layer.cornerRadius = 10
+        menuView.layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        menuView.layer.borderWidth = 1
+    }
+    
+    // Update side to side positioning of menu
+    func updateWidthMenuPositioning() {
+        // Update Right Constraint
+        let screenWidth = self.view.frame.size.width
+        let taskVCWidth = 0.1*self.view.frame.size.width
+        let menuWidth = menuView.frame.size.width
+        let menuToTaskVCWidth = (screenWidth - menuWidth - 2.0*taskVCWidth)/2.0
+        
+        rightMenuConstraint.constant =  4.0*menuToTaskVCWidth + taskVCWidth
+        debugPrint(rightMenuConstraint.constant)
+    }
+    
+    // Update vertical menu positioning
+    func updateHeightMenuPositioning(notification: NSNotification) {
+        // Update Bottom Constraint
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue  {
+            
+            // Get Height Values
+            let screenHeight = self.view.frame.size.height
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            let menuHeight = self.menuView.frame.size.height
+            
+            let keyboardMarginHeight = (screenHeight - keyboardHeight - menuHeight)*0.5 - 0.5*menuHeight
+            bottomMenuConstraint.constant = keyboardHeight + keyboardMarginHeight
+        }
+    }
+    
+    // Update Save Button
+    func updateSaveButton() {
+        saveBtn.layer.cornerRadius = 10
+        saveBtn.layer.borderWidth = 1
+        saveBtn.layer.borderColor = #colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1)
+        
+    }
 }

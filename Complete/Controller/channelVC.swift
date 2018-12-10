@@ -16,8 +16,10 @@ protocol ToLogInDelegate {
 class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC {
     
     // --- Outlets ---
-    @IBOutlet var channelTitle: UILabel!
     @IBOutlet var channelTbl: UITableView!
+    @IBOutlet var searchViewContainer: UIView!
+    @IBOutlet var searchBar: UISearchBar!
+    @IBOutlet var allTasksButton: UIButton!
     
     
     // --- Instance Variables ---
@@ -75,6 +77,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         delegate.toLogIn()
     }
     
+    // View All Tasks Button Pressed
+    @IBAction func viewAllTaksBtnPressed(_ sender: Any) {
+        selectedChannel = allChannels[0]
+        updateChannelDatainTaskVC()
+        self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
+    }
+    
+    
     // --- Load Functions ---
     // view did appear
     override func viewDidAppear(_ animated: Bool) {
@@ -100,10 +110,37 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     // --- Table View Delegate Functions ---
+    // Sections
+    // Number of Sections
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    // Height of Section
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat(40)
+    }
+    
+    // Format of Section
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        if let cell = tableView.dequeueReusableCell(withIdentifier: "channelSectionHeader") as? channelSectionHeaderViewCell {
+            
+            // Update Cell
+            cell.updateViews(title: "Channels")
+            return cell
+        }
+        else {
+            return channelSectionHeaderViewCell()
+        }
+    }
+    
+    // Cells
+    // Numbers of Cells in Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allChannels.count
     }
-
+    
+    // Content of Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "channelTblCell", for: indexPath) as? channelTableViewCell {
 
@@ -113,8 +150,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             return cell
         }
         else {
-            return taskTableViewCell()
+            return channelTableViewCell()
         }
+    }
+    
+    // Height of Cell
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return CGFloat(40)
     }
 
     // When table item selected
@@ -178,5 +220,16 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     func toTaskVC() {
         // go to task VC
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
+    }
+    
+    // Make ChannelVC Full Screen
+    func blackenTaskVC() {
+        taskVC.blackOutView.backgroundColor =  UIColor.black.withAlphaComponent(0.5)
+        taskVC.blackOutView.isHidden = false
+    }
+    
+    // Have ChannelVC back to normal view
+    func brightenTaskVC() {
+        taskVC.blackOutView.isHidden = true
     }
 }

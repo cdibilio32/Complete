@@ -13,14 +13,16 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
     // --- Outlets ---
     @IBOutlet var taskNameTxtField: UITextField!
     @IBOutlet var taskDescriptionTxtField: UITextView!
-    @IBOutlet var categorySegController: UISegmentedControl!
     @IBOutlet var taskNameErrorMessage: UILabel!
-    
+    @IBOutlet var viewForLine: UIView!
+    @IBOutlet var popUpView: UIView!
+    @IBOutlet var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet var saveBtn: UIButton!
     
     
     
     // --- Instance Variables ---
-    var currentCategory = "Short Term"
+    var currentCategory:String!
     var currentChannel:Channel!
     let categories = ["Short Term", "Medium Term", "Long Term"]
     
@@ -62,12 +64,6 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         closePopUp()
     }
     
-    // Category Seg Controll Changed
-    @IBAction func catSegControllDidChange(_ sender: Any) {
-        let selectedIndex = categorySegController.selectedSegmentIndex
-        currentCategory = categories[selectedIndex]
-    }
-    
     
     
     
@@ -79,14 +75,21 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         // Delegates
         taskDescriptionTxtField.delegate = self
         taskNameTxtField.delegate = self
+        
+        // Display Keyboard
+        taskNameTxtField.becomeFirstResponder()
+        
+        // Dismiss Keyboard
+        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
+        // Adjust menu to keyboard height
+        NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
 
         // Blur background VC
         self.view.backgroundColor = UIColor.black.withAlphaComponent(0.8)
         
         // Segment Controller Format
         let font = UIFont.systemFont(ofSize: 10)
-        categorySegController.setTitleTextAttributes([NSAttributedStringKey.font: font],
-                                               for: .normal)
         
         // Description Text Placeholder
         taskDescriptionTxtField.text = taskDescriptionPlaceHolder
@@ -94,6 +97,9 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         
         // Task Name error message
         taskNameErrorMessage.isHidden = true
+        
+        // Format view
+        formatView()
     }
     
     
@@ -103,6 +109,51 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         self.view.removeFromSuperview()
     }
     
+    // Format View
+    func formatView() {
+        // Set line between name and descriptions
+        viewForLine.layer.borderColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        viewForLine.layer.borderWidth = 5
+        
+        // Format Pop UP View
+        popUpView.layer.cornerRadius = 10
+        
+        // Format save button
+        saveBtn.layer.cornerRadius = 10
+        saveBtn.layer.borderWidth = 1
+        saveBtn.layer.borderColor = #colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1)
+        
+    }
+    
+    // Keyboard Functions
+    // UPdate height of menu when keyboard appears
+    @objc func keyboardWillShow(notification:NSNotification) {
+        updateMenuHeight(notification: notification)
+    }
+    
+    // Dismiss Keyboard
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+        closePopUp()
+    }
+    
+    // Menu Functions
+    // Update menu height
+    func updateMenuHeight(notification: NSNotification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            
+            // Get Values to calculate height
+            let screenHeight = self.view.frame.height
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            let menuHeight = self.popUpView.frame.size.height
+            
+            let keyboardMarginHeight = (screenHeight - keyboardHeight - menuHeight)*0.5
+            
+            bottomConstraint.constant = keyboardHeight + 0.5*keyboardMarginHeight
+        }
+        
+        
+    }
     
     
     
@@ -119,7 +170,7 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
     // Stopped editting
     func textViewDidEndEditing(_ textView: UITextView) {
         if textView.text.isEmpty {
-            textView.text = "Placeholder"
+            textView.text = taskDescriptionPlaceHolder
             textView.textColor = UIColor.lightGray
         }
     }
