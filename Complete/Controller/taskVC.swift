@@ -19,7 +19,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var laneSegmentControl: UISegmentedControl!
     @IBOutlet var blackOutView: UIView!
     @IBOutlet var topConstraint: NSLayoutConstraint!
-    
+    @IBOutlet var activitySpinner: UIView!
     
     
     // --- Instance Variables ---
@@ -89,6 +89,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         super.viewDidAppear(animated)
         updateTaskTable()
         
+        // Allow drag and drop
+        //taskTblView.setEditing(true, animated: false)
+        
         // If it is a new user need to reload data
         // Only one time - once put here change isNewUserToFalse
         if isNewUser {
@@ -102,6 +105,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Start Activity Spinner
+        activitySpinner.isHidden = false
         
         // Set Up VC to pass data to channelVC
         channelVC = self.revealViewController()?.rearViewController as? channelVC
@@ -282,6 +288,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             let currentTask = sourceArray?[sourceIndexPath.row]
             sourceArray?.insert(currentTask!, at: sourceIndexPath.row)
             sourceArray?.remove(at: sourceIndexPath.row)
+            updateTaskTable()
         }
     }
     

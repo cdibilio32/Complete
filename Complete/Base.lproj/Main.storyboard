@@ -430,6 +430,10 @@
                                     <constraint firstItem="e3S-1d-UCV" firstAttribute="centerX" secondItem="xr0-dl-XN3" secondAttribute="centerX" id="kLa-Ee-Jdi"/>
                                 </constraints>
                             </view>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Q2W-4o-zBh">
+                                <rect key="frame" x="177" y="323" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="anm-bE-hga">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -453,6 +457,7 @@
                         <viewLayoutGuide key="safeArea" id="N0d-iL-s4S"/>
                     </view>
                     <connections>
+                        <outlet property="activitySpinner" destination="anm-bE-hga" id="OUk-JZ-mQR"/>
                         <outlet property="blackOutView" destination="anm-bE-hga" id="MsQ-jT-kqi"/>
                         <outlet property="currentChannelLbl" destination="e3S-1d-UCV" id="fCR-TB-IEA"/>
                         <outlet property="laneSegmentControl" destination="tXw-fu-ewh" id="1OD-e3-rc4"/>
@@ -603,8 +608,8 @@
                                         </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Complete" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NEy-yu-9tc">
-                                        <rect key="frame" x="136.5" y="27" width="102" height="27"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="22"/>
+                                        <rect key="frame" x="141" y="41" width="93" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
@@ -613,13 +618,13 @@
                                 <constraints>
                                     <constraint firstItem="NEy-yu-9tc" firstAttribute="centerX" secondItem="KY1-n5-yOZ" secondAttribute="centerX" id="1xv-aQ-bqD"/>
                                     <constraint firstAttribute="height" constant="81" id="2aU-Ou-2mX"/>
-                                    <constraint firstItem="NEy-yu-9tc" firstAttribute="centerY" secondItem="ybb-Ii-VVa" secondAttribute="centerY" id="Rdw-8G-HmB"/>
+                                    <constraint firstAttribute="bottom" secondItem="NEy-yu-9tc" secondAttribute="bottom" constant="16" id="QbW-0I-U3U"/>
                                     <constraint firstItem="ybb-Ii-VVa" firstAttribute="leading" secondItem="KY1-n5-yOZ" secondAttribute="leading" constant="11" id="Sd7-xR-9lT"/>
-                                    <constraint firstItem="NEy-yu-9tc" firstAttribute="top" secondItem="KY1-n5-yOZ" secondAttribute="top" constant="27" id="oUg-2h-zSf"/>
+                                    <constraint firstItem="ybb-Ii-VVa" firstAttribute="top" secondItem="KY1-n5-yOZ" secondAttribute="top" constant="10.5" id="spA-Hr-7ha"/>
                                 </constraints>
                             </view>
                             <textField clearsContextBeforeDrawing="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Task Title" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="nu0-eI-LpE">
-                                <rect key="frame" x="16" y="109" width="343" height="33"/>
+                                <rect key="frame" x="16" y="113" width="343" height="33"/>
                                 <color key="backgroundColor" red="0.96862745100000003" green="0.96078431369999995" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="textColor"/>
@@ -627,7 +632,7 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="EVY-ax-pFf">
-                                <rect key="frame" x="16" y="203" width="343" height="29"/>
+                                <rect key="frame" x="16" y="207" width="343" height="29"/>
                                 <color key="backgroundColor" red="0.96862745100000003" green="0.96078431369999995" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <segments>
                                     <segment title="To Do"/>
@@ -640,7 +645,7 @@
                                 </connections>
                             </segmentedControl>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FYN-4Q-DD6">
-                                <rect key="frame" x="16" y="263" width="87" height="20"/>
+                                <rect key="frame" x="16" y="267" width="87" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="87" id="T2u-4S-oPh"/>
                                 </constraints>
@@ -649,7 +654,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Progress" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EfZ-X5-aBs">
-                                <rect key="frame" x="16" y="175" width="68" height="20"/>
+                                <rect key="frame" x="16" y="179" width="68" height="20"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="68" id="bPb-5L-Sqf"/>
                                 </constraints>
@@ -658,14 +663,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Xl7-1V-y5S">
-                                <rect key="frame" x="16" y="291" width="343" height="176"/>
+                                <rect key="frame" x="16" y="295" width="343" height="172"/>
                                 <color key="backgroundColor" red="0.96862745100000003" green="0.96078431369999995" blue="0.96862745100000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 Days on List" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLA-mM-Am3">
-                                <rect key="frame" x="29" y="144" width="85" height="14"/>
+                                <rect key="frame" x="29" y="148" width="85" height="14"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="85" id="abs-aP-aBH"/>
                                 </constraints>
@@ -687,12 +692,18 @@
                                     <action selector="saveBtnPressed:" destination="sAv-nN-72X" eventType="touchUpInside" id="cXs-oZ-fS2"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please Give Name To Task" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E9P-x3-ps4">
+                                <rect key="frame" x="122.5" y="149" width="130" height="13"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="11"/>
+                                <color key="textColor" red="1" green="0.17049660189999999" blue="0.079603191429999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.96862745098039216" green="0.96078431372549022" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="vyV-AC-Fdc" firstAttribute="leading" secondItem="163-a5-GLQ" secondAttribute="leading" constant="16" id="2iv-YQ-0tT"/>
                             <constraint firstItem="163-a5-GLQ" firstAttribute="bottom" secondItem="vyV-AC-Fdc" secondAttribute="bottom" constant="20" id="6L7-RJ-cTx"/>
-                            <constraint firstItem="nu0-eI-LpE" firstAttribute="top" secondItem="KY1-n5-yOZ" secondAttribute="bottom" constant="8" id="7MX-mO-0O2"/>
+                            <constraint firstItem="nu0-eI-LpE" firstAttribute="top" secondItem="KY1-n5-yOZ" secondAttribute="bottom" constant="12" id="7MX-mO-0O2"/>
                             <constraint firstItem="163-a5-GLQ" firstAttribute="trailing" secondItem="Xl7-1V-y5S" secondAttribute="trailing" constant="16" id="7cT-hS-dVZ"/>
                             <constraint firstItem="Xl7-1V-y5S" firstAttribute="top" secondItem="FYN-4Q-DD6" secondAttribute="bottom" constant="8" id="9G0-4D-btk"/>
                             <constraint firstItem="KY1-n5-yOZ" firstAttribute="leading" secondItem="163-a5-GLQ" secondAttribute="leading" id="Amd-fG-ouw"/>
@@ -703,6 +714,8 @@
                             <constraint firstItem="vyV-AC-Fdc" firstAttribute="leading" secondItem="163-a5-GLQ" secondAttribute="leading" constant="16" id="OXz-KE-l4i"/>
                             <constraint firstItem="163-a5-GLQ" firstAttribute="trailing" secondItem="nu0-eI-LpE" secondAttribute="trailing" constant="16" id="RfJ-sL-6OZ"/>
                             <constraint firstItem="gLA-mM-Am3" firstAttribute="leading" secondItem="163-a5-GLQ" secondAttribute="leading" constant="29" id="Rg3-7A-1F4"/>
+                            <constraint firstItem="E9P-x3-ps4" firstAttribute="centerX" secondItem="ZAJ-uC-ivb" secondAttribute="centerX" id="VrT-aZ-KNk"/>
+                            <constraint firstItem="E9P-x3-ps4" firstAttribute="top" secondItem="nu0-eI-LpE" secondAttribute="bottom" constant="3" id="XaY-ah-zAt"/>
                             <constraint firstItem="vyV-AC-Fdc" firstAttribute="top" secondItem="Xl7-1V-y5S" secondAttribute="bottom" constant="140" id="fxR-Dr-ByQ"/>
                             <constraint firstItem="KY1-n5-yOZ" firstAttribute="top" secondItem="163-a5-GLQ" secondAttribute="top" id="hQi-CX-u5Z"/>
                             <constraint firstItem="nu0-eI-LpE" firstAttribute="leading" secondItem="163-a5-GLQ" secondAttribute="leading" constant="16" id="nmk-zR-eia"/>
@@ -718,6 +731,9 @@
                         <viewLayoutGuide key="safeArea" id="163-a5-GLQ"/>
                     </view>
                     <connections>
+                        <outlet property="dateLbl" destination="gLA-mM-Am3" id="rYD-5v-3Q6"/>
+                        <outlet property="errorMsg" destination="E9P-x3-ps4" id="dVH-VZ-C9b"/>
+                        <outlet property="headerTitle" destination="NEy-yu-9tc" id="2M5-Yh-NBo"/>
                         <outlet property="taskNotes" destination="Xl7-1V-y5S" id="hRp-qU-pxL"/>
                         <outlet property="taskSegControlBar" destination="EVY-ax-pFf" id="fCf-ce-LBX"/>
                         <outlet property="taskTitleLbl" destination="nu0-eI-LpE" id="Gbk-N5-O17"/>

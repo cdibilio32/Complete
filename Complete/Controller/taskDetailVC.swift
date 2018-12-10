@@ -19,15 +19,17 @@ protocol deleteTaskUpdate {
 
 
 
-class taskDetailVC: UIViewController {
+class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
 
     // --- Outlets ---
     @IBOutlet var taskTitleLbl: UITextField!
     @IBOutlet var taskSegControlBar: UISegmentedControl!
     @IBOutlet var taskNotes: UITextView!
+    @IBOutlet var errorMsg: UILabel!
     
+    @IBOutlet var dateLbl: UILabel!
     
-    
+    @IBOutlet var headerTitle: UILabel!
     
     
     // --- Instance Variables ---
@@ -53,36 +55,51 @@ class taskDetailVC: UIViewController {
     }
     // Save Button Pressed
     @IBAction func saveBtnPressed(_ sender: Any) {
-        // If task changed - Put in Dict to send to database and send
-        var updatedData = [String:String]()
-        
-        // By Lane
-        if currentTask.didTaskChange(byLane: selectedLane) {
-            updatedData["lane"] = selectedLane
+        if taskTitleLbl.text != "" {
+            // If task changed - Put in Dict to send to database and send
+            var updatedData = [String:String]()
+            
+            // By Lane
+            if currentTask.didTaskChange(byLane: selectedLane) {
+                updatedData["lane"] = selectedLane
+            }
+            
+            // By Name
+            if currentTask.didTaskChange(byName: taskTitleLbl.text!) {
+                updatedData["name"] = taskTitleLbl.text
+            }
+            
+            // By Description
+            if currentTask.didTaskChange(byDescription: taskNotes.text) {
+                if taskNotes.text == taskDescPHForTaskDetail {
+                    updatedData["description"] = ""
+                }
+                else {
+                    updatedData["description"] = taskNotes.text
+                }
+            }
+            
+            // Update in Database
+            if currentTask.didTaskChange(byLane: selectedLane) || currentTask.didTaskChange(byName: taskTitleLbl.text!) || currentTask.didTaskChange(byDescription: taskNotes.text) {
+                DataService.instance.editTask(updatedData: updatedData, taskId: currentTask._id!)
+            }
+            
+            // Update in taskVC -> Doesn't Matter to repeat - low computation
+            currentTask._name = taskTitleLbl.text!
+            currentTask._lane = selectedLane
+            if taskNotes.text == taskDescPHForTaskDetail {
+                currentTask._description = ""
+            }
+            else {
+                currentTask._description = taskNotes.text
+            }
+            
+            // Dismiss back to taskVC
+            dismiss(animated: true, completion: nil)
         }
-        
-        // By Name
-        if currentTask.didTaskChange(byName: taskTitleLbl.text!) {
-            updatedData["name"] = taskTitleLbl.text
+        else {
+            errorMsg.isHidden = false
         }
-        
-        // By Description
-        if currentTask.didTaskChange(byDescription: taskNotes.text) {
-            updatedData["description"] = taskNotes.text
-        }
-        
-        // Update in Database
-        if currentTask.didTaskChange(byLane: selectedLane) || currentTask.didTaskChange(byName: taskTitleLbl.text!) || currentTask.didTaskChange(byDescription: taskNotes.text) {
-            DataService.instance.editTask(updatedData: updatedData, taskId: currentTask._id!)
-        }
-        
-        // Update in taskVC -> Doesn't Matter to repeat - low computation
-        currentTask._name = taskTitleLbl.text!
-        currentTask._description = taskNotes.text
-        currentTask._lane = selectedLane
-        
-        // Dismiss back to taskVC
-        dismiss(animated: true, completion: nil)
     }
     
     
@@ -92,7 +109,14 @@ class taskDetailVC: UIViewController {
         
         // Update Fields
         taskTitleLbl.text = currentTask._name
-        taskNotes.text = currentTask._description
+        if currentTask._description.isEmpty {
+            taskNotes.text = taskDescPHForTaskDetail
+            taskNotes.textColor = UIColor.lightGray
+        }
+        else {
+            taskNotes.text = currentTask._description
+        }
+        
         if currentTask._lane == "To Do" {
             taskSegControlBar.selectedSegmentIndex = 0
             selectedLane = lanes[taskSegControlBar.selectedSegmentIndex]
@@ -108,6 +132,22 @@ class taskDetailVC: UIViewController {
         
         // Disable Keyboard When User clicks out of it
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        
+        // Set Up delegates
+        taskNotes.delegate = self
+        taskTitleLbl.delegate = self
+        
+        // Hide Error Message
+        errorMsg.isHidden = true
+        
+        // Update Header Title With Category
+        headerTitle.text = currentTask._catgory
+        
+        // Format and display date
+        formatDate()
+        
+        // Format of seg controller
+        formatSegmentControl()
     }
     
     
@@ -117,5 +157,56 @@ class taskDetailVC: UIViewController {
     // Close Keyboard
     @objc func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    // Format Date and  Display
+    // *** IN PROGRESS ***
+    func formatDate() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MM/dd/yyyy"
+        let date = dateFormatter.date(from: currentTask._date)
+        //dateLbl.text = date?.description
+    }
+    
+    // Seg Controller Format
+    func formatSegmentControl() {
+        let titleTextAttributesWhenSelected = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        let titleTextAttributesWhenNotSelected = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1)]
+        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenNotSelected, for: .normal)
+        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenSelected, for: .selected)
+    }
+    
+    
+    
+    
+    // --- Delegate ---
+    // UITextView
+    // Make Placeholder text in description
+    // Began editting
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor == UIColor.lightGray {
+            textView.text = nil
+            textView.textColor = UIColor.black
+        }
+    }
+    // Stopped editting
+    func textViewDidEndEditing(_ textView: UITextView) {
+        if textView.text.isEmpty {
+            textView.text = taskDescPHForTaskDetail
+            textView.textColor = UIColor.lightGray
+        }
+    }
+    
+    // UITextField
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if !errorMsg.isHidden {
+            errorMsg.isHidden = true
+        }
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField.text == "" {
+            textField.placeholder = "Task Name"
+        }
     }
 }
