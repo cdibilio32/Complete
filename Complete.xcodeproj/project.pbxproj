@@ -35,6 +35,7 @@
 		51C1CB242161903500570639 /* signUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB232161903500570639 /* signUpVC.swift */; };
 		51C5527521769F26006FD951 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51C5527421769F25006FD951 /* GoogleService-Info.plist */; };
 		51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D3CB332184959D00097D2F /* MainNavigationController.swift */; };
+		51ECA18F21BF425E007A9A1E /* unusedCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA18E21BF425E007A9A1E /* unusedCode.swift */; };
 		51F8FB8921B16AC500AF7241 /* channelSectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */; };
 		C5CFF44762B3AE86DD06E1A4 /* Pods_Complete.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A053A2E8752948F48F4B935 /* Pods_Complete.framework */; };
 /* End PBXBuildFile section */
@@ -96,6 +97,7 @@
 		51C1CB232161903500570639 /* signUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signUpVC.swift; sourceTree = "<group>"; };
 		51C5527421769F25006FD951 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		51D3CB332184959D00097D2F /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
+		51ECA18E21BF425E007A9A1E /* unusedCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = unusedCode.swift; sourceTree = "<group>"; };
 		51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelSectionHeaderViewCell.swift; sourceTree = "<group>"; };
 		671F3282260C5EB1B3F26408 /* Pods_CompleteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CompleteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A053A2E8752948F48F4B935 /* Pods_Complete.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Complete.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -201,6 +203,7 @@
 			isa = PBXGroup;
 			children = (
 				517E75232158674E005CC8A5 /* SWRevealViewController.h */,
+				51ECA18E21BF425E007A9A1E /* unusedCode.swift */,
 				517E75222158674E005CC8A5 /* SWRevealViewController.m */,
 				517E75212158674D005CC8A5 /* Complete-Bridging-Header.h */,
 				515E6E052177D7130038C142 /* constants.swift */,
@@ -467,6 +470,7 @@
 				51C1CB242161903500570639 /* signUpVC.swift in Sources */,
 				51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */,
 				51786876216837CA004CEFAD /* Task.swift in Sources */,
+				51ECA18F21BF425E007A9A1E /* unusedCode.swift in Sources */,
 				517E74F821586677005CC8A5 /* Complete.xcdatamodeld in Sources */,
 				514B264621B336E000160477 /* taskSectionHeaderViewCell.swift in Sources */,
 				516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */,

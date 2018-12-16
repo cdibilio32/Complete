@@ -14,13 +14,15 @@ class Channel {
     public var _name:String
     public var _id:String?
     public var _date:String
+    public var _rank:Int
     
     // -- Functions --
     
     // Initializer
-    init(name:String, id:String?, date:String) {
+    init(name:String, id:String?, date:String, rank:Int) {
         self._name = name
         self._date = date
+        self._rank = rank
         if (id != nil) {
             self._id = id
         }

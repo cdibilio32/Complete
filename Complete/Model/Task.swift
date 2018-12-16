@@ -19,11 +19,12 @@ class Task {
     var _channelID:String
     var _userID:String
     var _date:String
+    var _rank:Int
     
     // --- Functions ---
     
     // Initializer
-    init(name:String, id:String?, description:String, category:String, lane:String, channelID:String, userID:String, date:String) {
+    init(name:String, id:String?, description:String, category:String, lane:String, channelID:String, userID:String, date:String, rank:Int) {
         self._name = name
         self._description = description
         self._catgory = category
@@ -31,6 +32,7 @@ class Task {
         self._channelID = channelID
         self._userID = userID
         self._date = date
+        self._rank = rank
         
         if (id != nil) {
             self._id = id
