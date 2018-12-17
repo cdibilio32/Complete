@@ -20,6 +20,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var blackOutView: UIView!
     @IBOutlet var topConstraint: NSLayoutConstraint!
     @IBOutlet var activitySpinner: UIView!
+    @IBOutlet var priorityBtn: UIButton!
     
     
     // --- Instance Variables ---
@@ -40,8 +41,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Tasks to update for drag and drop
     var updateTaskRankList = [Task]()
     var updateTaskCategoryList = [Task]()
-    
-    
 
     
     
@@ -85,7 +84,43 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Make Table editable
     @IBAction func dragAndDropBtnPressed(_ sender: Any) {
-        taskTblView.isEditing = !taskTblView.isEditing
+        
+        // Check if user is click to start or end drag and drop (editting)
+        // User Starts Editing
+        if !taskTblView.isEditing {
+            // Edit Button
+            priorityBtn.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            priorityBtn.layer.cornerRadius = 10
+            priorityBtn.setTitleColor(#colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1), for: .normal)
+            
+            
+            // Allow to Edit
+            taskTblView.isEditing = !taskTblView.isEditing
+        }
+        
+        // User Ends Editing
+        else {
+            // Save Updated Values to Database
+            // For Categories
+            for task in updateTaskCategoryList {
+                DataService.instance.updateTaskCategory(task: task)
+            }
+            
+            // For Rank
+            for task in updateTaskRankList {
+                DataService.instance.updateTaskRank(task: task)
+            }
+            
+            // Erase Items in update arrays
+            updateTaskCategoryList.removeAll()
+            updateTaskRankList.removeAll()
+            
+            // Edit Button
+            updatePriorityBtnView()
+            
+            // Disallow to edit
+            taskTblView.isEditing = !taskTblView.isEditing
+        }
     }
     
     
@@ -95,9 +130,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTaskTable()
-        
-        // Allow drag and drop
-        //taskTblView.setEditing(true, animated: false)
         
         // If it is a new user need to reload data
         // Only one time - once put here change isNewUserToFalse
@@ -138,12 +170,20 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Hide navigation bar
         self.navigationController?.setNavigationBarHidden(true  , animated: true)
         
+        // Update View
         // Lane Segment Control font
         formatSegmentControl()
+        updatePriorityBtnView()
         
         // Load All Data
         loadApplicationData()
     }
+    
+    
+    
+    
+    
+    
     
     
     
@@ -264,6 +304,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             
             // remove from table
             self.taskTblView.deleteRows(at: [indexPath], with: .fade)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {self.updateTaskTable()})
         }
         return [delete]
     }
@@ -327,7 +368,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             var destinationTask:Task!
             // If task is only one in the category, change category and put in update for category
             if destinationTaskArray?.count == 1 {
-                debugPrint("in only task in array")
                 // Update Task Category
                 if  destinationIndexPath.row >= (destinationTaskArray?.count)! {
                     destinationTask = destinationTaskArray![destinationIndexPath.row - 1]
@@ -343,12 +383,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             else {
                 // If destination task is in last index of array - make destination index the last one
                 if destinationTaskArray!.count <= destinationIndexPath.row {
-                    debugPrint("in not only task but in last row")
                     destinationTask = destinationTaskArray![destinationIndexPath.row - 1]
                 }
                 // If not assign destinationTask to detiation index
                 else {
-                    debugPrint("in not only task and not in last row")
                     destinationTask = destinationTaskArray![destinationIndexPath.row]
                 }
                 
@@ -360,7 +398,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 else {
                     // Update on tasks not source or destination depends on if source is being moed up or down
                     if sourceTask._rank > destinationTask._rank {
-                        debugPrint("soucre > dest")
                         // Change Rank of source task
                         updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
                         updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
@@ -376,7 +413,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                     }
                         
                     else if sourceTask._rank < destinationTask._rank {
-                        debugPrint("source < dest")
                         // Change Rank of source task
                         updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
                         updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
@@ -394,27 +430,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             }
         }
         updateTaskTable()
-        //printTaskRanks()
-        debugPrint("Category:")
-        for task in updateTaskCategoryList {
-            debugPrint("\(task._name) : \(task._catgory) ")
-        }
-        debugPrint("Rank: ")
-        for task in updateTaskRankList {
-            debugPrint("\(task._name) : \(task._rank)")
-        }
-        debugPrint("")
     }
     
-    func printTaskRanks() {
-        for (category, taskArray) in allTasks {
-            for task in taskArray {
-                if task._id != "Error Task" {
-                    debugPrint("\(task._name) : \(task._rank)")
-                }
-            }
-        }
-    }
+    
+    
     
     
     
@@ -725,6 +744,18 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         taskArray!.remove(at: taskIndex!)
         allTasks[category] = taskArray
         updateTaskTable()
+    }
+    
+    
+    
+    
+    // --- Helper Functions for View ---
+    func updatePriorityBtnView() {
+        priorityBtn.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
+        priorityBtn.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
+        priorityBtn.layer.cornerRadius = 10
+        priorityBtn.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        priorityBtn.layer.borderWidth = 1
     }
     
     

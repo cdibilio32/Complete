@@ -336,7 +336,10 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Io7-A2-ND8">
-                                        <rect key="frame" x="320" y="30" width="47" height="26"/>
+                                        <rect key="frame" x="307" y="30" width="60" height="26"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="8ii-8o-3uc"/>
+                                        </constraints>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
                                         <state key="normal" title="Prioritize">
                                             <color key="titleColor" red="0.97647058819999999" green="0.96862745100000003" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
@@ -470,6 +473,7 @@
                         <outlet property="currentChannelLbl" destination="e3S-1d-UCV" id="fCR-TB-IEA"/>
                         <outlet property="laneSegmentControl" destination="tXw-fu-ewh" id="1OD-e3-rc4"/>
                         <outlet property="menuBtn" destination="dek-ui-b3F" id="mWy-vT-qeq"/>
+                        <outlet property="priorityBtn" destination="Io7-A2-ND8" id="0lq-j5-v5t"/>
                         <outlet property="taskTblView" destination="NSQ-o7-J3E" id="S3j-XA-sXG"/>
                         <outlet property="topConstraint" destination="GSr-Nb-FUb" id="CCx-TU-hF1"/>
                         <segue destination="sAv-nN-72X" kind="showDetail" identifier="taskVCToTaskDetailVC" id="XiD-gN-U36"/>

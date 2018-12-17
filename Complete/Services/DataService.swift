@@ -173,6 +173,16 @@ class DataService {
         handler(true, channel)
     }
     
+    // Update Task rank
+    func updateTaskRank(task: Task) {
+        REF_TASKS.child(userID).child(task._id!).child("rank").setValue(task._rank)
+    }
+    
+    // Update Task Category
+    func updateTaskCategory(task: Task) {
+        REF_TASKS.child(userID).child(task._id!).child("category").setValue(task._catgory)
+    }
+    
     
     
     
