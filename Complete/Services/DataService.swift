@@ -58,8 +58,9 @@ class DataService {
             let id = snapshot.key
             let name = snapshot.childSnapshot(forPath:"name").value as! String
             let date = snapshot.childSnapshot(forPath: "date").value as! String
-            
-            let channelObject = Channel(name: name, id: id, date: date)
+            let rank = snapshot.childSnapshot(forPath: "rank").value as! Int
+   
+            let channelObject = Channel(name: name, id: id, date: date, rank:rank)
 
             // Pass channelArray to handler
             handler(channelObject)
@@ -81,9 +82,28 @@ class DataService {
             let channelId = snapshot.childSnapshot(forPath:"channelId").value as! String
             let userId = snapshot.childSnapshot(forPath:"userId").value as! String
             let date = snapshot.childSnapshot(forPath:"date").value as! String
+            let rank = snapshot.childSnapshot(forPath:"rank").value as! Int
             
-            let currentTask = Task(name: name, id: id, description: description, category: category, lane: lane, channelID: channelId, userID: userId, date: date)
+            let currentTask = Task(name: name, id: id, description: description, category: category, lane: lane, channelID: channelId, userID: userId, date: date, rank: rank)
             handler(currentTask)
+        }
+    }
+    
+    // Get Total Task Count
+    func getTotalTaskCount(handler: @escaping (_ count:Int)->()) {
+        // Submit request
+        REF_USERS.child(userID).child("Tasks").observeSingleEvent(of: .value) { (snapshot) in
+            let count = snapshot.childSnapshot(forPath: "Total").value as! Int
+            handler(count)
+        }
+    }
+    
+    // Get Total Channel Count
+    func getTotalChannelCount(handler: @escaping (_ count:Int)->()) {
+        // Submit request
+        REF_USERS.child(userID).child("Channels").observeSingleEvent(of: .value) { (snapshot) in
+            let count = snapshot.childSnapshot(forPath: "Total").value as! Int
+            handler(count)
         }
     }
     
@@ -104,7 +124,8 @@ class DataService {
             "category": task._catgory,
             "lane": task._lane,
             "date": task._date,
-            "userId": task._userID]
+            "userId": task._userID,
+            "rank": task._rank] as [String : Any]
         
         // Get Task Key
         let newTask = REF_TASKS.child(userID).childByAutoId()
@@ -114,7 +135,10 @@ class DataService {
         REF_TASKS.child(userID).child(taskID).setValue(newTaskDict)
         
         // Add task to user under User root
-        REF_USERS.child(userID).child("Tasks").child(taskID).setValue(true)
+        REF_USERS.child(userID).child("Tasks").child("List").child(taskID).setValue(true)
+        
+        // Update Task Count (in database)
+        REF_USERS.child(userID).child("Tasks").child("Total").setValue(totalTaskCount)
         
         // Return True
         handler(true)
@@ -126,7 +150,8 @@ class DataService {
         // Get Task Info
         let newChannelDict = [
             "name": channel._name,
-            "date": channel._date]
+            "date": channel._date,
+            "rank": channel._rank] as [String : Any]
         
         // Get Task Key
         let newChannel = REF_CHANNELS.child(userID).childByAutoId()
@@ -139,10 +164,23 @@ class DataService {
         REF_CHANNELS.child(userID).child(channelId).updateChildValues(newChannelDict)
         
         // Add channel to user under user root
-        REF_USERS.child(userID).child("Channels").child(channelId).setValue(true)
+        REF_USERS.child(userID).child("Channels").child("List").child(channelId).setValue(true)
+        
+        // Update total channel count
+        REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)
         
         // Return True
         handler(true, channel)
+    }
+    
+    // Update Task rank
+    func updateTaskRank(task: Task) {
+        REF_TASKS.child(userID).child(task._id!).child("rank").setValue(task._rank)
+    }
+    
+    // Update Task Category
+    func updateTaskCategory(task: Task) {
+        REF_TASKS.child(userID).child(task._id!).child("category").setValue(task._catgory)
     }
     
     
@@ -153,13 +191,15 @@ class DataService {
     // Delte task from database
     func deleteTaskForUser(task:Task) {
         REF_TASKS.child(userID).child(task._id!).removeValue()
-        REF_USERS.child(userID).child("Task").child(task._id!).removeValue()
+        REF_USERS.child(userID).child("Tasks").child("List").child(task._id!).removeValue()
+        REF_USERS.child(userID).child("Tasks").child("Total").setValue(totalTaskCount)
     }
     
     // Delete task from database
     func deleteChannelForUser(channel:Channel, allTasks:[String:[Task]]) -> [String:[Task]] {
         REF_CHANNELS.child(userID).child(channel._id!).removeValue()
-        REF_USERS.child(userID).child("Channels").child(channel._id!).removeValue()
+        REF_USERS.child(userID).child("Channels").child("List").child(channel._id!).removeValue()
+        REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)
         
         // Delete all tasks in channel
         var currentTaskDict = allTasks
@@ -167,6 +207,7 @@ class DataService {
             for task in taskArray {
                 if task._channelID == channel._id! {
                     // Delete from Database
+                    totalChannelCount = totalChannelCount - 1
                     deleteTaskForUser(task: task)
                 }
             }

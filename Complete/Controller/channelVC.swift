@@ -52,17 +52,17 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         DataService.instance.removeTaskListener()
         
         // Clear Data
-        selectedChannel = Channel(name: "Errands", id: nil, date: Date().description)
+        selectedChannel = Channel(name: "Errands", id: nil, date: Date().description, rank: -1)
         allChannels.removeAll()
         taskVC.allTasks.removeAll()
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
         taskVC.allTasks["Short Term"] = [errorTaskST]
         taskVC.allTasks["Medium Term"] = [errorTaskMT]
         taskVC.allTasks["Long Term"] = [errorTaskLT]
         taskVC.updateTaskTable()
-        selectedChannel = Channel(name: "Errand", id: nil, date: Date().description)
+        selectedChannel = Channel(name: "Errand", id: nil, date: Date().description, rank:-1)
         taskVC.updateChannelLabel()
         channelTbl.reloadData()
         
@@ -178,6 +178,8 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             
             // Remove from instance variables
             self.allChannels.remove(at: channelToDeleteIndex)
+            
+            totalChannelCount = totalChannelCount - 1
             
             // Remove from database and return all tasks without tasks associated with channel
             self.taskVC.allTasks = DataService.instance.deleteChannelForUser(channel: channelToDelete, allTasks: self.taskVC.allTasks)

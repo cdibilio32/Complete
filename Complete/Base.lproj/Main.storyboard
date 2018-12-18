@@ -312,6 +312,54 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="anm-bE-hga" userLabel="Black Out Screen">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <accessibility key="accessibilityConfiguration" identifier="blackOutView"/>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xr0-dl-XN3">
+                                <rect key="frame" x="0.0" y="20" width="375" height="73"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dek-ui-b3F">
+                                        <rect key="frame" x="16" y="25" width="30" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="30" id="8xB-NI-OLk"/>
+                                            <constraint firstAttribute="height" constant="30" id="d3g-Vh-e64"/>
+                                        </constraints>
+                                        <state key="normal" image="smackBurger"/>
+                                    </button>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Complete" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e3S-1d-UCV">
+                                        <rect key="frame" x="141" y="31" width="93" height="24"/>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Io7-A2-ND8">
+                                        <rect key="frame" x="307" y="30" width="60" height="26"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="60" id="8ii-8o-3uc"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="12"/>
+                                        <state key="normal" title="Prioritize">
+                                            <color key="titleColor" red="0.97647058819999999" green="0.96862745100000003" blue="0.97647058819999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="dragAndDropBtnPressed:" destination="dNB-JQ-suT" eventType="touchUpInside" id="8Yd-RQ-Rt7"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.1764705882352941" green="0.61568627450980395" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="e3S-1d-UCV" secondAttribute="bottom" constant="18" id="47Q-bN-rW6"/>
+                                    <constraint firstAttribute="bottom" secondItem="Io7-A2-ND8" secondAttribute="bottom" constant="17" id="BUv-UD-ZZi"/>
+                                    <constraint firstItem="dek-ui-b3F" firstAttribute="leading" secondItem="xr0-dl-XN3" secondAttribute="leading" constant="16" id="ECw-WO-0I8"/>
+                                    <constraint firstItem="dek-ui-b3F" firstAttribute="top" secondItem="xr0-dl-XN3" secondAttribute="top" constant="25" id="GSr-Nb-FUb"/>
+                                    <constraint firstAttribute="trailing" secondItem="Io7-A2-ND8" secondAttribute="trailing" constant="8" id="Ws2-Ie-qQs"/>
+                                    <constraint firstAttribute="bottom" secondItem="dek-ui-b3F" secondAttribute="bottom" constant="18" id="erS-3g-hIN"/>
+                                    <constraint firstItem="e3S-1d-UCV" firstAttribute="centerX" secondItem="xr0-dl-XN3" secondAttribute="centerX" id="kLa-Ee-Jdi"/>
+                                </constraints>
+                            </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="tXw-fu-ewh">
                                 <rect key="frame" x="0.0" y="93" width="375" height="29"/>
                                 <color key="backgroundColor" red="0.0" green="0.53333333329999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -403,43 +451,6 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xr0-dl-XN3">
-                                <rect key="frame" x="0.0" y="20" width="375" height="73"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dek-ui-b3F">
-                                        <rect key="frame" x="16" y="25" width="30" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" constant="30" id="8xB-NI-OLk"/>
-                                            <constraint firstAttribute="height" constant="30" id="d3g-Vh-e64"/>
-                                        </constraints>
-                                        <state key="normal" image="smackBurger"/>
-                                    </button>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Complete" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e3S-1d-UCV">
-                                        <rect key="frame" x="141" y="31" width="93" height="24"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="20"/>
-                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                </subviews>
-                                <color key="backgroundColor" red="0.1764705882352941" green="0.61568627450980395" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="e3S-1d-UCV" secondAttribute="bottom" constant="18" id="47Q-bN-rW6"/>
-                                    <constraint firstItem="dek-ui-b3F" firstAttribute="leading" secondItem="xr0-dl-XN3" secondAttribute="leading" constant="16" id="ECw-WO-0I8"/>
-                                    <constraint firstItem="dek-ui-b3F" firstAttribute="top" secondItem="xr0-dl-XN3" secondAttribute="top" constant="25" id="GSr-Nb-FUb"/>
-                                    <constraint firstAttribute="bottom" secondItem="dek-ui-b3F" secondAttribute="bottom" constant="18" id="erS-3g-hIN"/>
-                                    <constraint firstItem="e3S-1d-UCV" firstAttribute="centerX" secondItem="xr0-dl-XN3" secondAttribute="centerX" id="kLa-Ee-Jdi"/>
-                                </constraints>
-                            </view>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="Q2W-4o-zBh">
-                                <rect key="frame" x="177" y="323" width="20" height="20"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            </activityIndicatorView>
-                            <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="anm-bE-hga">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <accessibility key="accessibilityConfiguration" identifier="blackOutView"/>
-                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.96862745098039216" green="0.96078431372549022" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -462,6 +473,7 @@
                         <outlet property="currentChannelLbl" destination="e3S-1d-UCV" id="fCR-TB-IEA"/>
                         <outlet property="laneSegmentControl" destination="tXw-fu-ewh" id="1OD-e3-rc4"/>
                         <outlet property="menuBtn" destination="dek-ui-b3F" id="mWy-vT-qeq"/>
+                        <outlet property="priorityBtn" destination="Io7-A2-ND8" id="0lq-j5-v5t"/>
                         <outlet property="taskTblView" destination="NSQ-o7-J3E" id="S3j-XA-sXG"/>
                         <outlet property="topConstraint" destination="GSr-Nb-FUb" id="CCx-TU-hF1"/>
                         <segue destination="sAv-nN-72X" kind="showDetail" identifier="taskVCToTaskDetailVC" id="XiD-gN-U36"/>

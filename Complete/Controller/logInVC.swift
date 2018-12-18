@@ -26,6 +26,8 @@ class logInVC: UIViewController {
                 if success {
                     userID = (Auth.auth().currentUser?.uid)!
                     isNewUser = true
+                    
+                    // Set Up Database for user
                     self.dismiss(animated: true, completion: nil)
                 }
                 else {

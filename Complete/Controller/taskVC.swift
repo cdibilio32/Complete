@@ -20,6 +20,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var blackOutView: UIView!
     @IBOutlet var topConstraint: NSLayoutConstraint!
     @IBOutlet var activitySpinner: UIView!
+    @IBOutlet var priorityBtn: UIButton!
     
     
     // --- Instance Variables ---
@@ -37,7 +38,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Class to pass data to Channel vc
     var channelVC:channelVC!
     
-    
+    // Tasks to update for drag and drop
+    var updateTaskRankList = [Task]()
+    var updateTaskCategoryList = [Task]()
 
     
     
@@ -79,7 +82,46 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         updateTaskTable()
     }
     
-    
+    // Make Table editable
+    @IBAction func dragAndDropBtnPressed(_ sender: Any) {
+        
+        // Check if user is click to start or end drag and drop (editting)
+        // User Starts Editing
+        if !taskTblView.isEditing {
+            // Edit Button
+            priorityBtn.layer.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+            priorityBtn.layer.cornerRadius = 10
+            priorityBtn.setTitleColor(#colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1), for: .normal)
+            
+            
+            // Allow to Edit
+            taskTblView.isEditing = !taskTblView.isEditing
+        }
+        
+        // User Ends Editing
+        else {
+            // Save Updated Values to Database
+            // For Categories
+            for task in updateTaskCategoryList {
+                DataService.instance.updateTaskCategory(task: task)
+            }
+            
+            // For Rank
+            for task in updateTaskRankList {
+                DataService.instance.updateTaskRank(task: task)
+            }
+            
+            // Erase Items in update arrays
+            updateTaskCategoryList.removeAll()
+            updateTaskRankList.removeAll()
+            
+            // Edit Button
+            updatePriorityBtnView()
+            
+            // Disallow to edit
+            taskTblView.isEditing = !taskTblView.isEditing
+        }
+    }
     
     
     
@@ -88,9 +130,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateTaskTable()
-        
-        // Allow drag and drop
-        //taskTblView.setEditing(true, animated: false)
         
         // If it is a new user need to reload data
         // Only one time - once put here change isNewUserToFalse
@@ -106,14 +145,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Start Activity Spinner
-        activitySpinner.isHidden = false
+        // Set table to not editting at first
+        taskTblView.isEditing = false
         
         // Set Up VC to pass data to channelVC
         channelVC = self.revealViewController()?.rearViewController as? channelVC
         
         // Placeholder for current channel
-        let allChannelPlaceHolder = Channel(name: "All Tasks", id: "allTasks", date: Date().description)
+        let allChannelPlaceHolder = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank:-1)
         channelVC.selectedChannel = allChannelPlaceHolder
         channelVC.allChannels.append(allChannelPlaceHolder)
         
@@ -131,9 +170,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Hide navigation bar
         self.navigationController?.setNavigationBarHidden(true  , animated: true)
         
+        // Update View
         // Lane Segment Control font
         formatSegmentControl()
-        
+        updatePriorityBtnView()
         
         // Load All Data
         loadApplicationData()
@@ -143,10 +183,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     
+    
+    
+    
+    
+    
+    
     // --- Table View Delegates ---
-    @objc func Print() {
-        debugPrint("button worked")
-    }
     // Sections
     func numberOfSections(in tableView: UITableView) -> Int {
         return categories.count
@@ -171,7 +214,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             return cell
         }
         else {
-            debugPrint("else")
             return taskSectionHeaderViewCell()
         }
     }
@@ -254,43 +296,144 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             self.allTasks[category] = allTaskArray
             self.tasksForCurrentChannel = self.filterTasksForCurrentChannel(tasks: self.allTasks, channel: self.channelVC.selectedChannel)
             self.tasksForCurrentChannelAndLane = self.filterTasksForCurrentLane(tasks: self.tasksForCurrentChannel, lane: self.selectedLane!)
+            
+            totalTaskCount = totalTaskCount - 1
 
             // Remove from database
             DataService.instance.deleteTaskForUser(task: allTask)
             
             // remove from table
             self.taskTblView.deleteRows(at: [indexPath], with: .fade)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {self.updateTaskTable()})
         }
         return [delete]
     }
     
-    // Drag and Drop Feature
-    // Allows Table to drag and drop
-    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-//        // Allow if Not in All tasks
-//        if channelVC.selectedChannel._id == "allTasks" {
-//            return false
-//        }
-//
-//        else {
-//            return true
-//        }
+    // Drag and Drop
+    // Allow to move
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    // Drag and Drop Functionality
+    // Action when moved
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        // Check For Section
-        // If they are in the same section swap them
-        if sourceIndexPath.section == destinationIndexPath.section {
-            let currentCategory = categories[sourceIndexPath.section]
-            var sourceArray = allTasks[currentCategory]
-            let currentTask = sourceArray?[sourceIndexPath.row]
-            sourceArray?.insert(currentTask!, at: sourceIndexPath.row)
-            sourceArray?.remove(at: sourceIndexPath.row)
-            updateTaskTable()
+        // Get source task to update rank
+        let sourceTaskArray = tasksForCurrentChannelAndLane?[categories[sourceIndexPath.section]]
+        let sourceTask = sourceTaskArray![sourceIndexPath.row]
+        let destinationTaskArray = tasksForCurrentChannelAndLane?[categories[destinationIndexPath.section]]
+        
+        
+        // If switched cells in same section
+        if categories[sourceIndexPath.section] == categories[destinationIndexPath.section] {
+            // Get destination task
+            let destinationTask = destinationTaskArray![destinationIndexPath.row]
+            
+            // Update on tasks not source or destination depends on if source is being moed up or down
+            let oldSourceTaskRank = sourceTask._rank
+            if sourceTask._rank > destinationTask._rank {
+                // Change Rank of source task
+                updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
+                
+                // Increase rank of all task if ranked higher than destination
+                for (category, taskArray) in allTasks {
+                    for task in taskArray {
+                        if task._rank >= destinationTask._rank && task._rank < oldSourceTaskRank && task._id != sourceTask._id && task._id != "Error Task" {
+                            increaseRank(task:task)
+                        }
+                    }
+                }
+            }
+            
+            else if sourceTask._rank < destinationTask._rank {
+                // Change Rank of source task
+                updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
+                
+                
+                // Increase rank of all task if ranked lower than destination
+                for (category, taskArray) in allTasks {
+                    for task in taskArray {
+                        if task._rank <= destinationTask._rank && task._rank > oldSourceTaskRank && task._id != sourceTask._id && task._id != "Error Task" {
+                            decreaseRank(task: task)
+                        }
+                    }
+                }
+            }
         }
+        
+        // If switched cells are in different categories
+        else {
+            let oldSourceTaskRank = sourceTask._rank
+            
+            // Get Destination Task
+            var destinationTask:Task!
+            // If task is only one in the category, change category and put in update for category
+            if destinationTaskArray?.count == 1 {
+                // Update Task Category
+                if  destinationIndexPath.row >= (destinationTaskArray?.count)! {
+                    destinationTask = destinationTaskArray![destinationIndexPath.row - 1]
+                }
+                else {
+                    destinationTask = destinationTaskArray![destinationIndexPath.row]
+                }
+                updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                updateTaskTable()
+            }
+            
+            // If more than one task is in section
+            else {
+                // If destination task is in last index of array - make destination index the last one
+                if destinationTaskArray!.count <= destinationIndexPath.row {
+                    destinationTask = destinationTaskArray![destinationIndexPath.row - 1]
+                }
+                // If not assign destinationTask to detiation index
+                else {
+                    destinationTask = destinationTaskArray![destinationIndexPath.row]
+                }
+                
+                // If order does change - check to see if task goes from last row in previous section to first in next section
+                if sourceTask._rank + 1 == destinationTask._rank || sourceTask._rank - 1 == destinationTask._rank {
+                    // Do Nothing - Needed for else statement
+                    updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                }
+                else {
+                    // Update on tasks not source or destination depends on if source is being moed up or down
+                    if sourceTask._rank > destinationTask._rank {
+                        // Change Rank of source task
+                        updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                        updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
+                        
+                        // Increase rank of all task if ranked higher than destination
+                        for (category, taskArray) in allTasks {
+                            for task in taskArray {
+                                if task._rank >= destinationTask._rank && task._rank < oldSourceTaskRank && task._id != sourceTask._id && task._id != "Error Task" {
+                                    increaseRank(task:task)
+                                }
+                            }
+                        }
+                    }
+                        
+                    else if sourceTask._rank < destinationTask._rank {
+                        // Change Rank of source task
+                        updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                        updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
+                
+                        // Increase rank of all task if ranked lower than destination
+                        for (category, taskArray) in allTasks {
+                            for task in taskArray {
+                                if task._rank <= destinationTask._rank && task._rank > oldSourceTaskRank && task._id != sourceTask._id && task._id != "Error Task" {
+                                    decreaseRank(task: task)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        updateTaskTable()
     }
+    
+    
+    
     
     
     
@@ -357,6 +500,124 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     
+    
+    
+    // Helper Functions for Drag and Drap Rank
+    // Sort Tasks By Rank
+    func sortTasks() {
+        for category in allTasks.keys {
+            var taskArray = allTasks[category]
+            taskArray?.sort(by: {$0._rank < $1._rank})
+            allTasks[category] = taskArray
+        }
+    }
+    
+    // Icrease Rank of task
+    func increaseRank(task:Task) {
+        debugPrint("in increase rank")
+        // Update in All Tasks
+        for (category, taskArray) in allTasks {
+            for currentTask in taskArray {
+                if currentTask._id == task._id {
+                    currentTask._rank = currentTask._rank + 1
+                }
+            }
+        }
+        
+        // Put Task In Update Task List to Be saved to database later
+        if updateTaskRankList.contains(where: {$0._id == task._id}) {
+            let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == task._id})
+            let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
+            updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
+        }
+
+        else {
+            updateTaskRankList.append(task)
+        }
+    }
+    
+    // Update Rank of task
+    func decreaseRank(task:Task) {
+        debugPrint("in decrease rank")
+        // Update in All Tasks
+        for (category, taskArray) in allTasks {
+            for currentTask in taskArray {
+                if currentTask._id == task._id {
+                    currentTask._rank = currentTask._rank - 1
+                }
+            }
+        }
+        
+        // Put Task In Update Task List to Be saved to database later
+        if updateTaskRankList.contains(where: {$0._id == task._id}) {
+            let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == task._id})
+            let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
+            updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
+        }
+            
+        else {
+            updateTaskRankList.append(task)
+        }
+    }
+    
+    // Update source rank
+    func updateSourceRank(sourceTask:Task, destinationTask:Task) {
+        for (categeory, taskArray) in allTasks {
+            for task in taskArray {
+                if task._id == sourceTask._id {
+                    sourceTask._rank = destinationTask._rank
+                    
+                    // Put Source Task in UPdate Task Rank array
+                    if updateTaskRankList.contains(where: {$0._id == sourceTask._id}) {
+                        let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == sourceTask._id})
+                        let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
+                        updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
+                    }
+                        
+                    else {
+                        updateTaskRankList.append(sourceTask)
+                    }
+                }
+            }
+        }
+    }
+    
+    // Update category value and change order in allTasks
+    func updateTaskCategory(task:Task, category:String) {
+        debugPrint("in updateTaskCategory")
+        // Get old category value
+        let oldCategory = task._catgory
+        debugPrint(oldCategory)
+        // Update category value
+        task._catgory = category
+        
+        var taskArray = allTasks[oldCategory]
+        
+        // Remove from old category list
+        let taskInArrayIndex = taskArray!.firstIndex(where: {$0._id == task._id})
+        taskArray!.remove(at: taskInArrayIndex!)
+        allTasks[oldCategory] = taskArray
+        
+        // Insert in New category
+        var taskArrayNew = allTasks[category]
+        taskArrayNew?.append(task)
+        allTasks[category] = taskArrayNew
+        
+        // Insert in array to update task category
+        if updateTaskCategoryList.contains(where: {$0._id == task._id}) {
+            let taskInArrayIndex = updateTaskCategoryList.firstIndex(where: {$0._id == task._id})
+            let taskInArray = updateTaskCategoryList.remove(at: taskInArrayIndex!)
+            updateTaskCategoryList.insert(taskInArray, at: taskInArrayIndex!)
+        }
+            
+        else {
+            updateTaskCategoryList.append(task)
+        }
+    }
+    
+    
+    
+    
     // --- Helper Function for Segue ---
     // Prepare for Segue when task is selected
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -379,11 +640,21 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Update Task and Channel for Table
     func updateTaskTable() {
         // Display Tasks associated with Current Channel
+        sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
         tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
         
         // Populate Task Table
         taskTblView.reloadData()
+    }
+    
+    // Update Task and Channel for Table
+    func updateTaskTableWithoutReloadingData() {
+        // Display Tasks associated with Current Channel
+        sortTasks()
+        tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
+        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
+        
     }
     
     // Update channel label
@@ -418,9 +689,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         
         // Tasks
         // Put place holder tasks in to allTasks
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task")
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Short Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Medium Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Long Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
         allTasks["Short Term"] = [errorTaskST]
         allTasks["Medium Term"] = [errorTaskMT]
         allTasks["Long Term"] = [errorTaskLT]
@@ -434,6 +705,16 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             // Filter tasks and update table
             self.updateTaskTable()
         })
+        
+        // Get Total Count for Tasks
+        DataService.instance.getTotalTaskCount { (count) in
+            totalTaskCount = count
+        }
+        
+        // Get Total Count for Channels
+        DataService.instance.getTotalChannelCount { (count) in
+            totalChannelCount = count
+        }
     }
     
     // --- Helper Function For segment control view
@@ -463,6 +744,18 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         taskArray!.remove(at: taskIndex!)
         allTasks[category] = taskArray
         updateTaskTable()
+    }
+    
+    
+    
+    
+    // --- Helper Functions for View ---
+    func updatePriorityBtnView() {
+        priorityBtn.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
+        priorityBtn.setTitleColor(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1), for: .normal)
+        priorityBtn.layer.cornerRadius = 10
+        priorityBtn.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
+        priorityBtn.layer.borderWidth = 1
     }
     
     
