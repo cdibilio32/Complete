@@ -21,18 +21,22 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var topConstraint: NSLayoutConstraint!
     @IBOutlet var activitySpinner: UIView!
     @IBOutlet var priorityBtn: UIButton!
-    
+    @IBOutlet var noSectionPopUp: UIView!
+    @IBOutlet var noSectionPopUpBtn: UIButton!
     
     // --- Instance Variables ---
     // All Data For User
     var allTasks = [String:[Task]]()
     var lanes = ["To Do", "In Progress", "Complete"]
-    var categories = ["Short Term", "Medium Term", "Long Term"]
+    var categories = [Category]()
+    var dballTasks = [String:[Task]]()    
+
     
     // Current Selection Data and Help With Filtering
     var selectedLane:String?
     var tasksForCurrentChannel:[String:[Task]]!         // All tasks for current channel
     var tasksForCurrentChannelAndLane:[String:[Task]]! // All tasks for current channel, filtered by lane selected
+    var categoriesForCurrentChannel:[Category]!        // All categories for current channel
     var selectedTask:Task?
     
     // Class to pass data to Channel vc
@@ -45,6 +49,52 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     // --- Actions ---
+    @IBAction func addFirstCategoryToChannel(_ sender: Any) {
+        // If all channels is selected -> show error message
+        if channelVC.selectedChannel._id == "allTasks" {
+            let alert = UIAlertController(title: "Sorry you can't add a category to the #All channel.", message: "Please select a specific channel to add a category.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+            
+            // If not allow user to create a new category
+        else {
+            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewCategoryVC") as? createNewCategoryVC else {return}
+            
+            // Pass Data Over to Child View
+            createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
+            
+            // Start Pop Up
+            self.addChildViewController(createNewTaskPopUpVC)
+            createNewTaskPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewTaskPopUpVC.view)
+            createNewTaskPopUpVC.didMove(toParentViewController: self)
+        }
+    }
+    // Pop up to add Category when btn pressed
+    @objc func addCategorToTaskTable(sender:UIButton) {
+        // If all channels is selected -> show error message
+        if channelVC.selectedChannel._id == "allTasks" {
+            let alert = UIAlertController(title: "Sorry you can't add a category to the #All channel.", message: "Please select a specific channel to add a category.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            self.present(alert, animated: true)
+        }
+        
+        // If not allow user to create a new category
+        else {
+            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewCategoryVC") as? createNewCategoryVC else {return}
+            
+            // Pass Data Over to Child View
+            createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
+            
+            // Start Pop Up
+            self.addChildViewController(createNewTaskPopUpVC)
+            createNewTaskPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewTaskPopUpVC.view)
+            createNewTaskPopUpVC.didMove(toParentViewController: self)
+        }
+    }
+    
     // Pop up to add Task - in section
     @objc func addTaskInTableBtnPressed(sender:UIButton) {
         // If all channels is selected -> show error message
@@ -61,7 +111,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             
             // Pass Data Over to Child View
             createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
-            createNewTaskPopUpVC.currentCategory = categories[sender.tag]
+            createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
             
             // Start Pop Up
             self.addChildViewController(createNewTaskPopUpVC)
@@ -174,6 +224,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Lane Segment Control font
         formatSegmentControl()
         updatePriorityBtnView()
+        formatNoSectionPopUp()
+        
+        // Hide no category pop up
+        noSectionPopUp.isHidden = true
         
         // Load All Data
         loadApplicationData()
@@ -188,11 +242,19 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     
-    
+
     // --- Table View Delegates ---
     // Sections
     func numberOfSections(in tableView: UITableView) -> Int {
-        return categories.count
+        if categoriesForCurrentChannel == nil || categoriesForCurrentChannel.count == 0 {
+            noSectionPopUp.isHidden = false
+            return 0
+        }
+        else {
+            noSectionPopUp.isHidden = true
+            return categoriesForCurrentChannel.count
+            
+        }
     }
     
     // Height of section
@@ -204,7 +266,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "taskSectionHeader") as? taskSectionHeaderViewCell {
             // Update Cell
-            cell.updateCell(category: categories[section], categoryIndex: section)
+            cell.updateCell(category: categoriesForCurrentChannel[section]._name, categoryIndex: section)
             // Attach category section to button
             cell.addTaskSectionBtn.tag = section
             
@@ -221,8 +283,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         
     // Cells
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let currentCategory = categories[section]
-        let currentTaskArray = tasksForCurrentChannelAndLane[currentCategory]
+        let currentCategory = categoriesForCurrentChannel[section]._id
+        let currentTaskArray = tasksForCurrentChannelAndLane[currentCategory!]
         return (currentTaskArray?.count)!
     }
     
@@ -232,8 +294,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // If there is a cell, return it
         if let cell = tableView.dequeueReusableCell(withIdentifier: "TaskTableCell", for: indexPath) as? taskTableViewCell {
             // Make Cell and return it
-            let section = categories[indexPath.section]
-            let tasks = tasksForCurrentChannelAndLane[section]
+            let section = categoriesForCurrentChannel[indexPath.section]._id
+            let tasks = tasksForCurrentChannelAndLane[section!]
             let task = tasks![indexPath.row]
         
             // Update Cell
@@ -250,8 +312,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Height of cell at row - hide error cell if count > 1
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         // Grab Data
-        let currentSection = categories[indexPath.section]
-        let currentTaskArray = tasksForCurrentChannelAndLane[currentSection]
+        let currentSection = categoriesForCurrentChannel[indexPath.section]._id
+        let currentTaskArray = tasksForCurrentChannelAndLane[currentSection!]
         let currentTask = currentTaskArray![indexPath.row]
         
         if (currentTaskArray?.count)! > 1 && currentTask._id == "Error Task" {
@@ -264,11 +326,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // When Cell is selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedSection = categories[indexPath.section]
+        let selectedSection = categoriesForCurrentChannel[indexPath.section]._id
         
         // Make sure it is not a place holding task, if so don't do anything
-        if tasksForCurrentChannel[selectedSection] != nil {
-            let tasksForSelectedSection = tasksForCurrentChannelAndLane[selectedSection]
+        if tasksForCurrentChannel[selectedSection!] != nil {
+            let tasksForSelectedSection = tasksForCurrentChannelAndLane[selectedSection!]
             selectedTask = tasksForSelectedSection?[indexPath.row]
             
             // If not error task perform segue
@@ -283,17 +345,17 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
             // Grab Data
             let categoryIndex = indexPath.section
-            let category = self.categories[categoryIndex]
-            let taskArray = self.tasksForCurrentChannelAndLane[category]
+            let category = self.categoriesForCurrentChannel[categoryIndex]._id
+            let taskArray = self.tasksForCurrentChannelAndLane[category!]
             let task = taskArray![indexPath.row]
             
-            var allTaskArray = self.allTasks[category]
+            var allTaskArray = self.allTasks[category!]
             let allTaskIndex = allTaskArray!.firstIndex(where: {$0 === task})
             let allTask = allTaskArray![allTaskIndex!]
             
             // Remove Item from instance variables
             allTaskArray!.remove(at: allTaskIndex!)
-            self.allTasks[category] = allTaskArray
+            self.allTasks[category!] = allTaskArray
             self.tasksForCurrentChannel = self.filterTasksForCurrentChannel(tasks: self.allTasks, channel: self.channelVC.selectedChannel)
             self.tasksForCurrentChannelAndLane = self.filterTasksForCurrentLane(tasks: self.tasksForCurrentChannel, lane: self.selectedLane!)
             
@@ -309,6 +371,32 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         return [delete]
     }
     
+    // Footer for table
+    // height
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == categoriesForCurrentChannel.count - 1 {
+            return CGFloat(40)
+        }
+        else {return CGFloat(0)}
+    }
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        // Only add footer if is in last category
+        if section == categoriesForCurrentChannel.count - 1 {
+            // Get Cell
+            if let cell = tableView.dequeueReusableCell(withIdentifier: "taskTableFooterView") as? taskTableFooterViewCell {
+                // Set Up Listener for button
+                cell.addCategoryBtn.addTarget(self, action: #selector(addCategorToTaskTable(sender:)), for: .touchUpInside)
+                
+                return cell
+            }
+            // If no cell provided return empty one
+            else {
+                return taskTableViewCell()
+            }
+        }
+        else {return nil}
+    }
+    
     // Drag and Drop
     // Allow to move
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -318,13 +406,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Action when moved
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // Get source task to update rank
-        let sourceTaskArray = tasksForCurrentChannelAndLane?[categories[sourceIndexPath.section]]
+        let sourceTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[sourceIndexPath.section]._id!]
         let sourceTask = sourceTaskArray![sourceIndexPath.row]
-        let destinationTaskArray = tasksForCurrentChannelAndLane?[categories[destinationIndexPath.section]]
+        let destinationTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[destinationIndexPath.section]._id!]
         
         
         // If switched cells in same section
-        if categories[sourceIndexPath.section] == categories[destinationIndexPath.section] {
+        if categoriesForCurrentChannel[sourceIndexPath.section]._id! == categoriesForCurrentChannel[destinationIndexPath.section]._id! {
             // Get destination task
             let destinationTask = destinationTaskArray![destinationIndexPath.row]
             
@@ -375,7 +463,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 else {
                     destinationTask = destinationTaskArray![destinationIndexPath.row]
                 }
-                updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                updateTaskCategory(task: sourceTask, category: destinationTask._categoryId)
                 updateTaskTable()
             }
             
@@ -393,13 +481,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 // If order does change - check to see if task goes from last row in previous section to first in next section
                 if sourceTask._rank + 1 == destinationTask._rank || sourceTask._rank - 1 == destinationTask._rank {
                     // Do Nothing - Needed for else statement
-                    updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                    updateTaskCategory(task: sourceTask, category: destinationTask._categoryId)
                 }
                 else {
                     // Update on tasks not source or destination depends on if source is being moed up or down
                     if sourceTask._rank > destinationTask._rank {
                         // Change Rank of source task
-                        updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                        updateTaskCategory(task: sourceTask, category: destinationTask._categoryId)
                         updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
                         
                         // Increase rank of all task if ranked higher than destination
@@ -414,7 +502,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                         
                     else if sourceTask._rank < destinationTask._rank {
                         // Change Rank of source task
-                        updateTaskCategory(task: sourceTask, category: destinationTask._catgory)
+                        updateTaskCategory(task: sourceTask, category: destinationTask._categoryId)
                         updateSourceRank(sourceTask: sourceTask, destinationTask: destinationTask)
                 
                         // Increase rank of all task if ranked lower than destination
@@ -442,6 +530,19 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     // --- Helper Functions For Instance Variables ---
+    // Return only categories associated with Channel
+    func filterCategoriesForCurrentChannel() {
+        // Store filtered categories
+        var filteredCategories = [Category]()
+        
+        // Filter
+        for cat in categories {
+            if cat._channelId == channelVC.selectedChannel._id || channelVC.selectedChannel._id == "allTasks" {
+                filteredCategories.append(cat)
+            }
+        }
+        categoriesForCurrentChannel = filteredCategories
+    }
     // Return only tasks associated with Channel
     func filterTasksForCurrentChannel(tasks:[String:[Task]], channel:Channel) -> [String: [Task]] {
         
@@ -514,7 +615,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Icrease Rank of task
     func increaseRank(task:Task) {
-        debugPrint("in increase rank")
         // Update in All Tasks
         for (category, taskArray) in allTasks {
             for currentTask in taskArray {
@@ -538,7 +638,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Update Rank of task
     func decreaseRank(task:Task) {
-        debugPrint("in decrease rank")
         // Update in All Tasks
         for (category, taskArray) in allTasks {
             for currentTask in taskArray {
@@ -584,12 +683,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Update category value and change order in allTasks
     func updateTaskCategory(task:Task, category:String) {
-        debugPrint("in updateTaskCategory")
         // Get old category value
-        let oldCategory = task._catgory
-        debugPrint(oldCategory)
+        let oldCategory = task._categoryId
         // Update category value
-        task._catgory = category
+        task._categoryId = category
         
         var taskArray = allTasks[oldCategory]
         
@@ -629,6 +726,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 taskDetailVC.currentTask = selectedTask
                 taskDetailVC.lanes = lanes
                 taskDetailVC.allTasks = allTasks
+                
+                // Give Sectio Name to taskDetail
+                let categoryId = selectedTask?._categoryId
+                for cat in categories {
+                    if cat._id == categoryId {
+                        taskDetailVC.currentCategoryName = cat._name
+                    }
+                }
             }
         }
     }
@@ -639,6 +744,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // --- Helper function for Table Function ---
     // Update Task and Channel for Table
     func updateTaskTable() {
+        // Display catgories for current channel
+        filterCategoriesForCurrentChannel()
+        
         // Display Tasks associated with Current Channel
         sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
@@ -687,19 +795,28 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             }
         })
         
-        // Tasks
-        // Put place holder tasks in to allTasks
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Short Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Medium Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Long Term", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        allTasks["Short Term"] = [errorTaskST]
-        allTasks["Medium Term"] = [errorTaskMT]
-        allTasks["Long Term"] = [errorTaskLT]
-        updateTaskTable()
         
+        
+        // Categories
+        DataService.instance.getAllCategoriesForUser { (category) in
+            // Put in dbCategories OR categories
+            var inCategories = false
+            for i in self.categories {
+                if i._id == category._id {
+                    inCategories = true
+                }
+            }
+            if !inCategories {
+                self.categories.append(category)
+                let errorTask = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: category._id!, lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+                self.allTasks = errorTask.add(toDictionary: self.allTasks)
+                self.updateTaskTable()
+            }
+        }
+        
+        // Tasks
         // Upload and listen to tasks Taks
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
-            
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
             // Filter tasks and update table
@@ -714,6 +831,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Get Total Count for Channels
         DataService.instance.getTotalChannelCount { (count) in
             totalChannelCount = count
+        }
+        
+        // Get Total Count for Channels
+        DataService.instance.getTotalCategoryCount { (count) in
+            totalCategoryCount = count
         }
     }
     
@@ -734,7 +856,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Delete task from allTasks and update table
     func deleteTaskAndUpdateTable(task: Task) {
         // Delete from taskVC
-        let category = task._catgory
+        let category = task._categoryId
         var taskArray = allTasks[category]
         var idArray = [String]()
         for task in taskArray! {
@@ -756,6 +878,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         priorityBtn.layer.cornerRadius = 10
         priorityBtn.layer.borderColor = #colorLiteral(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0)
         priorityBtn.layer.borderWidth = 1
+    }
+    
+    func formatNoSectionPopUp() {
+        noSectionPopUpBtn.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
+        noSectionPopUpBtn.setTitleColor(#colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1), for: .normal)
+        noSectionPopUpBtn.layer.cornerRadius = 10
+        noSectionPopUpBtn.layer.borderColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
+        noSectionPopUpBtn.layer.borderWidth = 1
     }
     
     

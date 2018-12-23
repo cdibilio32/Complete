@@ -55,9 +55,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         selectedChannel = Channel(name: "Errands", id: nil, date: Date().description, rank: -1)
         allChannels.removeAll()
         taskVC.allTasks.removeAll()
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
         taskVC.allTasks["Short Term"] = [errorTaskST]
         taskVC.allTasks["Medium Term"] = [errorTaskMT]
         taskVC.allTasks["Long Term"] = [errorTaskLT]

@@ -38,6 +38,7 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     var lanes:[String]!
     var delegate:deleteTaskUpdate!
     var selectedLane:String!
+    var currentCategoryName:String!
     
     
     
@@ -141,7 +142,7 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         errorMsg.isHidden = true
         
         // Update Header Title With Category
-        headerTitle.text = currentTask._catgory
+        headerTitle.text = currentCategoryName
         
         // Format and display date
         formatDate()
