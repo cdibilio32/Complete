@@ -104,8 +104,9 @@ class DataService {
             let id = snapshot.key
             let name = snapshot.childSnapshot(forPath: "name").value as! String
             let channelId = snapshot.childSnapshot(forPath: "channelId").value as! String
+            let rank = snapshot.childSnapshot(forPath: "rank").value as! Int
             
-            let currentCategory = Category(name: name, id: id, channelId: channelId)
+            let currentCategory = Category(name: name, id: id, channelId: channelId, rank: rank)
             handler(currentCategory)
         })
     }
@@ -208,7 +209,8 @@ class DataService {
         // Get Categoy Info
         let newCategoryDict = [
             "name": category._name,
-            "channelId": category._channelId] as [String:Any]
+            "channelId": category._channelId,
+            "rank": category._rank] as [String:Any]
         
         // Get CAtegory Key
         let newCategory = REF_CATEGORIES.child(userID).childByAutoId()
@@ -234,6 +236,11 @@ class DataService {
     // Update Task Category
     func updateTaskCategory(task: Task) {
         REF_TASKS.child(userID).child(task._id!).child("categoryId").setValue(task._categoryId)
+    }
+    
+    // Update Category Rank
+    func updateCategoryRank(category: Category) {
+        REF_CATEGORIES.child(userID).child(category._id!).child("rank").setValue(category._rank)
     }
     
     

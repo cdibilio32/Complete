@@ -38,7 +38,7 @@ class createNewCategoryVC: UIViewController, UITextFieldDelegate {
             
             // Create Category
             totalCategoryCount = totalCategoryCount + 1
-            let category  = Category(name: name!, id: nil, channelId: channelId!)
+            let category  = Category(name: name!, id: nil, channelId: channelId!, rank: totalCategoryCount)
             
             // Add to Database (remember gets id in dataservice function)
             DataService.instance.uploadCategoryForUser(category: category) { (uploaded, category) in

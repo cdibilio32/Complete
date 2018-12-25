@@ -14,11 +14,13 @@ class Category {
     public var _name:String
     public var _id:String?
     public var _channelId:String
+    public var _rank:Int
     
     // Initializer
-    init(name:String, id:String?, channelId:String) {
+    init(name:String, id:String?, channelId:String, rank:Int) {
         self._name = name
         self._channelId = channelId
+        self._rank = rank
         if (id != nil) {
             self._id = id
         }

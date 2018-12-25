@@ -13,6 +13,8 @@ class taskSectionHeaderViewCell: UITableViewCell {
     // --- Outlets ---
     @IBOutlet var titleLbl: UILabel!
     @IBOutlet var addTaskSectionBtn: UIButton!
+    @IBOutlet var upButton: UIButton!
+    @IBOutlet var downButton: UIButton!
     
     
     

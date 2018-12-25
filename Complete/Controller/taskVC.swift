@@ -42,13 +42,55 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Class to pass data to Channel vc
     var channelVC:channelVC!
     
-    // Tasks to update for drag and drop
+    // Uppdated taska and categories for drag and drop
     var updateTaskRankList = [Task]()
     var updateTaskCategoryList = [Task]()
+    var updateCategoryList = [Category]()
+    
+    // Bool to designate if in edit mode or not
+    var priorityBtnPressed = false
 
     
     
     // --- Actions ---
+    // Switch Section with section below it
+    @objc func dropSection(sender:UIButton) {
+        // Get origin and destination Categories
+        let originCatIndex = sender.tag
+        debugPrint(sender.tag)
+        let destinationCatIndex = originCatIndex + 1
+        var originCat = categoriesForCurrentChannel[originCatIndex]
+        var destinationCat = categoriesForCurrentChannel[destinationCatIndex]
+        
+        // Update ranks and put into update instance variable
+        // Origin
+        let oldOriginRank = originCat._rank
+        originCat._rank = destinationCat._rank
+        updateCategoryList.append(originCat)
+        increaseAllCategorieRank(oldOriginRank: oldOriginRank, originId: originCat._id!, destinationRank: destinationCat._rank)
+        
+        // Update table so categories are rearanged
+        updateTaskTable()
+    }
+    
+    // Switch section with section above it
+    @objc func riseSection(sender:UIButton) {
+        // Get origin and destination Categories
+        let originCatIndex = sender.tag
+        let destinationCatIndex = originCatIndex - 1
+        var originCat = categoriesForCurrentChannel[originCatIndex]
+        var destinationCat = categoriesForCurrentChannel[destinationCatIndex]
+        
+        // Update ranks and put into update instance variable
+        // Origin
+        let oldOriginRank = originCat._rank
+        originCat._rank = destinationCat._rank
+        updateCategoryList.append(originCat)
+        decreaseAllCategorieRank(oldOriginRank: oldOriginRank, originId: originCat._id!, destinationRank: destinationCat._rank)
+        
+        // Update table so categories are rearanged
+        updateTaskTable()
+    }
     @IBAction func addFirstCategoryToChannel(_ sender: Any) {
         // If all channels is selected -> show error message
         if channelVC.selectedChannel._id == "allTasks" {
@@ -135,6 +177,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Make Table editable
     @IBAction func dragAndDropBtnPressed(_ sender: Any) {
         
+        // Update Task Table to hide appropriate buttons
+        updateTaskTable()
+        
         // Check if user is click to start or end drag and drop (editting)
         // User Starts Editing
         if !taskTblView.isEditing {
@@ -143,7 +188,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             priorityBtn.layer.cornerRadius = 10
             priorityBtn.setTitleColor(#colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1), for: .normal)
             
-            
             // Allow to Edit
             taskTblView.isEditing = !taskTblView.isEditing
         }
@@ -151,19 +195,25 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // User Ends Editing
         else {
             // Save Updated Values to Database
-            // For Categories
+            // For task category
             for task in updateTaskCategoryList {
                 DataService.instance.updateTaskCategory(task: task)
             }
             
-            // For Rank
+            // For task rank
             for task in updateTaskRankList {
                 DataService.instance.updateTaskRank(task: task)
+            }
+            
+            // For categories
+            for category in updateCategoryList {
+                DataService.instance.updateCategoryRank(category: category)
             }
             
             // Erase Items in update arrays
             updateTaskCategoryList.removeAll()
             updateTaskRankList.removeAll()
+            updateCategoryList.removeAll()
             
             // Edit Button
             updatePriorityBtnView()
@@ -171,6 +221,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             // Disallow to edit
             taskTblView.isEditing = !taskTblView.isEditing
         }
+        
+        // Update Priority Btn Pressed
+        priorityBtnPressed = !priorityBtnPressed
+        
     }
     
     
@@ -267,11 +321,40 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         if let cell = tableView.dequeueReusableCell(withIdentifier: "taskSectionHeader") as? taskSectionHeaderViewCell {
             // Update Cell
             cell.updateCell(category: categoriesForCurrentChannel[section]._name, categoryIndex: section)
+            
             // Attach category section to button
             cell.addTaskSectionBtn.tag = section
+            cell.upButton.tag = section
+            cell.downButton.tag = section
             
-            // Add Listener to button
+            // Disable UP and down buttons if at top or bottom of table
+            if section == categoriesForCurrentChannel.count - 1 {
+                cell.downButton.isEnabled = false
+            }
+            if section == 0 {
+                cell.upButton.isEnabled = false
+            }
+            
+            // Hide category up/down buttons When Priority btn not pressed
+            if priorityBtnPressed {
+                cell.upButton.isHidden = false
+                cell.downButton.isHidden = false
+                cell.addTaskSectionBtn.isHidden = true
+            }
+            
+            // Hide add task button if pririoty btn is pressed
+            else {
+                cell.upButton.isHidden = true
+                cell.downButton.isHidden = true
+                cell.addTaskSectionBtn.isHidden = false
+            }
+            
+            
+            
+            // Add Listener to buttons
             cell.addTaskSectionBtn.addTarget(self, action: #selector(addTaskInTableBtnPressed(sender:)), for: .touchUpInside)
+            cell.upButton.addTarget(self, action: #selector(riseSection(sender:)), for: .touchUpInside)
+            cell.downButton.addTarget(self, action: #selector(dropSection(sender:)), for: .touchUpInside)
             
             return cell
         }
@@ -613,6 +696,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         }
     }
     
+    // Sort Categories By Rank
+    func sortCategories() {
+        categories.sort(by: {$0._rank < $1._rank})
+    }
+    
     // Icrease Rank of task
     func increaseRank(task:Task) {
         // Update in All Tasks
@@ -712,6 +800,34 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         }
     }
     
+    // Categories
+    // Increase rank
+    func increaseAllCategorieRank(oldOriginRank: Int, originId: String, destinationRank:Int) {
+        for category in categories {
+            if category._rank <= destinationRank && category._rank > oldOriginRank && category._id != originId {
+                // Update in categories
+                category._rank = category._rank - 1
+                
+                // Put in update instance variable
+                updateCategoryList.append(category)
+            }
+        }
+    }
+    
+    // Decrease RAnk
+    // Increase rank
+    func decreaseAllCategorieRank(oldOriginRank: Int, originId: String, destinationRank:Int) {
+        for category in categories {
+            if category._rank >= destinationRank && category._rank < oldOriginRank && category._id != originId {
+                // Update in categories
+                category._rank = category._rank + 1
+                
+                // Put in update instance variable
+                updateCategoryList.append(category)
+            }
+        }
+    }
+    
     
     
     
@@ -745,6 +861,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Update Task and Channel for Table
     func updateTaskTable() {
         // Display catgories for current channel
+        sortCategories()
         filterCategoriesForCurrentChannel()
         
         // Display Tasks associated with Current Channel
