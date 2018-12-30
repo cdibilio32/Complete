@@ -574,7 +574,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                     updateTaskRank(rank: sourceTaskArray![i+1]._rank, task: sourceTaskArray![i])
                 }
                 updateTaskRank(rank: oldDestinationTaskRank, task: sourceTaskArray![sourceIndexPath.row])
-                updateTaskTable()
             }
             
             // If Cell is moved to bottom of list
@@ -585,7 +584,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                     i = i - 1
                 }
                 updateTaskRank(rank: oldDestinationTaskRank, task: sourceTaskArray![sourceIndexPath.row])
-                updateTaskTable()
             }
         }
         
@@ -649,6 +647,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 }
             }
         }
+        debugPrint(updateTaskRankList)
         updateTaskTable()
     }
     
@@ -750,76 +749,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         categories.sort(by: {$0._rank < $1._rank})
     }
     
-    // Icrease Rank of task
-    func increaseRank(task:Task) {
-        // Update in All Tasks
-        for (category, taskArray) in allTasks {
-            for currentTask in taskArray {
-                if currentTask._id == task._id {
-                    currentTask._rank = currentTask._rank + 1
-                }
-            }
-        }
-        
-        // Put Task In Update Task List to Be saved to database later
-        if updateTaskRankList.contains(where: {$0._id == task._id}) {
-            let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == task._id})
-            let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
-            updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
-        }
-
-        else {
-            updateTaskRankList.append(task)
-        }
-    }
-    
-    // Update Rank of task
-    func decreaseRank(task:Task) {
-        // Update in All Tasks
-        for (category, taskArray) in allTasks {
-            for currentTask in taskArray {
-                if currentTask._id == task._id {
-                    currentTask._rank = currentTask._rank - 1
-                }
-            }
-        }
-        
-        // Put Task In Update Task List to Be saved to database later
-        if updateTaskRankList.contains(where: {$0._id == task._id}) {
-            let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == task._id})
-            let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
-            updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
-        }
-            
-        else {
-            updateTaskRankList.append(task)
-        }
-    }
-    
-    // Update source rank
-    func updateSourceRank(sourceTask:Task, destinationTask:Task) {
-        for (categeory, taskArray) in allTasks {
-            for task in taskArray {
-                if task._id == sourceTask._id {
-                    sourceTask._rank = destinationTask._rank
-                    
-                    // Put Source Task in UPdate Task Rank array
-                    if updateTaskRankList.contains(where: {$0._id == sourceTask._id}) {
-                        let taskInArrayIndex = updateTaskRankList.firstIndex(where: {$0._id == sourceTask._id})
-                        let taskInArray = updateTaskRankList.remove(at: taskInArrayIndex!)
-                        updateTaskRankList.insert(taskInArray, at: taskInArrayIndex!)
-                    }
-                        
-                    else {
-                        updateTaskRankList.append(sourceTask)
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    
     // Categories
     // Increase rank
     func increaseAllCategorieRank(oldOriginRank: Int, originId: String, destinationRank:Int) {
@@ -859,6 +788,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         currentTask._rank = rank
         taskArray?.append(currentTask)
         allTasks[task._categoryId] = taskArray
+        putTaskInUpdateTaskRankArray(task: task)
     }
     
     // Switch TAsk Ranks
@@ -881,6 +811,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         allTasks[currentCategoryId!] = taskArray
         
         // Put in update Array
+        debugPrint("above put in task array")
         putTaskInUpdateTaskRankArray(task: taskArray![firstTaskIndex!])
         putTaskInUpdateTaskRankArray(task: taskArray![secondTaskIndex!])
     }
