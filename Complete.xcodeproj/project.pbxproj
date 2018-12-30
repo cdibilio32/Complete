@@ -11,13 +11,13 @@
 		5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F251216D6E460044880E /* channelTableViewCell.swift */; };
 		514B264621B336E000160477 /* taskSectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */; };
 		515E6E062177D7130038C142 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515E6E052177D7130038C142 /* constants.swift */; };
-		516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */; };
 		516FABEF21A364110095E23F /* SectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 516FABEE21A364110095E23F /* SectionHeader.xib */; };
 		51786874216837C1004CEFAD /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51786873216837C1004CEFAD /* Channel.swift */; };
 		51786876216837CA004CEFAD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51786875216837CA004CEFAD /* Task.swift */; };
 		5178687921683978004CEFAD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178687821683978004CEFAD /* DataService.swift */; };
 		5178687B2168411E004CEFAD /* taskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178687A2168411E004CEFAD /* taskTableViewCell.swift */; };
 		5178CCB52196013000FFCA95 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178CCB42196013000FFCA95 /* AuthService.swift */; };
+		517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */; };
 		517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E74EF21586677005CC8A5 /* AppDelegate.swift */; };
 		517E74F221586677005CC8A5 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E74F121586677005CC8A5 /* ViewController.swift */; };
 		517E74F521586677005CC8A5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 517E74F321586677005CC8A5 /* Main.storyboard */; };
@@ -36,6 +36,8 @@
 		51C5527521769F26006FD951 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51C5527421769F25006FD951 /* GoogleService-Info.plist */; };
 		51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D3CB332184959D00097D2F /* MainNavigationController.swift */; };
 		51ECA18F21BF425E007A9A1E /* unusedCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA18E21BF425E007A9A1E /* unusedCode.swift */; };
+		51ECA19121C873B7007A9A1E /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA19021C873B7007A9A1E /* Category.swift */; };
+		51ECA19321CB1C5B007A9A1E /* taskTableFooterViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA19221CB1C5B007A9A1E /* taskTableFooterViewCell.swift */; };
 		51F8FB8921B16AC500AF7241 /* channelSectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */; };
 		C5CFF44762B3AE86DD06E1A4 /* Pods_Complete.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9A053A2E8752948F48F4B935 /* Pods_Complete.framework */; };
 /* End PBXBuildFile section */
@@ -65,13 +67,13 @@
 		5144F251216D6E460044880E /* channelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelTableViewCell.swift; sourceTree = "<group>"; };
 		514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderViewCell.swift; sourceTree = "<group>"; };
 		515E6E052177D7130038C142 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
-		516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderFooterView.swift; sourceTree = "<group>"; };
 		516FABEE21A364110095E23F /* SectionHeader.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SectionHeader.xib; sourceTree = "<group>"; };
 		51786873216837C1004CEFAD /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		51786875216837CA004CEFAD /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		5178687821683978004CEFAD /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		5178687A2168411E004CEFAD /* taskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskTableViewCell.swift; sourceTree = "<group>"; };
 		5178CCB42196013000FFCA95 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewCategoryVC.swift; sourceTree = "<group>"; };
 		517E74EC21586677005CC8A5 /* Complete.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Complete.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		517E74EF21586677005CC8A5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		517E74F121586677005CC8A5 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -98,6 +100,8 @@
 		51C5527421769F25006FD951 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		51D3CB332184959D00097D2F /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		51ECA18E21BF425E007A9A1E /* unusedCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = unusedCode.swift; sourceTree = "<group>"; };
+		51ECA19021C873B7007A9A1E /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
+		51ECA19221CB1C5B007A9A1E /* taskTableFooterViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskTableFooterViewCell.swift; sourceTree = "<group>"; };
 		51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelSectionHeaderViewCell.swift; sourceTree = "<group>"; };
 		671F3282260C5EB1B3F26408 /* Pods_CompleteTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CompleteTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9A053A2E8752948F48F4B935 /* Pods_Complete.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Complete.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -219,6 +223,7 @@
 				517E752A21586D59005CC8A5 /* taskVC.swift */,
 				51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */,
 				51C1CB1F2161845F00570639 /* taskDetailVC.swift */,
+				517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */,
 				51C1CB232161903500570639 /* signUpVC.swift */,
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
 				51D3CB332184959D00097D2F /* MainNavigationController.swift */,
@@ -231,7 +236,7 @@
 			children = (
 				5178687A2168411E004CEFAD /* taskTableViewCell.swift */,
 				514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */,
-				516FABEA21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift */,
+				51ECA19221CB1C5B007A9A1E /* taskTableFooterViewCell.swift */,
 				5144F251216D6E460044880E /* channelTableViewCell.swift */,
 				51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */,
 			);
@@ -242,6 +247,7 @@
 			isa = PBXGroup;
 			children = (
 				51786873216837C1004CEFAD /* Channel.swift */,
+				51ECA19021C873B7007A9A1E /* Category.swift */,
 				51786875216837CA004CEFAD /* Task.swift */,
 			);
 			path = Model;
@@ -465,6 +471,7 @@
 				5178CCB52196013000FFCA95 /* AuthService.swift in Sources */,
 				517E74F221586677005CC8A5 /* ViewController.swift in Sources */,
 				517E752B21586D59005CC8A5 /* taskVC.swift in Sources */,
+				517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */,
 				517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */,
 				51C1CB2221618C3E00570639 /* logInVC.swift in Sources */,
 				51C1CB242161903500570639 /* signUpVC.swift in Sources */,
@@ -473,11 +480,12 @@
 				51ECA18F21BF425E007A9A1E /* unusedCode.swift in Sources */,
 				517E74F821586677005CC8A5 /* Complete.xcdatamodeld in Sources */,
 				514B264621B336E000160477 /* taskSectionHeaderViewCell.swift in Sources */,
-				516FABEB21A2D7DE0095E23F /* taskSectionHeaderFooterView.swift in Sources */,
 				517E752921586D47005CC8A5 /* channelVC.swift in Sources */,
 				51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */,
 				517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */,
+				51ECA19321CB1C5B007A9A1E /* taskTableFooterViewCell.swift in Sources */,
 				515E6E062177D7130038C142 /* constants.swift in Sources */,
+				51ECA19121C873B7007A9A1E /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

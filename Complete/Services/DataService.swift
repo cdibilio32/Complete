@@ -22,10 +22,12 @@ class DataService {
     private var _REF_USERS = DB_BASE.child("Users")
     private var _REF_CHANNELS = DB_BASE.child("Channels")
     private var _REF_TASKS = DB_BASE.child("Tasks")
+    private var _REF_CATEGORIES = DB_BASE.child("Categories")
     
     // Listeners
     private var channelListener: DatabaseHandle?
     private var taskListener: DatabaseHandle?
+    private var categoryListener: DatabaseHandle?
     
     var REF_BASE: DatabaseReference {
         return _REF_BASE
@@ -41,6 +43,10 @@ class DataService {
     
     var REF_TASKS: DatabaseReference {
         return _REF_TASKS
+    }
+    
+    var REF_CATEGORIES: DatabaseReference {
+        return _REF_CATEGORIES
     }
     
     
@@ -77,16 +83,32 @@ class DataService {
             let id = snapshot.key
             let name = snapshot.childSnapshot(forPath:"name").value as! String
             let description = snapshot.childSnapshot(forPath:"description").value as! String
-            let category = snapshot.childSnapshot(forPath:"category").value as! String
+            let categoryId = snapshot.childSnapshot(forPath:"categoryId").value as! String
             let lane = snapshot.childSnapshot(forPath:"lane").value as! String
             let channelId = snapshot.childSnapshot(forPath:"channelId").value as! String
             let userId = snapshot.childSnapshot(forPath:"userId").value as! String
             let date = snapshot.childSnapshot(forPath:"date").value as! String
             let rank = snapshot.childSnapshot(forPath:"rank").value as! Int
             
-            let currentTask = Task(name: name, id: id, description: description, category: category, lane: lane, channelID: channelId, userID: userId, date: date, rank: rank)
+            let currentTask = Task(name: name, id: id, description: description, categoryId: categoryId, lane: lane, channelID: channelId, userID: userId, date: date, rank: rank)
             handler(currentTask)
         }
+    }
+    
+    // Get All Categories for User
+    func getAllCategoriesForUser(handler: @escaping (_ category:Category) -> ()){
+        // Subit Request
+        categoryListener = _REF_CATEGORIES.child(userID).observe(.childAdded, with: { (snapshot) in
+            
+            // Make Category Object
+            let id = snapshot.key
+            let name = snapshot.childSnapshot(forPath: "name").value as! String
+            let channelId = snapshot.childSnapshot(forPath: "channelId").value as! String
+            let rank = snapshot.childSnapshot(forPath: "rank").value as! Int
+            
+            let currentCategory = Category(name: name, id: id, channelId: channelId, rank: rank)
+            handler(currentCategory)
+        })
     }
     
     // Get Total Task Count
@@ -107,6 +129,15 @@ class DataService {
         }
     }
     
+    // Get Total Category Count
+    func getTotalCategoryCount(handler: @escaping (_ count:Int) -> ()) {
+        // Submit request
+        REF_USERS.child(userID).child("Categories").observeSingleEvent(of: .value) { (snapshot) in
+            let count = snapshot.childSnapshot(forPath: "Total").value as! Int
+            handler(count)
+        }
+    }
+    
     
     
     
@@ -121,7 +152,7 @@ class DataService {
             "name": task._name,
             "description": task._description,
             "channelId": task._channelID,
-            "category": task._catgory,
+            "categoryId": task._categoryId,
             "lane": task._lane,
             "date": task._date,
             "userId": task._userID,
@@ -173,6 +204,30 @@ class DataService {
         handler(true, channel)
     }
     
+    // Upload Category For User
+    func uploadCategoryForUser(category: Category, handler: @escaping (_ status:Bool, _ category:Category) -> ()) {
+        // Get Categoy Info
+        let newCategoryDict = [
+            "name": category._name,
+            "channelId": category._channelId,
+            "rank": category._rank] as [String:Any]
+        
+        // Get CAtegory Key
+        let newCategory = REF_CATEGORIES.child(userID).childByAutoId()
+        let categoryId = newCategory.key
+        
+        // Add category to user under category root
+        REF_CATEGORIES.child(userID).child(categoryId).updateChildValues(newCategoryDict)
+        
+        // Add category under user root
+        REF_USERS.child(userID).child("Categories").child("List").child(categoryId).setValue(true)
+        
+        // UPdate total Category count
+        REF_USERS.child(userID).child("Categories").child("Total").setValue(totalCategoryCount)
+        
+        handler(true, category)
+    }
+    
     // Update Task rank
     func updateTaskRank(task: Task) {
         REF_TASKS.child(userID).child(task._id!).child("rank").setValue(task._rank)
@@ -180,7 +235,17 @@ class DataService {
     
     // Update Task Category
     func updateTaskCategory(task: Task) {
-        REF_TASKS.child(userID).child(task._id!).child("category").setValue(task._catgory)
+        REF_TASKS.child(userID).child(task._id!).child("categoryId").setValue(task._categoryId)
+    }
+    
+    // Update Category Rank
+    func updateCategoryRank(category: Category) {
+        REF_CATEGORIES.child(userID).child(category._id!).child("rank").setValue(category._rank)
+    }
+    
+    // Update Channel Rank
+    func updateChannelRank(channel: Channel) {
+        REF_CHANNELS.child(userID).child(channel._id!).child("rank").setValue(channel._rank)
     }
     
     
@@ -196,23 +261,32 @@ class DataService {
     }
     
     // Delete task from database
-    func deleteChannelForUser(channel:Channel, allTasks:[String:[Task]]) -> [String:[Task]] {
+    func deleteChannelForUser(channel:Channel, categories:[Category], allTasks:[String:[Task]]) {
         REF_CHANNELS.child(userID).child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("List").child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)
         
         // Delete all tasks in channel
-        var currentTaskDict = allTasks
-        for (category, taskArray) in currentTaskDict {
-            for task in taskArray {
-                if task._channelID == channel._id! {
-                    // Delete from Database
-                    totalChannelCount = totalChannelCount - 1
-                    deleteTaskForUser(task: task)
-                }
+        for categoryId in allTasks.keys {
+            // Find Category
+            let category = categories.first(where: {$0._id == categoryId})
+            if category?._channelId == channel._id! {
+                // Delete from Database - category and task
+                deleteCategoryForUser(category: category!, tasks: allTasks[categoryId]!)
             }
         }
-        return currentTaskDict
+    }
+    
+    // Delete Category from database
+    func deleteCategoryForUser(category:Category, tasks:[Task]) {
+        REF_CATEGORIES.child(userID).child(category._id!).removeValue()
+        REF_USERS.child(userID).child("Categories").child("List").child(category._id!).removeValue()
+        REF_USERS.child(userID).child("Categories").child("Total").setValue(totalCategoryCount)
+        
+        // Delete all tasks in Category
+        for task in tasks {
+            deleteTaskForUser(task: task)
+        }
     }
     
     
@@ -230,6 +304,9 @@ class DataService {
     // Add user to database
     func createDBUser(userId:String, userData:[String:String]) {
         REF_USERS.child(userId).setValue(userData)
+        REF_USERS.child(userId).child("Channels").child("Total").setValue(0)
+        REF_USERS.child(userId).child("Categories").child("Total").setValue(0)
+        REF_USERS.child(userId).child("Tasks").child("Total").setValue(0)
     }
     
     

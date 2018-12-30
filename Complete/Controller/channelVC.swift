@@ -55,9 +55,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         selectedChannel = Channel(name: "Errands", id: nil, date: Date().description, rank: -1)
         allChannels.removeAll()
         taskVC.allTasks.removeAll()
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", category: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
         taskVC.allTasks["Short Term"] = [errorTaskST]
         taskVC.allTasks["Medium Term"] = [errorTaskMT]
         taskVC.allTasks["Long Term"] = [errorTaskLT]
@@ -173,37 +173,34 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
             // Grab Data
             let channelToDeleteIndex = indexPath.row
-            debugPrint(channelToDeleteIndex)
             let channelToDelete = self.allChannels[channelToDeleteIndex]
             
-            // Remove from instance variables
-            self.allChannels.remove(at: channelToDeleteIndex)
+            // Update Counts
+            self.updateCounts(channelToDelete: channelToDelete)
             
-            totalChannelCount = totalChannelCount - 1
+            // Remove from database - all channel - category - task
+            DataService.instance.deleteChannelForUser(channel: channelToDelete, categories: self.taskVC.categories, allTasks: self.taskVC.allTasks)
             
-            // Remove from database and return all tasks without tasks associated with channel
-            self.taskVC.allTasks = DataService.instance.deleteChannelForUser(channel: channelToDelete, allTasks: self.taskVC.allTasks)
-            
-            // Remove from table
-            self.channelTbl.deleteRows(at: [indexPath], with: .fade)
-            
-            // If current channel is deleted, change assignment to first index
-            if channelToDelete._id == self.selectedChannel?._id {
-                if self.allChannels.count > 0 {
-                    self.selectedChannel = self.allChannels[0]
-                    self.updateChannelDatainTaskVC()
-                    debugPrint(self.selectedChannel._name)
-                }
-            }
+            // Remove from instance variables - channel - tasks - categories
+            self.removeFromInstanceVariables(channelToDelete: channelToDelete, channelToDeleteIndex: channelToDeleteIndex , indexPath: indexPath)
         }
         return [delete]
     }
         
     
+    
+    
+    
+    
     // --- Helper Functions ---
     
+    // Sort Channels
+    func sortChannels() {
+        allChannels.sort(by: {$0._name < $1._name})
+    }
     // Update table view
     func updateChannelTable() {
+        sortChannels()
         self.channelTbl.reloadData()
     }
     
@@ -211,6 +208,53 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     func updateChannelDatainTaskVC() {
         taskVC?.updateTaskTable()
         taskVC?.updateChannelLabel()
+    }
+    
+    // Update count of Channels, categories and tasks
+    func updateCounts(channelToDelete:Channel) {
+        // Channel
+        totalChannelCount = totalChannelCount - 1
+        
+        // Categories
+        for cat in self.taskVC.categories {
+            if cat._channelId == channelToDelete._id {
+                totalCategoryCount = totalCategoryCount - 1
+            }
+        }
+        
+        // Tasks
+        for (cat, taskArray) in self.taskVC.allTasks {
+            for task in taskArray {
+                if task._channelID == channelToDelete._id && task._id != "ErrorTask" {
+                    totalTaskCount = totalTaskCount - 1
+                }
+            }
+        }
+    }
+    
+    func removeFromInstanceVariables(channelToDelete: Channel,channelToDeleteIndex:Int , indexPath:IndexPath) {
+        self.allChannels.remove(at: channelToDeleteIndex)
+        for category in self.taskVC.categories {
+            if category._channelId == channelToDelete._id {
+                self.taskVC.allTasks = category.removeTasks(allTasks: self.taskVC.allTasks)
+                
+            }
+        }
+        self.taskVC.categories.removeAll(where: {$0._channelId == channelToDelete._id})
+        
+        // UPdate Task Table
+        self.taskVC.updateTaskTable()
+        
+        // Remove from channel table
+        self.channelTbl.deleteRows(at: [indexPath], with: .fade)
+        
+        // If current channel is deleted, change assignment to first index
+        if channelToDelete._id == self.selectedChannel?._id {
+            if self.allChannels.count > 0 {
+                self.selectedChannel = self.allChannels[0]
+                self.updateChannelDatainTaskVC()
+            }
+        }
     }
     
     

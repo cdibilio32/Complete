@@ -14,7 +14,7 @@ class Task {
     var _name:String
     var _id:String?
     var _description:String
-    var _catgory:String
+    var _categoryId:String
     var _lane:String
     var _channelID:String
     var _userID:String
@@ -24,10 +24,10 @@ class Task {
     // --- Functions ---
     
     // Initializer
-    init(name:String, id:String?, description:String, category:String, lane:String, channelID:String, userID:String, date:String, rank:Int) {
+    init(name:String, id:String?, description:String, categoryId:String, lane:String, channelID:String, userID:String, date:String, rank:Int) {
         self._name = name
         self._description = description
-        self._catgory = category
+        self._categoryId = categoryId
         self._lane = lane
         self._channelID = channelID
         self._userID = userID
@@ -41,43 +41,19 @@ class Task {
     
     // Add Task To Dictionary
     func add(toDictionary dict:[String:[Task]]) -> [String:[Task]] {
-        let category = self._catgory
+        let categoryId = self._categoryId
         var returnDict = dict
         
-        if category == "Short Term" {
-            // If there are no short term tasks, create array and add first one
-            if dict["Short Term"] == nil {
-                let currentArray = [self]
-                returnDict["Short Term"] = currentArray
-            }
-            // If there is a short term task, get array add task and put pack
-            else {
-                var currentArray = returnDict["Short Term"]
-                currentArray?.append(self)
-                returnDict["Short Term"] = currentArray
-            }
+        // If there isn't an entry for categoryId - make one
+        if dict[categoryId] == nil {
+            let currentArray = [self]
+            returnDict[categoryId] = currentArray
         }
-        else if category == "Medium Term" {
-            if returnDict["Medium Term"] == nil {
-                let currentArray = [self]
-                returnDict["Medium Term"] = currentArray
-            }
-            else {
-                var currentArray = returnDict["Medium Term"]
-                currentArray?.append(self)
-                returnDict["Medium Term"] = currentArray
-            }
-        }
+        // If there is an entry for categoryId - add it to entry
         else {
-            if returnDict["Long Term"] == nil {
-                let currentArray = [self]
-                returnDict["Long Term"] = currentArray
-            }
-            else {
-                var currentArray = returnDict["Long Term"]
-                currentArray?.append(self)
-                returnDict["Long Term"] = currentArray
-            }
+            var currentArray = returnDict[categoryId]
+            currentArray?.append(self)
+            returnDict[categoryId] = currentArray
         }
         return returnDict
     }

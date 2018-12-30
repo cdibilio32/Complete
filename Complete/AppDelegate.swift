@@ -24,6 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Skip Log in page if logged in
         if Auth.auth().currentUser == nil {
+            debugPrint("current user is niil")
             // Show task VC
             let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
             let logInVC = storyboard.instantiateViewController(withIdentifier: "logInVC")
@@ -33,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         else {
             // Set User ID
             userID = (Auth.auth().currentUser?.uid)!
+            isNewUser = true
         }
         
         return true
