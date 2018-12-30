@@ -26,4 +26,15 @@ class Category {
         }
     }
     
+    
+    
+    
+    // --- Functions ---
+    // Remove Tasks from associated Categories
+    func removeTasks(allTasks:[String:[Task]]) -> [String:[Task]] {
+        var newAllTasks = allTasks
+        newAllTasks.removeValue(forKey: self._id!)
+        return newAllTasks
+    }
+    
 }

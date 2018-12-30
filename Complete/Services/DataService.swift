@@ -243,6 +243,11 @@ class DataService {
         REF_CATEGORIES.child(userID).child(category._id!).child("rank").setValue(category._rank)
     }
     
+    // Update Channel Rank
+    func updateChannelRank(channel: Channel) {
+        REF_CHANNELS.child(userID).child(channel._id!).child("rank").setValue(channel._rank)
+    }
+    
     
     
     
@@ -256,23 +261,32 @@ class DataService {
     }
     
     // Delete task from database
-    func deleteChannelForUser(channel:Channel, allTasks:[String:[Task]]) -> [String:[Task]] {
+    func deleteChannelForUser(channel:Channel, categories:[Category], allTasks:[String:[Task]]) {
         REF_CHANNELS.child(userID).child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("List").child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)
         
         // Delete all tasks in channel
-        var currentTaskDict = allTasks
-        for (category, taskArray) in currentTaskDict {
-            for task in taskArray {
-                if task._channelID == channel._id! {
-                    // Delete from Database
-                    totalChannelCount = totalChannelCount - 1
-                    deleteTaskForUser(task: task)
-                }
+        for categoryId in allTasks.keys {
+            // Find Category
+            let category = categories.first(where: {$0._id == categoryId})
+            if category?._channelId == channel._id! {
+                // Delete from Database - category and task
+                deleteCategoryForUser(category: category!, tasks: allTasks[categoryId]!)
             }
         }
-        return currentTaskDict
+    }
+    
+    // Delete Category from database
+    func deleteCategoryForUser(category:Category, tasks:[Task]) {
+        REF_CATEGORIES.child(userID).child(category._id!).removeValue()
+        REF_USERS.child(userID).child("Categories").child("List").child(category._id!).removeValue()
+        REF_USERS.child(userID).child("Categories").child("Total").setValue(totalCategoryCount)
+        
+        // Delete all tasks in Category
+        for task in tasks {
+            deleteTaskForUser(task: task)
+        }
     }
     
     
@@ -290,6 +304,9 @@ class DataService {
     // Add user to database
     func createDBUser(userId:String, userData:[String:String]) {
         REF_USERS.child(userId).setValue(userData)
+        REF_USERS.child(userId).child("Channels").child("Total").setValue(0)
+        REF_USERS.child(userId).child("Categories").child("Total").setValue(0)
+        REF_USERS.child(userId).child("Tasks").child("Total").setValue(0)
     }
     
     
