@@ -29,8 +29,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // All Data For User
     var allTasks = [String:[Task]]()
     var lanes = ["To Do", "In Progress", "Complete"]
-    var categories = [Category]()
-    var dballTasks = [String:[Task]]()    
+    var categories = [Category]()   
 
     
     // Current Selection Data and Help With Filtering
@@ -310,7 +309,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Placeholder for current channel
         let allChannelPlaceHolder = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank:-1)
         channelVC.selectedChannel = allChannelPlaceHolder
-        channelVC.allChannels.append(allChannelPlaceHolder)
         
         // SWViewController Swipe Right
         menuBtn.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
