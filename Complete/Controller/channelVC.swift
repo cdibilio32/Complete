@@ -50,10 +50,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         // Detach Listeners
         DataService.instance.removeChannelListener()
         DataService.instance.removeTaskListener()
+        DataService.instance.removeCategoryListener()
         
         // Clear Data
-        selectedChannel = Channel(name: "Errands", id: nil, date: Date().description, rank: -1)
+        // Channel VC
+        selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
         allChannels.removeAll()
+        
+        // Task VC
         taskVC.allTasks.removeAll()
         let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
         let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
@@ -61,8 +65,15 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC.allTasks["Short Term"] = [errorTaskST]
         taskVC.allTasks["Medium Term"] = [errorTaskMT]
         taskVC.allTasks["Long Term"] = [errorTaskLT]
+        
+        // Task VC update instance variables
+        taskVC.updateTaskRankList.removeAll()
+        taskVC.updateTaskCategoryList.removeAll()
+        taskVC.updateCategoryList.removeAll()
+        taskVC.updateCategoryRankList.removeAll()
+        
+        // UPdate all data and titles
         taskVC.updateTaskTable()
-        selectedChannel = Channel(name: "Errand", id: nil, date: Date().description, rank:-1)
         taskVC.updateChannelLabel()
         channelTbl.reloadData()
         
@@ -79,7 +90,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     // View All Tasks Button Pressed
     @IBAction func viewAllTaksBtnPressed(_ sender: Any) {
-        selectedChannel = allChannels[0]
+        selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
         updateChannelDatainTaskVC()
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
     }

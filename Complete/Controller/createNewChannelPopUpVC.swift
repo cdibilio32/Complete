@@ -172,7 +172,6 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
         let menuToTaskVCWidth = (screenWidth - menuWidth - 2.0*taskVCWidth)/2.0
         
         rightMenuConstraint.constant =  4.0*menuToTaskVCWidth + taskVCWidth
-        debugPrint(rightMenuConstraint.constant)
     }
     
     // Update vertical menu positioning
