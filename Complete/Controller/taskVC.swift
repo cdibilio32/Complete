@@ -23,6 +23,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var priorityBtn: UIButton!
     @IBOutlet var noSectionPopUp: UIView!
     @IBOutlet var noSectionPopUpBtn: UIButton!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     
     // --- Instance Variables ---
     // All Data For User
@@ -264,6 +265,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
     // --- Load Functions ---
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -287,6 +296,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Start Activity Spinner
+        let transform = CGAffineTransform(scaleX: CGFloat(2), y: CGFloat(2))
+        activityIndicator.transform = transform
+        activityIndicator.startAnimating()
+        
         // Set table to not editting at first
         taskTblView.isEditing = false
         
@@ -1074,11 +1088,16 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Tasks
         // Upload and listen to tasks Taks
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
+            
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
             
             // Filter tasks and update table
             self.updateTaskTable()
+            
+            // Update indication spinner
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.isHidden = true
         })
         
         // Get Total Count for Tasks
