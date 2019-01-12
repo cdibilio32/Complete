@@ -26,11 +26,11 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     @IBOutlet var taskSegControlBar: UISegmentedControl!
     @IBOutlet var taskNotes: UITextView!
     @IBOutlet var errorMsg: UILabel!
-    
+    @IBOutlet var saveBtnBottomConstraint: NSLayoutConstraint!
     @IBOutlet var dateLbl: UILabel!
-    
     @IBOutlet var headerTitle: UILabel!
-    
+    @IBOutlet var progressTitle: UILabel!
+    @IBOutlet var descTitleTopConstraint: NSLayoutConstraint!
     
     // --- Instance Variables ---
     var allTasks:[String:[Task]]!
@@ -134,6 +134,9 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         // Disable Keyboard When User clicks out of it
         self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
+        // Push Save Button Up when keyboard appears
+        NotificationCenter.default.addObserver(self, selector: #selector(pushSaveBtnAboveKeyboard(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
         // Set Up delegates
         taskNotes.delegate = self
         taskTitleLbl.delegate = self
@@ -155,8 +158,35 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     
     
     // --- Helper Functions ---
+    // Keyboard
+    @objc func pushSaveBtnAboveKeyboard(notification:Notification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue  {
+            // Adjust Keyboard
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            saveBtnBottomConstraint.constant = keyboardHeight - CGFloat(25)
+        }
+        
+        // Progress Items
+        progressTitle.isHidden = true
+        taskSegControlBar.isHidden = true
+        
+        // Description
+        descTitleTopConstraint.constant = CGFloat(-55)
+    }
+    
     // Close Keyboard
     @objc func dismissKeyboard() {
+        // Save Button
+        saveBtnBottomConstraint.constant = CGFloat(20)
+        
+        // Progress Items
+        progressTitle.isHidden = false
+        taskSegControlBar.isHidden = false
+        
+        // Description
+        descTitleTopConstraint.constant = CGFloat(32)
+        
+        // Dismiss Keyboard
         view.endEditing(true)
     }
     

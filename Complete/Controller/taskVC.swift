@@ -23,13 +23,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var priorityBtn: UIButton!
     @IBOutlet var noSectionPopUp: UIView!
     @IBOutlet var noSectionPopUpBtn: UIButton!
+    @IBOutlet var activityIndicator: UIActivityIndicatorView!
     
     // --- Instance Variables ---
     // All Data For User
     var allTasks = [String:[Task]]()
     var lanes = ["To Do", "In Progress", "Complete"]
-    var categories = [Category]()
-    var dballTasks = [String:[Task]]()    
+    var categories = [Category]()   
 
     
     // Current Selection Data and Help With Filtering
@@ -264,6 +264,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
     // --- Load Functions ---
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
@@ -287,6 +295,11 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Start Activity Spinner
+        let transform = CGAffineTransform(scaleX: CGFloat(2), y: CGFloat(2))
+        activityIndicator.transform = transform
+        activityIndicator.startAnimating()
+        
         // Set table to not editting at first
         taskTblView.isEditing = false
         
@@ -296,7 +309,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Placeholder for current channel
         let allChannelPlaceHolder = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank:-1)
         channelVC.selectedChannel = allChannelPlaceHolder
-        channelVC.allChannels.append(allChannelPlaceHolder)
         
         // SWViewController Swipe Right
         menuBtn.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
@@ -1074,11 +1086,16 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Tasks
         // Upload and listen to tasks Taks
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
+            
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
             
             // Filter tasks and update table
             self.updateTaskTable()
+            
+            // Update indication spinner
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.isHidden = true
         })
         
         // Get Total Count for Tasks

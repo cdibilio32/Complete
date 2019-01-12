@@ -307,5 +307,10 @@ class DataService {
     func removeTaskListener() {
         REF_TASKS.child(userID).removeObserver(withHandle: taskListener!)
     }
+    
+    // Remove CAtegory Listener
+    func removeCategoryListener() {
+        REF_CATEGORIES.child(userID).removeObserver(withHandle: categoryListener!)
+    }
 }
 
