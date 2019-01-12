@@ -175,14 +175,34 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             let channelToDeleteIndex = indexPath.row
             let channelToDelete = self.allChannels[channelToDeleteIndex]
             
-            // Update Counts
-            self.updateCounts(channelToDelete: channelToDelete)
+            // Tasks
+            // If in channel, delete and update ranks
+            for (_,taskArray) in self.taskVC.allTasks {
+                for task in taskArray {
+                    if task._channelID == channelToDelete._id {
+                        self.taskVC.deleteTask(task: task, updateTableWithOutLoadTable: false)
+                    }
+                }
+            }
+            
+            // Categories
+            // If in channel, delete and update ranks
+            for cat in self.taskVC.categories {
+                if cat._channelId == channelToDelete._id {
+                    self.taskVC.deleteCategory(category: cat)
+                }
+            }
+            
+            // Channels
+            // Delete Channel - update counts - change channel if current selected one
+            self.deleteChannel(channelToDelete: channelToDelete, indexPath: indexPath)
             
             // Remove from database - all channel - category - task
-            DataService.instance.deleteChannelForUser(channel: channelToDelete, categories: self.taskVC.categories, allTasks: self.taskVC.allTasks)
+            DataService.instance.deleteChannelForUser(channel: channelToDelete)
             
-            // Remove from instance variables - channel - tasks - categories
-            self.removeFromInstanceVariables(channelToDelete: channelToDelete, channelToDeleteIndex: channelToDeleteIndex , indexPath: indexPath)
+            // Update Ranks - category and task
+            self.taskVC.uploadUpdatedCategoryRanksToDatabase()
+            self.taskVC.uploadUpdatedTaskRanksToDatabase()
         }
         return [delete]
     }
@@ -210,43 +230,16 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC?.updateChannelLabel()
     }
     
-    // Update count of Channels, categories and tasks
-    func updateCounts(channelToDelete:Channel) {
-        // Channel
+    func deleteChannel(channelToDelete: Channel, indexPath:IndexPath) {
+        // Update Counts
         totalChannelCount = totalChannelCount - 1
         
-        // Categories
-        for cat in self.taskVC.categories {
-            if cat._channelId == channelToDelete._id {
-                totalCategoryCount = totalCategoryCount - 1
-            }
-        }
-        
-        // Tasks
-        for (cat, taskArray) in self.taskVC.allTasks {
-            for task in taskArray {
-                if task._channelID == channelToDelete._id && task._id != "ErrorTask" {
-                    totalTaskCount = totalTaskCount - 1
-                }
-            }
-        }
-    }
-    
-    func removeFromInstanceVariables(channelToDelete: Channel,channelToDeleteIndex:Int , indexPath:IndexPath) {
-        self.allChannels.remove(at: channelToDeleteIndex)
-        for category in self.taskVC.categories {
-            if category._channelId == channelToDelete._id {
-                self.taskVC.allTasks = category.removeTasks(allTasks: self.taskVC.allTasks)
-                
-            }
-        }
-        self.taskVC.categories.removeAll(where: {$0._channelId == channelToDelete._id})
-        
-        // UPdate Task Table
-        self.taskVC.updateTaskTable()
+        // Remove From Instance Variables
+        allChannels.remove(at: indexPath.row)
         
         // Remove from channel table
         self.channelTbl.deleteRows(at: [indexPath], with: .fade)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {self.updateChannelTable()})
         
         // If current channel is deleted, change assignment to first index
         if channelToDelete._id == self.selectedChannel?._id {

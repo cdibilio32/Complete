@@ -158,3 +158,45 @@ import Foundation
 //    snapshot?.removeFromSuperview()
 //    self.snapshot = nil
 //}
+
+
+//// Testing for delete tasks
+//var count = 0
+//var ranks = [Int]()
+//let total = 88
+//count = count + 1
+//for (_, taskArray) in self.allTasks {
+//    for t in taskArray {
+//        if t._rank == currentTask._rank {
+//            debugPrint("duplicate: \(t._id) , \(currentTask._id)")
+//        }
+//        if t._rank > total {
+//            debugPrint("Rank Too High: \(t._rank)")
+//        }
+//    }
+//}
+//
+//for (_, taskArray) in self.allTasks {
+//    for t in taskArray {
+//        if !ranks.contains(t._rank) {
+//            ranks.append(t._rank)
+//            ranks.sort()
+//        }
+//    }
+//}
+//
+//
+//if count == total {
+//    debugPrint("in skips")
+//    for i in 0...ranks.count {
+//        if i == ranks.count - 1 || i == ranks.count {
+//            var nothing = 0
+//        }
+//        else {
+//            if ranks[i] != ranks[i+1] - 1 {
+//                debugPrint("Skip: \(ranks[i]) , \(ranks[i+1])")
+//                debugPrint()
+//            }
+//        }
+//    }
+//}

@@ -456,7 +456,7 @@
                                                     </constraints>
                                                 </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="if5-gZ-0jl">
-                                                    <rect key="frame" x="30" y="12.5" width="42" height="20"/>
+                                                    <rect key="frame" x="30" y="12.5" width="315" height="20"/>
                                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -466,6 +466,7 @@
                                                 <constraint firstAttribute="trailing" secondItem="Ijd-d2-0Sy" secondAttribute="trailing" constant="10" id="44t-oT-Iqp"/>
                                                 <constraint firstAttribute="bottom" secondItem="Ijd-d2-0Sy" secondAttribute="bottom" id="Dfx-0D-8l8"/>
                                                 <constraint firstItem="if5-gZ-0jl" firstAttribute="centerY" secondItem="64F-24-BYb" secondAttribute="centerY" id="PLq-xr-THs"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="if5-gZ-0jl" secondAttribute="trailing" constant="15" id="hhG-jr-e4o"/>
                                                 <constraint firstItem="Ijd-d2-0Sy" firstAttribute="leading" secondItem="64F-24-BYb" secondAttribute="leading" constant="10" id="tmg-cy-7jb"/>
                                                 <constraint firstItem="if5-gZ-0jl" firstAttribute="leading" secondItem="64F-24-BYb" secondAttribute="leadingMargin" constant="15" id="yHm-Wt-9ec"/>
                                             </constraints>

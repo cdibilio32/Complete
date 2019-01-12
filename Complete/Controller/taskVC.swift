@@ -46,6 +46,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     var updateTaskRankList = [Task]()
     var updateTaskCategoryList = [Task]()
     var updateCategoryList = [Category]()
+    var updateCategoryRankList = [Category]()
     
     // Bool to designate if in edit mode or not
     var priorityBtnPressed = false
@@ -60,52 +61,31 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @objc func deleteCategory(sender:UIButton) {
         let alert = UIAlertController(title: "Are You Sure?", message: "Selecting yes will delete all tasks associated with this category.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Yes", style: .default, handler:  { action in
+            
             // Get Category and index
             let categoryIndex = sender.tag
             let category = self.categoriesForCurrentChannel[categoryIndex]
             
-            // Update Counts
-            totalCategoryCount = totalCategoryCount - 1
-            totalTaskCount = totalTaskCount - (self.allTasks[category._id!]?.count)! + 1
+            // TASKS
+            let taskArray = self.allTasks[category._id!]
+            for task in taskArray! {
+                // Delete Task and update ranks
+                self.deleteTask(task: task, updateTableWithOutLoadTable: true)
+            }
             
-            // remove from database
-            DataService.instance.deleteCategoryForUser(category: category, tasks: self.allTasks[category._id!]!)
+            // CATEGORIES
+            // Delete Category and update ranks
+            self.deleteCategory(category: category)
             
-            // remove categories from data structure
-            self.categories.removeAll(where: {$0._id == category._id})
-            
-            // Remove associated Tasks from data structure
-            self.allTasks = category.removeTasks(allTasks: self.allTasks)
+            // Send new ranks to database
+            self.uploadUpdatedCategoryRanksToDatabase()
+            self.uploadUpdatedTaskRanksToDatabase()
             
             // Update Task Table
             self.updateTaskTable()
-
         }))
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: nil))
         self.present(alert, animated: true)
-    }
-    
-    // Delte all task and category associated with category
-    @objc func deleteTasksAndCategory(tag: Int) {
-        // Get Category and index
-        let categoryIndex = tag
-        let category = categoriesForCurrentChannel[categoryIndex]
-        
-        // Update Counts
-        totalCategoryCount = totalCategoryCount - 1
-        totalTaskCount = totalTaskCount - (allTasks[category._id!]?.count)! + 1
-        
-        // remove from database
-        DataService.instance.deleteCategoryForUser(category: category, tasks: allTasks[category._id!]!)
-        
-        // remove categories from data structure
-        categories.removeAll(where: {$0._id == category._id})
-        
-        // Remove associated Tasks from data structure
-        allTasks = category.removeTasks(allTasks: allTasks)
-        
-        // Update Task Table
-        updateTaskTable()
     }
     
     // Switch Section with section below it
@@ -290,10 +270,16 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         
         // If it is a new user need to reload data
         // Only one time - once put here change isNewUserToFalse
+        debugPrint(isNewUser)
+        debugPrint(loading)
+        debugPrint("")
         if isNewUser && !loading {
-            loadApplicationData()
-            isNewUser = false
             updateTaskTable()
+        }
+        
+        // Deselect cell
+        if let index = self.taskTblView.indexPathForSelectedRow{
+            self.taskTblView.deselectRow(at: index, animated: false)
         }
         
         // Hide black out view
@@ -338,7 +324,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Load All Data
         if isNewUser {
             loadApplicationData()
-            loading = true
         }
     }
     
@@ -491,24 +476,16 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             let taskArray = self.tasksForCurrentChannelAndLane[category!]
             let task = taskArray![indexPath.row]
             
-            var allTaskArray = self.allTasks[category!]
-            let allTaskIndex = allTaskArray!.firstIndex(where: {$0 === task})
-            let allTask = allTaskArray![allTaskIndex!]
-            
-            // Remove Item from instance variables
-            allTaskArray!.remove(at: allTaskIndex!)
-            self.allTasks[category!] = allTaskArray
-            self.tasksForCurrentChannel = self.filterTasksForCurrentChannel(tasks: self.allTasks, channel: self.channelVC.selectedChannel)
-            self.tasksForCurrentChannelAndLane = self.filterTasksForCurrentLane(tasks: self.tasksForCurrentChannel, lane: self.selectedLane!)
-            
-            totalTaskCount = totalTaskCount - 1
-
-            // Remove from database
-            DataService.instance.deleteTaskForUser(task: allTask)
+            // Delete TAsk
+            self.deleteTask(task: task, updateTableWithOutLoadTable: true)
             
             // remove from table
             self.taskTblView.deleteRows(at: [indexPath], with: .fade)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: {self.updateTaskTable()})
+
+            // Update Ranks of other tasks
+            self.uploadUpdatedTaskRanksToDatabase()
+            
         }
         return [delete]
     }
@@ -647,7 +624,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
                 }
             }
         }
-        debugPrint(updateTaskRankList)
+        for task in updateTaskRankList {
+            debugPrint("\(task._name): \(task._rank)")
+        }
+        debugPrint("")
         updateTaskTable()
     }
     
@@ -873,6 +853,120 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         }
     }
     
+    // Put category in update category rank list
+    func putCategoryInUpdateCategoryRankArray(category:Category) {
+        // If already there, update
+        if updateCategoryRankList.contains(where: {$0._id == category._id}) {
+            let categoryIndex = updateCategoryRankList.firstIndex(where: {$0._id == category._id})
+            categories[categoryIndex!]._rank = category._rank
+        }
+        
+        // Append if not there
+        else {
+            categories.append(category)
+        }
+    }
+    
+    
+    // Update rank of channel, category and task if deleted helper functions
+    // Task
+    func updateTaskRanksForDeletionOfTask(deletedTask:Task) {
+        // Find All Tasks need to Update and update in all tasks
+        for (_, taskArray) in allTasks {
+            for task in taskArray {
+                if task._rank > deletedTask._rank {
+                    task._rank = task._rank - 1
+                    putTaskInUpdateTaskRankArray(task: task)
+                }
+            }
+        }
+    }
+    
+    // Store updated task ranks in database
+    func uploadUpdatedTaskRanksToDatabase() {
+        for task in updateTaskRankList {
+            DataService.instance.updateTaskRank(task: task)
+        }
+        self.updateTaskRankList.removeAll()
+    }
+    
+    // Category
+    func updateCategoryRanksForDeletionOfCategory(deletedCategory:Category) {
+        for cat in categories {
+            if cat._rank > deletedCategory._rank {
+                cat._rank = cat._rank - 1
+                putCategoryInUpdateCategoryRankArray(category: cat)
+            }
+        }
+    }
+    
+    // Store updated Category ranks in database
+    func uploadUpdatedCategoryRanksToDatabase() {
+        for cat in updateCategoryRankList {
+            DataService.instance.updateCategoryRank(category: cat)
+        }
+        updateCategoryRankList.removeAll()
+    }
+    
+    
+    
+    
+    
+    // --- Helper method for deleting tasks, category and channels ---
+    // Tasks
+    func deleteTask(task:Task, updateTableWithOutLoadTable:Bool) {
+        // Dont do this for error task
+        if task._id != "Error Task" {
+            // Remove Item from instance variables
+            let taskIndex = allTasks[task._categoryId]?.firstIndex(where: {$0._id == task._id})
+            allTasks[task._categoryId]?.remove(at: taskIndex!)
+            
+            // Update Table
+            if updateTableWithOutLoadTable { updateTaskTableWithoutReloadingData() }
+            else { updateTaskTable() }
+            
+            // Update Count
+            totalTaskCount = totalTaskCount - 1
+            
+            // Remove from database
+            DataService.instance.deleteTaskForUser(task: task)
+            
+            // Take out of update task rank list if in list
+            if updateTaskRankList.contains(where: {$0._id == task._id}) {
+                let taskIndex = updateTaskRankList.firstIndex(where: {$0._id == task._id})
+                updateTaskRankList.remove(at: taskIndex!)
+            }
+            
+            
+            // Update Task Ranks and put in database
+            updateTaskRanksForDeletionOfTask(deletedTask: task)
+        }
+    }
+    
+    // Category
+    func deleteCategory(category: Category) {
+        // Update Counts
+        totalCategoryCount = totalCategoryCount - 1
+        
+        // remove from database
+        DataService.instance.deleteCategoryForUser(category: category)
+        
+        // remove categories from data structure
+        self.categories.removeAll(where: {$0._id == category._id})
+        allTasks.removeValue(forKey: category._id!)
+        
+        updateTaskTable()
+        
+        // If in update category rank, take out
+        if updateCategoryRankList.contains(where: {$0._id == category._id}) {
+            let categoryIndex = updateCategoryRankList.firstIndex(where: {$0._id == category._id})
+            updateCategoryRankList.remove(at: categoryIndex!)
+        }
+        
+        // Update Ranks
+        self.updateCategoryRanksForDeletionOfCategory(deletedCategory: category)
+    }
+    
     
     
     
@@ -934,6 +1028,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Load data for application
     func loadApplicationData() {
+        loading = true
         // --- Load All Data ---
         // Lanes
         // Get Currently Selected Lane
@@ -981,6 +1076,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
+            
             // Filter tasks and update table
             self.updateTaskTable()
         })

@@ -261,32 +261,17 @@ class DataService {
     }
     
     // Delete task from database
-    func deleteChannelForUser(channel:Channel, categories:[Category], allTasks:[String:[Task]]) {
+    func deleteChannelForUser(channel:Channel) {
         REF_CHANNELS.child(userID).child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("List").child(channel._id!).removeValue()
         REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)
-        
-        // Delete all tasks in channel
-        for categoryId in allTasks.keys {
-            // Find Category
-            let category = categories.first(where: {$0._id == categoryId})
-            if category?._channelId == channel._id! {
-                // Delete from Database - category and task
-                deleteCategoryForUser(category: category!, tasks: allTasks[categoryId]!)
-            }
-        }
     }
     
     // Delete Category from database
-    func deleteCategoryForUser(category:Category, tasks:[Task]) {
+    func deleteCategoryForUser(category:Category) {
         REF_CATEGORIES.child(userID).child(category._id!).removeValue()
         REF_USERS.child(userID).child("Categories").child("List").child(category._id!).removeValue()
         REF_USERS.child(userID).child("Categories").child("Total").setValue(totalCategoryCount)
-        
-        // Delete all tasks in Category
-        for task in tasks {
-            deleteTaskForUser(task: task)
-        }
     }
     
     
