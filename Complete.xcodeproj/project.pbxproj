@@ -362,7 +362,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 517E74E721586677005CC8A5 /* Build configuration list for PBXProject "Jotit" */;
+			buildConfigurationList = 517E74E721586677005CC8A5 /* Build configuration list for PBXProject "Complete" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -781,7 +781,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		517E74E721586677005CC8A5 /* Build configuration list for PBXProject "Jotit" */ = {
+		517E74E721586677005CC8A5 /* Build configuration list for PBXProject "Complete" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				517E751521586679005CC8A5 /* Debug */,
