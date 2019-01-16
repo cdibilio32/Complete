@@ -13,7 +13,7 @@ protocol ToLogInDelegate {
     func toLogIn()
 }
 
-class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC {
+class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate {
     
     // --- Outlets ---
     @IBOutlet var channelTbl: UITableView!
@@ -24,7 +24,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     // --- Instance Variables ---
     var allChannels = [Channel]()
+    var filteredChannels = [Channel]()
     var selectedChannel: Channel!
+    let searchController = UISearchController(searchResultsController: nil)
     
     // Class to pass data to Task vc
     var taskVC:taskVC!
@@ -116,6 +118,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         channelTbl.delegate = self
         channelTbl.dataSource = self
         
+        // Delegate For Task controller
+        searchBar.delegate = self
+        
         // Connect to taskVC
         taskVC = self.revealViewController()?.frontViewController as? taskVC
         
@@ -152,17 +157,27 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     // Cells
     // Numbers of Cells in Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allChannels.count
+        if !searchBarIsEmpty() {
+            return filteredChannels.count
+        }
+        else { return allChannels.count }
     }
     
     // Content of Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "channelTblCell", for: indexPath) as? channelTableViewCell {
-
+            
             // Update Cell
-            let channel = allChannels[indexPath.row]
-            cell.updateViews(channel:channel)
-            return cell
+            if !searchBarIsEmpty() {
+                let channel = filteredChannels[indexPath.row]
+                cell.updateViews(channel:channel)
+                return cell
+            }
+            else {
+                let channel = allChannels[indexPath.row]
+                cell.updateViews(channel:channel)
+                return cell
+            }
         }
         else {
             return channelTableViewCell()
@@ -176,7 +191,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
 
     // When table item selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedChannel = allChannels[indexPath.row]
+        if !searchBarIsEmpty() {
+            selectedChannel = filteredChannels[indexPath.row]
+        }
+        else { selectedChannel = allChannels[indexPath.row] }
         
         // Go to taskVC
         updateChannelDatainTaskVC()
@@ -188,7 +206,11 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
             // Grab Data
             let channelToDeleteIndex = indexPath.row
-            let channelToDelete = self.allChannels[channelToDeleteIndex]
+            let channelToDelete:Channel!
+            if !self.searchBarIsEmpty() {
+                channelToDelete = self.filteredChannels[channelToDeleteIndex]
+            }
+            else { channelToDelete = self.allChannels[channelToDeleteIndex] }
             
             // Tasks
             // If in channel, delete and update ranks
@@ -250,7 +272,12 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         totalChannelCount = totalChannelCount - 1
         
         // Remove From Instance Variables
-        allChannels.remove(at: indexPath.row)
+        if !searchBarIsEmpty() {
+            filteredChannels.remove(at: indexPath.row)
+            let allChannelIndex = allChannels.firstIndex(where: {$0._id == channelToDelete._id})
+            allChannels.remove(at: allChannelIndex!)
+        }
+        else { allChannels.remove(at: indexPath.row) }
         
         // Remove from channel table
         self.channelTbl.deleteRows(at: [indexPath], with: .fade)
@@ -285,5 +312,38 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     // Have ChannelVC back to normal view
     func brightenTaskVC() {
         taskVC.blackOutView.isHidden = true
+    }
+    
+    
+    
+    
+    
+    // --- Delegate For Search Bar ---
+    // Update table by text in search bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterChannelsForSearchText(searchText: searchText)
+    }
+    
+    // Dismiss keyboard when exit search
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+    }
+    
+    
+    
+    
+    
+    // --- Helper Functions For Search ---
+    // See if search bar is empty
+    func searchBarIsEmpty() -> Bool {
+        return searchBar.text?.isEmpty ?? true
+    }
+    
+    // Filter Channels for search bar
+    func filterChannelsForSearchText(searchText:String) {
+        filteredChannels = allChannels.filter({ (channel) -> Bool in
+            return channel._name.lowercased().contains(searchText.lowercased())
+        })
+        updateChannelTable()
     }
 }
