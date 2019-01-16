@@ -77,9 +77,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC.updateChannelLabel()
         channelTbl.reloadData()
         
+        // Constants
+        userID = "Logged Out"
+        isNewUser = false
+        justLoggedIn = false
+        
         // Log out
         AuthService.instance.logOffUser()
-        userID = "Logged Out"
         
         // Push to Task VC so when log back in goes to correct page
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)

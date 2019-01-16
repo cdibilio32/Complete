@@ -49,6 +49,9 @@ class DataService {
         return _REF_CATEGORIES
     }
     
+    // Delegates
+    var delegate:dataServiceToTaskVC!
+    
     
     
     
@@ -143,6 +146,11 @@ class DataService {
     
     
     
+    
+    
+    
+    
+    
     // --- Upload Data to Database ---
     // Add Task to Database
     func uploadTaskForUser(task: Task, handler: @escaping (_ status:Bool)->()) {
@@ -185,11 +193,17 @@ class DataService {
             "rank": channel._rank] as [String : Any]
         
         // Get Task Key
-        let newChannel = REF_CHANNELS.child(userID).childByAutoId()
-        let channelId = newChannel.key
-        
-        // Add id to channel model
-        channel._id = channelId
+        let channelId:String!
+        if channel._id != "onboardingChannel1" {
+            let newChannel = REF_CHANNELS.child(userID).childByAutoId()
+            channelId = newChannel.key
+            
+            // Add id to channel model
+            channel._id = channelId
+        }
+        else {
+            channelId = channel._id
+        }
         
         // Add channel to user under Channel Root
         REF_CHANNELS.child(userID).child(channelId).updateChildValues(newChannelDict)
@@ -213,8 +227,14 @@ class DataService {
             "rank": category._rank] as [String:Any]
         
         // Get CAtegory Key
-        let newCategory = REF_CATEGORIES.child(userID).childByAutoId()
-        let categoryId = newCategory.key
+        let categoryId:String!
+        if category._id == nil {
+            let newCategory = REF_CATEGORIES.child(userID).childByAutoId()
+            categoryId = newCategory.key
+        }
+        else {
+            categoryId = category._id
+        }
         
         // Add category to user under category root
         REF_CATEGORIES.child(userID).child(categoryId).updateChildValues(newCategoryDict)
@@ -292,6 +312,19 @@ class DataService {
         REF_USERS.child(userId).child("Channels").child("Total").setValue(0)
         REF_USERS.child(userId).child("Categories").child("Total").setValue(0)
         REF_USERS.child(userId).child("Tasks").child("Total").setValue(0)
+        
+//        // Set up onboarding welcome channel and such
+//        // Channels
+//        totalChannelCount = totalChannelCount + 1
+//        let welcomeChannel = Channel(name: "Welcome", id: nil, date: Date().description, rank: totalChannelCount)
+//        uploadChannelForUser(channel: welcomeChannel) { (uploaded, channel) in
+//            if uploaded {
+//                self.delegate.addChannel(channel: channel)
+//            }
+//            else {
+//                debugPrint("channel didn't upload")
+//            }
+//        }
     }
     
     
@@ -312,5 +345,18 @@ class DataService {
     func removeCategoryListener() {
         REF_CATEGORIES.child(userID).removeObserver(withHandle: categoryListener!)
     }
+}
+
+
+
+
+
+
+
+// --- To taskVC Delegate Protocol
+protocol dataServiceToTaskVC {
+    func addChannel(channel:Channel)
+    func addCategory(category:Category)
+    func addTask(task:Task)
 }
 

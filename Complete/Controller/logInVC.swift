@@ -25,8 +25,7 @@ class logInVC: UIViewController {
             AuthService.instance.loginUser(withEmail: emailTxtField.text!, andPassword: passwordTxtField.text!) { (success, error) in
                 if success {
                     userID = (Auth.auth().currentUser?.uid)!
-                    isNewUser = true
-                    
+                    justLoggedIn = true
                     // Set Up Database for user
                     self.dismiss(animated: true, completion: nil)
                 }

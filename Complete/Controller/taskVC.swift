@@ -33,10 +33,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
 
     
     // Current Selection Data and Help With Filtering
-    var selectedLane:String?
-    var tasksForCurrentChannel:[String:[Task]]!         // All tasks for current channel
-    var tasksForCurrentChannelAndLane:[String:[Task]]! // All tasks for current channel, filtered by lane selected
-    var categoriesForCurrentChannel:[Category]!        // All categories for current channel
+    var selectedLane:String = "To Do"
+    var tasksForCurrentChannel = [String:[Task]]()        // All tasks for current channel
+    var tasksForCurrentChannelAndLane = [String:[Task]]() // All tasks for current channel, filtered by lane selected
+    var categoriesForCurrentChannel = [Category]()        // All categories for current channel
     var selectedTask:Task?
     
     // Class to pass data to Channel vc
@@ -275,14 +275,33 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // --- Load Functions ---
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        // If it is a new user need to reload data
-        // Only one time - once put here change isNewUserToFalse
-        debugPrint(isNewUser)
-        debugPrint(loading)
-        debugPrint("")
+        debugPrint("new user \(isNewUser)")
+        debugPrint("just logged in \(justLoggedIn)")
+        // Handle logging in and new use sign ups
+        // New User
         if isNewUser && !loading {
+            isNewUser = false
+            debugPrint("if statement for appear - new user")
+            
+            // add onboarding data
+            addOnboardingDataForUser()
+            
+            // load new onboarding data to app
+            loadApplicationData()
+        }
+        
+        // New Log In
+        if justLoggedIn && !loading {
+            justLoggedIn = false
+            debugPrint("if statement for appear - logged in")
+            loadApplicationData()
+        }
+        
+        // If new task or category is added
+        if newTaskOrCategoryCreated {
+            newTaskOrCategoryCreated = false
             updateTaskTable()
+            debugPrint("in new task or category created")
         }
         
         // Deselect cell
@@ -332,11 +351,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         
         // Hide no category pop up
         noSectionPopUp.isHidden = true
-        
-        // Load All Data
-        if isNewUser {
-            loadApplicationData()
-        }
     }
     
     
@@ -424,7 +438,12 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let currentCategory = categoriesForCurrentChannel[section]._id
         let currentTaskArray = tasksForCurrentChannelAndLane[currentCategory!]
-        return (currentTaskArray?.count)!
+        if (currentTaskArray?.count) == nil {
+            return 0
+        }
+        else {
+            return (currentTaskArray?.count)!
+        }
     }
     
     // Configure Cell
@@ -532,7 +551,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Allow to move
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Get DAta
-        let currentTaskArray = tasksForCurrentChannelAndLane![categoriesForCurrentChannel[indexPath.section]._id!]
+        let currentTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[indexPath.section]._id!]
         let currentTask = currentTaskArray![indexPath.row]
         
         // Allow only if not error task
@@ -547,9 +566,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Action when moved
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // Get source task to update rank
-        var sourceTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[sourceIndexPath.section]._id!]
+        var sourceTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[sourceIndexPath.section]._id!]
         let sourceTask = sourceTaskArray![sourceIndexPath.row]
-        var destinationTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[destinationIndexPath.section]._id!]
+        var destinationTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[destinationIndexPath.section]._id!]
         
         // If Cells are in same section
         if sourceIndexPath.section == destinationIndexPath.section {
@@ -1018,7 +1037,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Display Tasks associated with Current Channel
         sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
-        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
+        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane)
         
         // Populate Task Table
         taskTblView.reloadData()
@@ -1029,7 +1048,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Display Tasks associated with Current Channel
         sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
-        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
+        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane)
         
     }
     
@@ -1086,7 +1105,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Tasks
         // Upload and listen to tasks Taks
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
-            
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
             
@@ -1113,6 +1131,54 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             totalCategoryCount = count
         }
         loading = false
+    }
+    
+    // Add onboarding data for user
+    func addOnboardingDataForUser() {
+        // Channel
+        totalChannelCount = totalChannelCount + 1
+        let channel = Channel(name: "Welcome 👋", id: "onboardingChannel1", date: Date().description, rank: totalChannelCount)
+        channelVC.selectedChannel = channel
+        DataService.instance.uploadChannelForUser(channel: channel) { (uploaded, channel) in
+            debugPrint(uploaded)
+        }
+        
+        // Categories
+        totalCategoryCount = totalCategoryCount + 1
+        let cat1 = Category(name: "Welcome to Jotit!", id: "onboardingCat1", channelId: "onboardingChannel1", rank: totalCategoryCount)
+        totalCategoryCount = totalCategoryCount + 1
+        let cat2 = Category(name: "Lets Get You Started", id: "onboardingCat2", channelId: "onboardingChannel1", rank: totalCategoryCount)
+        totalCategoryCount = totalCategoryCount + 1
+        
+        let cats = [cat1, cat2]
+        
+        for cat in cats{
+            DataService.instance.uploadCategoryForUser(category: cat) { (uploaded, category) in
+                debugPrint(uploaded)
+                
+            }
+        }
+        
+        // Tasks
+        totalTaskCount = totalTaskCount + 1
+        let task1 = Task(name: "Why we made Jotit?", id: "onboardingtask1", description: "Jotit was created to free your mind.  No one enjoys having a task on top of their mind or trying to remember a certain idea.  Now you can jot that task down, free your mind and find it later with ease.", categoryId: "onboardingCat1", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task2 = Task(name: "Tasks / Categories / Channels", id: "onboardingtask2", description: "Jotit is organized into tasks, categories and Channels.  Tasks are organized into categories and categories are organized into channels. \n\nExample:\nChannel - To Do List\nCategory - Around The House Chores\nTask - Laundry\n\nHit the back button to see how to create a task.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task3 = Task(name: "Add a Task", id: "onboardingtask3", description: "You can add a task to a category by selecting the + button next to a category title.\n\nYou can delete a task by swipping left on a given task.\n\nTo view a task, edit its name or description, or move it between to do, in progress and complete, simply select the task.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task4 = Task(name: "Add a Category", id: "onboardingtask4", description: "You can add a category to a group by selecting the Add New Category button at the buttom of the page.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task5 = Task(name: "Change Task or Category Order", id: "onboardingtask5", description: "You can change the order of tasks and categories by selecting the Prioritize button in the top right of the screen.\n\nAfter selecting the Prioritize button, to change the order of your tasks you can simply click and drag with the hamburger button that appear on the right of the screen.\n\nTo change the order of your categories, simply click the up and down arrows next to the category title.\n\nTo delete a category, simply select the icon to the left of the category title.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task6 = Task(name: "Add a Channel", id: "onboardingtask6", description: "To view your channels, simply select the menu button at the top left of the screen or swipe right on the screen.\n\nTo add a channel, select the + button next to Channels.\n\nTo delete a channel, simply swipe left on the channel.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        
+        let tasks = [task1, task2, task3, task4, task5, task6]
+        for task in tasks {
+            DataService.instance.uploadTaskForUser(task: task) { (uploaded) in
+                debugPrint(uploaded)
+            }
+        }
     }
     
     

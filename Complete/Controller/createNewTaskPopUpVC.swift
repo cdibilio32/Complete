@@ -52,6 +52,8 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
                     taskVC?.updateTaskTable()
                 }
             }
+             // BAck to task vc
+            newTaskOrCategoryCreated = true
             self.closePopUp()
         }
         // Task name not provided
