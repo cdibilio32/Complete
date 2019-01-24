@@ -11,9 +11,11 @@ import Foundation
 // --- Global Variables ---
 var userID = "Logged Out"      // Holds user ID
 var isNewUser = false           // Keeps track if a new user logged in
+var justLoggedIn = false
 var totalTaskCount = 0
 var totalChannelCount = 0
 var totalCategoryCount = 0
+var newTaskOrCategoryCreated = false
 
 
 

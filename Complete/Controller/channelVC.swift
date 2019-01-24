@@ -13,18 +13,25 @@ protocol ToLogInDelegate {
     func toLogIn()
 }
 
-class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC {
+class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate {
     
     // --- Outlets ---
     @IBOutlet var channelTbl: UITableView!
     @IBOutlet var searchViewContainer: UIView!
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var allTasksButton: UIButton!
+    @IBOutlet var navView: UIView!
+    @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var searchBarCenterY: NSLayoutConstraint!
+    @IBOutlet var searchBarBottomConstraint: NSLayoutConstraint!
     
     
     // --- Instance Variables ---
     var allChannels = [Channel]()
+    var filteredChannels = [Channel]()
     var selectedChannel: Channel!
+    let searchController = UISearchController(searchResultsController: nil)
     
     // Class to pass data to Task vc
     var taskVC:taskVC!
@@ -77,9 +84,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC.updateChannelLabel()
         channelTbl.reloadData()
         
+        // Constants
+        userID = "Logged Out"
+        isNewUser = false
+        justLoggedIn = false
+        
         // Log out
         AuthService.instance.logOffUser()
-        userID = "Logged Out"
         
         // Push to Task VC so when log back in goes to correct page
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
@@ -112,8 +123,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         channelTbl.delegate = self
         channelTbl.dataSource = self
         
+        // Delegate For Task controller
+        searchBar.delegate = self
+        
         // Connect to taskVC
         taskVC = self.revealViewController()?.frontViewController as? taskVC
+        
+        // Format navigation bar with search bar
+        navigationBarFormatting()
         
         // Load Table
         updateChannelTable()
@@ -148,17 +165,27 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     // Cells
     // Numbers of Cells in Section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allChannels.count
+        if !searchBarIsEmpty() {
+            return filteredChannels.count
+        }
+        else { return allChannels.count }
     }
     
     // Content of Cell
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: "channelTblCell", for: indexPath) as? channelTableViewCell {
-
+            
             // Update Cell
-            let channel = allChannels[indexPath.row]
-            cell.updateViews(channel:channel)
-            return cell
+            if !searchBarIsEmpty() {
+                let channel = filteredChannels[indexPath.row]
+                cell.updateViews(channel: channel, selectedChannel: selectedChannel)
+                return cell
+            }
+            else {
+                let channel = allChannels[indexPath.row]
+                cell.updateViews(channel: channel, selectedChannel: selectedChannel)
+                return cell
+            }
         }
         else {
             return channelTableViewCell()
@@ -172,7 +199,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
 
     // When table item selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedChannel = allChannels[indexPath.row]
+        // Update task table to get rid of highlight
+        updateChannelTable()
+        
+        // Return correct channel
+        if !searchBarIsEmpty() {
+            selectedChannel = filteredChannels[indexPath.row]
+        }
+        else { selectedChannel = allChannels[indexPath.row] }
         
         // Go to taskVC
         updateChannelDatainTaskVC()
@@ -184,7 +218,11 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { (action, indexPath) in
             // Grab Data
             let channelToDeleteIndex = indexPath.row
-            let channelToDelete = self.allChannels[channelToDeleteIndex]
+            let channelToDelete:Channel!
+            if !self.searchBarIsEmpty() {
+                channelToDelete = self.filteredChannels[channelToDeleteIndex]
+            }
+            else { channelToDelete = self.allChannels[channelToDeleteIndex] }
             
             // Tasks
             // If in channel, delete and update ranks
@@ -246,7 +284,12 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         totalChannelCount = totalChannelCount - 1
         
         // Remove From Instance Variables
-        allChannels.remove(at: indexPath.row)
+        if !searchBarIsEmpty() {
+            filteredChannels.remove(at: indexPath.row)
+            let allChannelIndex = allChannels.firstIndex(where: {$0._id == channelToDelete._id})
+            allChannels.remove(at: allChannelIndex!)
+        }
+        else { allChannels.remove(at: indexPath.row) }
         
         // Remove from channel table
         self.channelTbl.deleteRows(at: [indexPath], with: .fade)
@@ -258,6 +301,33 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
                 self.selectedChannel = self.allChannels[0]
                 self.updateChannelDatainTaskVC()
             }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --- View Helper Functions
+    // UPdate navigation bar based on ndevice - update for
+    func navigationBarFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            debugPrint("in iphone10")
+            // Top Constraint
+            navViewTopConstraint.isActive = false
+            navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+            
+            // Height
+            navViewHeightConstraint.isActive = false
+            navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 28).isActive = true
+            
+            // Search Bar
+            searchBarCenterY.isActive = false
+            searchBarBottomConstraint.constant = CGFloat(8)
         }
     }
     
@@ -281,5 +351,38 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     // Have ChannelVC back to normal view
     func brightenTaskVC() {
         taskVC.blackOutView.isHidden = true
+    }
+    
+    
+    
+    
+    
+    // --- Delegate For Search Bar ---
+    // Update table by text in search bar
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filterChannelsForSearchText(searchText: searchText)
+    }
+    
+    // Dismiss keyboard when exit search
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.view.endEditing(true)
+    }
+    
+    
+    
+    
+    
+    // --- Helper Functions For Search ---
+    // See if search bar is empty
+    func searchBarIsEmpty() -> Bool {
+        return searchBar.text?.isEmpty ?? true
+    }
+    
+    // Filter Channels for search bar
+    func filterChannelsForSearchText(searchText:String) {
+        filteredChannels = allChannels.filter({ (channel) -> Bool in
+            return channel._name.lowercased().contains(searchText.lowercased())
+        })
+        updateChannelTable()
     }
 }

@@ -45,6 +45,9 @@ class createNewCategoryVC: UIViewController, UITextFieldDelegate {
                 if uploaded {
                     // Print successful and leave
                     debugPrint("Successful save of category")
+                    
+                    // back to task vc
+                    newTaskOrCategoryCreated = true
                     self.closePopUp()
                 }
                 else {

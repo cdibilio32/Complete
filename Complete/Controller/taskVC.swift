@@ -24,6 +24,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var noSectionPopUp: UIView!
     @IBOutlet var noSectionPopUpBtn: UIButton!
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var navView: UIView!
+    @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
     
     // --- Instance Variables ---
     // All Data For User
@@ -33,10 +36,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
 
     
     // Current Selection Data and Help With Filtering
-    var selectedLane:String?
-    var tasksForCurrentChannel:[String:[Task]]!         // All tasks for current channel
-    var tasksForCurrentChannelAndLane:[String:[Task]]! // All tasks for current channel, filtered by lane selected
-    var categoriesForCurrentChannel:[Category]!        // All categories for current channel
+    var selectedLane:String = "To Do"
+    var tasksForCurrentChannel = [String:[Task]]()        // All tasks for current channel
+    var tasksForCurrentChannelAndLane = [String:[Task]]() // All tasks for current channel, filtered by lane selected
+    var categoriesForCurrentChannel = [Category]()        // All categories for current channel
     var selectedTask:Task?
     
     // Class to pass data to Channel vc
@@ -175,11 +178,30 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @objc func addTaskInTableBtnPressed(sender:UIButton) {
         // If all channels is selected -> show error message
         if channelVC.selectedChannel._id == "allTasks" {
-            let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
+            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
             
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            // Get according data
+            let currentCategory = categoriesForCurrentChannel[sender.tag]
+            let currentChannelId = currentCategory._channelId
+            let currentChannel = channelVC.allChannels.first(where: {$0._id == currentChannelId})
             
-            self.present(alert, animated: true)
+            // Pass Data Over to Child View
+            createNewTaskPopUpVC.currentChannel = currentChannel
+            createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+            createNewTaskPopUpVC.currentLane = selectedLane
+            
+            // Start Pop Up
+            self.addChildViewController(createNewTaskPopUpVC)
+            createNewTaskPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewTaskPopUpVC.view)
+            createNewTaskPopUpVC.didMove(toParentViewController: self)
+            
+            
+//            let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
+//
+//            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+//
+//            self.present(alert, animated: true)
         }
             // If not allow user to create a new task
         else {
@@ -188,6 +210,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             // Pass Data Over to Child View
             createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
             createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+            createNewTaskPopUpVC.currentLane = selectedLane
             
             // Start Pop Up
             self.addChildViewController(createNewTaskPopUpVC)
@@ -275,14 +298,33 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // --- Load Functions ---
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        // If it is a new user need to reload data
-        // Only one time - once put here change isNewUserToFalse
-        debugPrint(isNewUser)
-        debugPrint(loading)
-        debugPrint("")
+        debugPrint("new user \(isNewUser)")
+        debugPrint("just logged in \(justLoggedIn)")
+        // Handle logging in and new use sign ups
+        // New User
         if isNewUser && !loading {
+            isNewUser = false
+            debugPrint("if statement for appear - new user")
+            
+            // add onboarding data
+            addOnboardingDataForUser()
+            
+            // load new onboarding data to app
+            loadApplicationData()
+        }
+        
+        // New Log In
+        if justLoggedIn && !loading {
+            justLoggedIn = false
+            debugPrint("if statement for appear - logged in")
+            loadApplicationData()
+        }
+        
+        // If new task or category is added
+        if newTaskOrCategoryCreated {
+            newTaskOrCategoryCreated = false
             updateTaskTable()
+            debugPrint("in new task or category created")
         }
         
         // Deselect cell
@@ -329,14 +371,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         formatSegmentControl()
         updatePriorityBtnView()
         formatNoSectionPopUp()
+        navigationBarFormatting()
         
         // Hide no category pop up
         noSectionPopUp.isHidden = true
-        
-        // Load All Data
-        if isNewUser {
-            loadApplicationData()
-        }
     }
     
     
@@ -424,7 +462,12 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let currentCategory = categoriesForCurrentChannel[section]._id
         let currentTaskArray = tasksForCurrentChannelAndLane[currentCategory!]
-        return (currentTaskArray?.count)!
+        if (currentTaskArray?.count) == nil {
+            return 0
+        }
+        else {
+            return (currentTaskArray?.count)!
+        }
     }
     
     // Configure Cell
@@ -506,7 +549,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // height
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == categoriesForCurrentChannel.count - 1 {
-            return CGFloat(40)
+            return CGFloat(60)
         }
         else {return CGFloat(0)}
     }
@@ -517,6 +560,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             if let cell = tableView.dequeueReusableCell(withIdentifier: "taskTableFooterView") as? taskTableFooterViewCell {
                 // Set Up Listener for button
                 cell.addCategoryBtn.addTarget(self, action: #selector(addCategorToTaskTable(sender:)), for: .touchUpInside)
+                
+                // View
+                cell.formatView()
                 
                 return cell
             }
@@ -532,7 +578,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Allow to move
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Get DAta
-        let currentTaskArray = tasksForCurrentChannelAndLane![categoriesForCurrentChannel[indexPath.section]._id!]
+        let currentTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[indexPath.section]._id!]
         let currentTask = currentTaskArray![indexPath.row]
         
         // Allow only if not error task
@@ -547,9 +593,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // Action when moved
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // Get source task to update rank
-        var sourceTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[sourceIndexPath.section]._id!]
+        var sourceTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[sourceIndexPath.section]._id!]
         let sourceTask = sourceTaskArray![sourceIndexPath.row]
-        var destinationTaskArray = tasksForCurrentChannelAndLane?[categoriesForCurrentChannel[destinationIndexPath.section]._id!]
+        var destinationTaskArray = tasksForCurrentChannelAndLane[categoriesForCurrentChannel[destinationIndexPath.section]._id!]
         
         // If Cells are in same section
         if sourceIndexPath.section == destinationIndexPath.section {
@@ -1018,7 +1064,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Display Tasks associated with Current Channel
         sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
-        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
+        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane)
         
         // Populate Task Table
         taskTblView.reloadData()
@@ -1029,13 +1075,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Display Tasks associated with Current Channel
         sortTasks()
         tasksForCurrentChannel = filterTasksForCurrentChannel(tasks: allTasks, channel: channelVC.selectedChannel!)
-        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane!)
+        tasksForCurrentChannelAndLane = filterTasksForCurrentLane(tasks: tasksForCurrentChannel, lane: selectedLane)
         
     }
     
     // Update channel label
     func updateChannelLabel() {
-        currentChannelLbl.text = "#"+(channelVC.selectedChannel._name)
+        currentChannelLbl.text = channelVC.selectedChannel._name
     }
     
     // Load data for application
@@ -1086,7 +1132,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Tasks
         // Upload and listen to tasks Taks
         DataService.instance.getAllTasksForUser(handler: { (currentTask) in
-            
             // Add Task to allTasks
             self.allTasks = currentTask.add(toDictionary: self.allTasks)
             
@@ -1113,6 +1158,54 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             totalCategoryCount = count
         }
         loading = false
+    }
+    
+    // Add onboarding data for user
+    func addOnboardingDataForUser() {
+        // Channel
+        totalChannelCount = totalChannelCount + 1
+        let channel = Channel(name: "Welcome 👋", id: "onboardingChannel1", date: Date().description, rank: totalChannelCount)
+        channelVC.selectedChannel = channel
+        DataService.instance.uploadChannelForUser(channel: channel) { (uploaded, channel) in
+            debugPrint(uploaded)
+        }
+        
+        // Categories
+        totalCategoryCount = totalCategoryCount + 1
+        let cat1 = Category(name: "Welcome to Jotit!", id: "onboardingCat1", channelId: "onboardingChannel1", rank: totalCategoryCount)
+        totalCategoryCount = totalCategoryCount + 1
+        let cat2 = Category(name: "Lets Get You Started", id: "onboardingCat2", channelId: "onboardingChannel1", rank: totalCategoryCount)
+        totalCategoryCount = totalCategoryCount + 1
+        
+        let cats = [cat1, cat2]
+        
+        for cat in cats{
+            DataService.instance.uploadCategoryForUser(category: cat) { (uploaded, category) in
+                debugPrint(uploaded)
+                
+            }
+        }
+        
+        // Tasks
+        totalTaskCount = totalTaskCount + 1
+        let task1 = Task(name: "Why we made Jotit?", id: "onboardingtask1", description: "Jotit was created to free your mind.  No one enjoys having a task on top of their mind or trying to remember a certain idea.  Now you can jot that task down, free your mind and find it later with ease.", categoryId: "onboardingCat1", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task2 = Task(name: "Tasks / Categories / Channels", id: "onboardingtask2", description: "Jotit is organized into tasks, categories and Channels.  Tasks are organized into categories and categories are organized into channels. \n\nExample:\nChannel - To Do List\nCategory - Around The House Chores\nTask - Laundry\n\nHit the back button to see how to create a task.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task3 = Task(name: "Add a Task", id: "onboardingtask3", description: "You can add a task to a category by selecting the + button next to a category title.\n\nYou can delete a task by swipping left on a given task.\n\nTo view a task, edit its name or description, or move it between to do, in progress and complete, simply select the task.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task4 = Task(name: "Add a Category", id: "onboardingtask4", description: "You can add a category to a group by selecting the Add New Category button at the buttom of the page.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task5 = Task(name: "Change Task or Category Order", id: "onboardingtask5", description: "You can change the order of tasks and categories by selecting the Prioritize button in the top right of the screen.\n\nAfter selecting the Prioritize button, to change the order of your tasks you can simply click and drag with the hamburger button that appear on the right of the screen.\n\nTo change the order of your categories, simply click the up and down arrows next to the category title.\n\nTo delete a category, simply select the icon to the left of the category title.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        totalTaskCount = totalTaskCount + 1
+        let task6 = Task(name: "Add a Channel", id: "onboardingtask6", description: "To view your channels, simply select the menu button at the top left of the screen or swipe right on the screen.\n\nTo add a channel, select the + button next to Channels.\n\nTo delete a channel, simply swipe left on the channel.", categoryId: "onboardingCat2", lane: "To Do", channelID: "onboardingChannel1", userID: userID, date: Date().description, rank: totalTaskCount)
+        
+        let tasks = [task1, task2, task3, task4, task5, task6]
+        for task in tasks {
+            DataService.instance.uploadTaskForUser(task: task) { (uploaded) in
+                debugPrint(uploaded)
+            }
+        }
     }
     
     
@@ -1150,6 +1243,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         updateTaskTable()
     }
     
+    func updateTaskTableFromTaskDetailVC() {
+        taskTblView.reloadData()
+    }
+    
     
     
     
@@ -1170,6 +1267,19 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         noSectionPopUpBtn.layer.borderWidth = 1
     }
     
+    // UPdate navigation bar based on ndevice - update for
+    func navigationBarFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            debugPrint("in iphone10")
+            // Top Constraint
+            navViewTopConstraint.isActive = false
+            navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+            
+            // Height
+            navViewHeightConstraint.isActive = false
+            navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 16).isActive = true
+        }
+    }
     
     
     
@@ -1179,6 +1289,54 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Safe Present
         if let logInVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "logInVC") as? logInVC {
             present(logInVC, animated: true, completion: nil)
+        }
+    }
+}
+
+
+
+
+
+// --- Extension for uidevice to determine iphone model ---
+public extension UIDevice {
+    
+    var modelName: String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8, value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        
+        switch identifier {
+        case "iPod5,1":                                 return "iPod Touch 5"
+        case "iPod7,1":                                 return "iPod Touch 6"
+        case "iPhone3,1", "iPhone3,2", "iPhone3,3":     return "iPhone 4"
+        case "iPhone4,1":                               return "iPhone 4s"
+        case "iPhone5,1", "iPhone5,2":                  return "iPhone 5"
+        case "iPhone5,3", "iPhone5,4":                  return "iPhone 5c"
+        case "iPhone6,1", "iPhone6,2":                  return "iPhone 5s"
+        case "iPhone7,2":                               return "iPhone 6"
+        case "iPhone7,1":                               return "iPhone 6 Plus"
+        case "iPhone8,1":                               return "iPhone 6s"
+        case "iPhone8,2":                               return "iPhone 6s Plus"
+        case "iPhone9,1", "iPhone9,3":                  return "iPhone 7"
+        case "iPhone9,2", "iPhone9,4":                  return "iPhone 7 Plus"
+        case "iPhone8,4":                               return "iPhone SE"
+        case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":return "iPad 2"
+        case "iPad3,1", "iPad3,2", "iPad3,3":           return "iPad 3"
+        case "iPad3,4", "iPad3,5", "iPad3,6":           return "iPad 4"
+        case "iPad4,1", "iPad4,2", "iPad4,3":           return "iPad Air"
+        case "iPad5,3", "iPad5,4":                      return "iPad Air 2"
+        case "iPad2,5", "iPad2,6", "iPad2,7":           return "iPad Mini"
+        case "iPad4,4", "iPad4,5", "iPad4,6":           return "iPad Mini 2"
+        case "iPad4,7", "iPad4,8", "iPad4,9":           return "iPad Mini 3"
+        case "iPad5,1", "iPad5,2":                      return "iPad Mini 4"
+        case "iPad6,3", "iPad6,4", "iPad6,7", "iPad6,8":return "iPad Pro"
+        case "AppleTV5,3":                              return "Apple TV"
+        case "i386", "x86_64":                          return "Simulator"
+        default:                                        return identifier
         }
     }
 }
