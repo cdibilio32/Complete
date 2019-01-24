@@ -24,7 +24,7 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
     // --- Instance Variables ---
     var currentCategory:String!
     var currentChannel:Channel!
-    let categories = ["Short Term", "Medium Term", "Long Term"]
+    var currentLane:String!
     
     
     // --- Actions ---
@@ -43,7 +43,7 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
                 description = ""
             }
             totalTaskCount = totalTaskCount + 1
-            let task  = Task(name: name!, id: nil, description: description!, categoryId: currentCategory, lane: "To Do", channelID: currentChannel._id!, userID: userID, date: date, rank: totalTaskCount)
+            let task  = Task(name: name!, id: nil, description: description!, categoryId: currentCategory, lane: currentLane, channelID: currentChannel._id!, userID: userID, date: date, rank: totalTaskCount)
             
             // Add to Database
             DataService.instance.uploadTaskForUser(task: task) { (uploaded) in

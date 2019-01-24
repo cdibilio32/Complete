@@ -13,6 +13,7 @@ import UIKit
 // --- Protocol declaration to delte task ---
 protocol deleteTaskUpdate {
     func deleteTaskAndUpdateTable(task:Task)
+    func updateTaskTableFromTaskDetailVC()
 }
 
 
@@ -31,6 +32,11 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     @IBOutlet var headerTitle: UILabel!
     @IBOutlet var progressTitle: UILabel!
     @IBOutlet var descTitleTopConstraint: NSLayoutConstraint!
+    
+    @IBOutlet var navView: UIView!
+    @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
+    
     
     // --- Instance Variables ---
     var allTasks:[String:[Task]]!
@@ -86,6 +92,7 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
             }
             
             // Update in taskVC -> Doesn't Matter to repeat - low computation
+            delegate.updateTaskTableFromTaskDetailVC()
             currentTask._name = taskTitleLbl.text!
             currentTask._lane = selectedLane
             if taskNotes.text == taskDescPHForTaskDetail {
@@ -152,6 +159,9 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         
         // Format of seg controller
         formatSegmentControl()
+        
+        // Format navigation bar
+        navigationBarFormatting()
     }
     
     
@@ -205,6 +215,20 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         let titleTextAttributesWhenNotSelected = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1)]
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenNotSelected, for: .normal)
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenSelected, for: .selected)
+    }
+    
+    // UPdate navigation bar based on ndevice - update for
+    func navigationBarFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            debugPrint("in iphone10")
+            // Top Constraint
+            navViewTopConstraint.isActive = false
+            navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+            
+            // Height
+            navViewHeightConstraint.isActive = false
+            navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 16).isActive = true
+        }
     }
     
     

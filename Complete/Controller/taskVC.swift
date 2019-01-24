@@ -24,6 +24,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @IBOutlet var noSectionPopUp: UIView!
     @IBOutlet var noSectionPopUpBtn: UIButton!
     @IBOutlet var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet var navView: UIView!
+    @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
     
     // --- Instance Variables ---
     // All Data For User
@@ -175,11 +178,30 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     @objc func addTaskInTableBtnPressed(sender:UIButton) {
         // If all channels is selected -> show error message
         if channelVC.selectedChannel._id == "allTasks" {
-            let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
+            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
             
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+            // Get according data
+            let currentCategory = categoriesForCurrentChannel[sender.tag]
+            let currentChannelId = currentCategory._channelId
+            let currentChannel = channelVC.allChannels.first(where: {$0._id == currentChannelId})
             
-            self.present(alert, animated: true)
+            // Pass Data Over to Child View
+            createNewTaskPopUpVC.currentChannel = currentChannel
+            createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+            createNewTaskPopUpVC.currentLane = selectedLane
+            
+            // Start Pop Up
+            self.addChildViewController(createNewTaskPopUpVC)
+            createNewTaskPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewTaskPopUpVC.view)
+            createNewTaskPopUpVC.didMove(toParentViewController: self)
+            
+            
+//            let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
+//
+//            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+//
+//            self.present(alert, animated: true)
         }
             // If not allow user to create a new task
         else {
@@ -188,6 +210,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             // Pass Data Over to Child View
             createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
             createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+            createNewTaskPopUpVC.currentLane = selectedLane
             
             // Start Pop Up
             self.addChildViewController(createNewTaskPopUpVC)
@@ -348,6 +371,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         formatSegmentControl()
         updatePriorityBtnView()
         formatNoSectionPopUp()
+        navigationBarFormatting()
         
         // Hide no category pop up
         noSectionPopUp.isHidden = true
@@ -525,7 +549,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     // height
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == categoriesForCurrentChannel.count - 1 {
-            return CGFloat(40)
+            return CGFloat(60)
         }
         else {return CGFloat(0)}
     }
@@ -536,6 +560,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
             if let cell = tableView.dequeueReusableCell(withIdentifier: "taskTableFooterView") as? taskTableFooterViewCell {
                 // Set Up Listener for button
                 cell.addCategoryBtn.addTarget(self, action: #selector(addCategorToTaskTable(sender:)), for: .touchUpInside)
+                
+                // View
+                cell.formatView()
                 
                 return cell
             }
@@ -1054,7 +1081,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
     
     // Update channel label
     func updateChannelLabel() {
-        currentChannelLbl.text = "#"+(channelVC.selectedChannel._name)
+        currentChannelLbl.text = channelVC.selectedChannel._name
     }
     
     // Load data for application
@@ -1216,6 +1243,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         updateTaskTable()
     }
     
+    func updateTaskTableFromTaskDetailVC() {
+        taskTblView.reloadData()
+    }
+    
     
     
     
@@ -1236,6 +1267,19 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         noSectionPopUpBtn.layer.borderWidth = 1
     }
     
+    // UPdate navigation bar based on ndevice - update for
+    func navigationBarFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            debugPrint("in iphone10")
+            // Top Constraint
+            navViewTopConstraint.isActive = false
+            navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+            
+            // Height
+            navViewHeightConstraint.isActive = false
+            navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 16).isActive = true
+        }
+    }
     
     
     
@@ -1245,6 +1289,54 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate,delet
         // Safe Present
         if let logInVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "logInVC") as? logInVC {
             present(logInVC, animated: true, completion: nil)
+        }
+    }
+}
+
+
+
+
+
+// --- Extension for uidevice to determine iphone model ---
+public extension UIDevice {
+    
+    var modelName: String {
+        var systemInfo = utsname()
+        uname(&systemInfo)
+        let machineMirror = Mirror(reflecting: systemInfo.machine)
+        let identifier = machineMirror.children.reduce("") { identifier, element in
+            guard let value = element.value as? Int8, value != 0 else { return identifier }
+            return identifier + String(UnicodeScalar(UInt8(value)))
+        }
+        
+        switch identifier {
+        case "iPod5,1":                                 return "iPod Touch 5"
+        case "iPod7,1":                                 return "iPod Touch 6"
+        case "iPhone3,1", "iPhone3,2", "iPhone3,3":     return "iPhone 4"
+        case "iPhone4,1":                               return "iPhone 4s"
+        case "iPhone5,1", "iPhone5,2":                  return "iPhone 5"
+        case "iPhone5,3", "iPhone5,4":                  return "iPhone 5c"
+        case "iPhone6,1", "iPhone6,2":                  return "iPhone 5s"
+        case "iPhone7,2":                               return "iPhone 6"
+        case "iPhone7,1":                               return "iPhone 6 Plus"
+        case "iPhone8,1":                               return "iPhone 6s"
+        case "iPhone8,2":                               return "iPhone 6s Plus"
+        case "iPhone9,1", "iPhone9,3":                  return "iPhone 7"
+        case "iPhone9,2", "iPhone9,4":                  return "iPhone 7 Plus"
+        case "iPhone8,4":                               return "iPhone SE"
+        case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":return "iPad 2"
+        case "iPad3,1", "iPad3,2", "iPad3,3":           return "iPad 3"
+        case "iPad3,4", "iPad3,5", "iPad3,6":           return "iPad 4"
+        case "iPad4,1", "iPad4,2", "iPad4,3":           return "iPad Air"
+        case "iPad5,3", "iPad5,4":                      return "iPad Air 2"
+        case "iPad2,5", "iPad2,6", "iPad2,7":           return "iPad Mini"
+        case "iPad4,4", "iPad4,5", "iPad4,6":           return "iPad Mini 2"
+        case "iPad4,7", "iPad4,8", "iPad4,9":           return "iPad Mini 3"
+        case "iPad5,1", "iPad5,2":                      return "iPad Mini 4"
+        case "iPad6,3", "iPad6,4", "iPad6,7", "iPad6,8":return "iPad Pro"
+        case "AppleTV5,3":                              return "Apple TV"
+        case "i386", "x86_64":                          return "Simulator"
+        default:                                        return identifier
         }
     }
 }

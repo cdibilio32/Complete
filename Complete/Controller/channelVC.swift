@@ -20,6 +20,11 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     @IBOutlet var searchViewContainer: UIView!
     @IBOutlet var searchBar: UISearchBar!
     @IBOutlet var allTasksButton: UIButton!
+    @IBOutlet var navView: UIView!
+    @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
+    @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var searchBarCenterY: NSLayoutConstraint!
+    @IBOutlet var searchBarBottomConstraint: NSLayoutConstraint!
     
     
     // --- Instance Variables ---
@@ -124,6 +129,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         // Connect to taskVC
         taskVC = self.revealViewController()?.frontViewController as? taskVC
         
+        // Format navigation bar with search bar
+        navigationBarFormatting()
+        
         // Load Table
         updateChannelTable()
     }
@@ -170,12 +178,12 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             // Update Cell
             if !searchBarIsEmpty() {
                 let channel = filteredChannels[indexPath.row]
-                cell.updateViews(channel:channel)
+                cell.updateViews(channel: channel, selectedChannel: selectedChannel)
                 return cell
             }
             else {
                 let channel = allChannels[indexPath.row]
-                cell.updateViews(channel:channel)
+                cell.updateViews(channel: channel, selectedChannel: selectedChannel)
                 return cell
             }
         }
@@ -191,6 +199,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
 
     // When table item selected
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Update task table to get rid of highlight
+        updateChannelTable()
+        
+        // Return correct channel
         if !searchBarIsEmpty() {
             selectedChannel = filteredChannels[indexPath.row]
         }
@@ -289,6 +301,33 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
                 self.selectedChannel = self.allChannels[0]
                 self.updateChannelDatainTaskVC()
             }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --- View Helper Functions
+    // UPdate navigation bar based on ndevice - update for
+    func navigationBarFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            debugPrint("in iphone10")
+            // Top Constraint
+            navViewTopConstraint.isActive = false
+            navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
+            
+            // Height
+            navViewHeightConstraint.isActive = false
+            navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 28).isActive = true
+            
+            // Search Bar
+            searchBarCenterY.isActive = false
+            searchBarBottomConstraint.constant = CGFloat(8)
         }
     }
     
