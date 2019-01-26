@@ -307,24 +307,11 @@ class DataService {
     
     // --- User Functions ---
     // Add user to database
-    func createDBUser(userId:String, userData:[String:String]) {
+    func createDBUser(userId:String, userData:[String:Any]) {
         REF_USERS.child(userId).setValue(userData)
         REF_USERS.child(userId).child("Channels").child("Total").setValue(0)
         REF_USERS.child(userId).child("Categories").child("Total").setValue(0)
         REF_USERS.child(userId).child("Tasks").child("Total").setValue(0)
-        
-//        // Set up onboarding welcome channel and such
-//        // Channels
-//        totalChannelCount = totalChannelCount + 1
-//        let welcomeChannel = Channel(name: "Welcome", id: nil, date: Date().description, rank: totalChannelCount)
-//        uploadChannelForUser(channel: welcomeChannel) { (uploaded, channel) in
-//            if uploaded {
-//                self.delegate.addChannel(channel: channel)
-//            }
-//            else {
-//                debugPrint("channel didn't upload")
-//            }
-//        }
     }
     
     

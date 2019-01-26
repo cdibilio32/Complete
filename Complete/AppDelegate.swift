@@ -22,6 +22,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Configure Firebase
         FirebaseApp.configure()
         
+        // Admob
+        GADMobileAds.configure(withApplicationID: "ca-app-pub-5383101165774401~1391043887")
+        
         // Skip Log in page if logged in
         if Auth.auth().currentUser == nil {
             // Show task VC

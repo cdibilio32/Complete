@@ -22,10 +22,10 @@ class AuthService {
             }
             
             // If user is created
-            let userData = ["provider": user.providerID, "email": user.email] as! [String : String]
+            let userData = ["provider": user.providerID, "email": user.email, "subscriber" : false] as! [String : Any]
             
             // send to database user
-            DataService.instance.createDBUser(userId: user.uid, userData: userData as! [String : String])
+            DataService.instance.createDBUser(userId: user.uid, userData: userData )
             
             userCreationComplete(true, nil)
         }

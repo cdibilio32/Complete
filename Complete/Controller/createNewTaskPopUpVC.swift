@@ -34,8 +34,11 @@ class createNewTaskPopUpVC: UIViewController, UITextViewDelegate, UITextFieldDel
         if taskNameTxtField.text != "" {
             // Grab Data
             let name = taskNameTxtField.text
-            let date = Date().description
             var description = taskDescriptionTxtField.text
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .full
+            dateFormatter.timeStyle = .full
+            let date = dateFormatter.string(from: Date())
 
             // Create Task
             // If description was not altered, save blank

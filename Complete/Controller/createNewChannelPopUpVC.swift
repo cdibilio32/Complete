@@ -46,12 +46,14 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
         if newChannelNameField.text != "" {
             // Grab Data
             let name = newChannelNameField.text
-            let date = Date()
-            let dateString = date.description
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .full
+            dateFormatter.timeStyle = .full
+            let date = dateFormatter.string(from: Date())
            
             // Create Channel
             totalChannelCount = totalChannelCount + 1
-            let channel  = Channel(name: name!, id: nil, date: dateString, rank: totalChannelCount)
+            let channel  = Channel(name: name!, id: nil, date: date, rank: totalChannelCount)
             
             // Add to Database (remember gets id in dataservice function)
             DataService.instance.uploadChannelForUser(channel: channel) { (uploaded, returnedChannel) in
