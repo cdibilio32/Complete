@@ -562,7 +562,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // height
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         if section == categoriesForCurrentChannel.count - 1 {
-            return CGFloat(60)
+            return CGFloat(70)
         }
         else {return CGFloat(0)}
     }
