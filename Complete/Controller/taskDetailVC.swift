@@ -203,10 +203,21 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     // Format Date and  Display
     // *** IN PROGRESS ***
     func formatDate() {
+        // Get and translate date
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM/dd/yyyy"
+        dateFormatter.dateStyle = .full
+        dateFormatter.timeStyle = .full
         let date = dateFormatter.date(from: currentTask._date)
-        //dateLbl.text = date?.description
+        let dateFormatter2 = DateFormatter()
+        dateFormatter2.dateFormat = "MM/dd/yyyy"
+        let dateString = dateFormatter2.string(from: date!)
+        
+        // Time since today
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.day]
+        formatter.unitsStyle = .full
+        let intervalString = formatter.string(from: date!, to: Date())
+        dateLbl.text = intervalString! + " on list"
     }
     
     // Seg Controller Format

@@ -26,3 +26,6 @@ var newTaskOrCategoryCreated = false
 let taskDescriptionPlaceHolder = "Task Description"
 let taskDescPHForTaskDetail = "Any additional information related to the task"
 let channelVCMargin:Double = 0.1
+let adMobAppID = "ca-app-pub-5383101165774401~1391043887"
+let adMobTestAdUnit = "ca-app-pub-3940256099942544/2934735716"
+let adMobTaskVCAdUnit = "ca-app-pub-5383101165774401/3144244729"

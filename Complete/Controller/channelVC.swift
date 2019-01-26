@@ -78,6 +78,8 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC.updateTaskCategoryList.removeAll()
         taskVC.updateCategoryList.removeAll()
         taskVC.updateCategoryRankList.removeAll()
+        taskVC.categories.removeAll()
+        taskVC.categoriesForCurrentChannel.removeAll()
         
         // UPdate all data and titles
         taskVC.updateTaskTable()
