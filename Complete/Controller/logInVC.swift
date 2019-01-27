@@ -16,7 +16,7 @@ class logInVC: UIViewController {
     @IBOutlet var emailTxtField: UITextField!
     @IBOutlet var passwordTxtField: UITextField!
     @IBOutlet var errorMsgLbl: UILabel!
-    
+    @IBOutlet var logInBtn: UIButton!
     
     // --- Actions ---
     // Log In User
@@ -55,5 +55,8 @@ class logInVC: UIViewController {
         
         // Hide error message
         errorMsgLbl.isHidden = true
+        
+        // Format Log In button
+        logInBtn.layer.cornerRadius = 10.0
     }
 }

@@ -17,6 +17,7 @@ class signUpVC: UIViewController {
     @IBOutlet var passwordTxtLbl: UITextField!
     @IBOutlet var confirmPWTxtLbl: UITextField!
     @IBOutlet var errorMsg: UILabel!
+    @IBOutlet var signUpBtn: UIButton!
     
     
     
@@ -76,5 +77,8 @@ class signUpVC: UIViewController {
         // Hide Error message
         errorMsg.isHidden = true
         errorMsg.isHidden = true
+        
+        // Format Sign Up Button
+        signUpBtn.layer.cornerRadius = 10.0
     }
 }
