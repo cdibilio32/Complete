@@ -24,7 +24,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     @IBOutlet var navViewTopConstraint: NSLayoutConstraint!
     @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var searchBarCenterY: NSLayoutConstraint!
-    @IBOutlet var searchBarBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var searchBarBottomContraint: NSLayoutConstraint!
     
     
     // --- Instance Variables ---
@@ -329,7 +329,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             
             // Search Bar
             searchBarCenterY.isActive = false
-            searchBarBottomConstraint.constant = CGFloat(8)
+            searchBarBottomContraint.constant = CGFloat(8)
         }
     }
     
