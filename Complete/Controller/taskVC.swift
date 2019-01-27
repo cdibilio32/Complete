@@ -782,7 +782,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // Helper function for banner ads
     func loadBannerView() {
         // Test ID now
-        bannerAd.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        bannerAd.adUnitID = "ca-app-pub-5383101165774401/3144244729"
         bannerAd.rootViewController = self
         bannerAd.load(GADRequest())
     }
