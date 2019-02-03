@@ -81,7 +81,8 @@ class createNewCategoryVC: UIViewController, UITextFieldDelegate {
         catNameField.becomeFirstResponder()
         
         // Dismiss Keyboard
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        //*taken out for design purposes*
+        //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         // Adjust menu to keyboard height
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)

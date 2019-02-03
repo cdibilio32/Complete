@@ -553,7 +553,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 self.present(alert, animated: true)
                 
             }
-            
         }
         return [delete]
     }
@@ -1146,7 +1145,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             }
             if !inCategories {
                 self.categories.append(category)
-                let errorTask = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: category._id!, lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+                let errorTask = Task(name: "No Tasks Listed", id: "Error Task", description: "Error Task", categoryId: category._id!, lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
                 self.allTasks = errorTask.add(toDictionary: self.allTasks)
                 self.updateTaskTable()
             }
