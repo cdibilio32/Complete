@@ -434,6 +434,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             if priorityBtnPressed {
                 cell.upButton.isHidden = false
                 cell.downButton.isHidden = false
+                cell.titleLeadConstraint.constant = 25.0
                 cell.deleteCategoryButton.isHidden = false
                 cell.addTaskSectionBtn.isHidden = true
             }
@@ -442,6 +443,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             else {
                 cell.upButton.isHidden = true
                 cell.downButton.isHidden = true
+                cell.titleLeadConstraint.constant = 10.0
                 cell.deleteCategoryButton.isHidden = true
                 cell.addTaskSectionBtn.isHidden = false
             }

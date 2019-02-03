@@ -16,6 +16,7 @@ class taskSectionHeaderViewCell: UITableViewCell {
     @IBOutlet var upButton: UIButton!
     @IBOutlet var downButton: UIButton!
     @IBOutlet var deleteCategoryButton: UIButton!
+    @IBOutlet var titleLeadConstraint: NSLayoutConstraint!
     
     
     
