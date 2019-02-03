@@ -12,5 +12,6 @@ target 'Complete' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Firebase/AdMob'
+  pod 'AmazonAd', '~>2.2'
 
 end

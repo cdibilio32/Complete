@@ -11,6 +11,7 @@ import CoreData
 import Firebase
 import GoogleMobileAds
 
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -25,6 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // Admob
         GADMobileAds.configure(withApplicationID: "ca-app-pub-5383101165774401~1391043887")
+        
+        // Amazon Ads
+        AmazonAdRegistration.shared().setAppKey("2388df04c67d44a6b0755196baf65c3d")
         
         // Skip Log in page if logged in
         if Auth.auth().currentUser == nil {
