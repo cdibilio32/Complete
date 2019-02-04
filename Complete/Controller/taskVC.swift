@@ -1287,6 +1287,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     func adView(_ bannerView: GADBannerView,
                 didFailToReceiveAdWithError error: GADRequestError) {
         print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+        print("adView:didFailToReceiveAdWithError: \(error.description)")
         bannerAdContainerHeightConstraint.constant = CGFloat(0)
     }
     

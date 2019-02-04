@@ -16,6 +16,7 @@
 		51786876216837CA004CEFAD /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51786875216837CA004CEFAD /* Task.swift */; };
 		5178687921683978004CEFAD /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178687821683978004CEFAD /* DataService.swift */; };
 		5178687B2168411E004CEFAD /* taskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178687A2168411E004CEFAD /* taskTableViewCell.swift */; };
+		5178A03722076F800087ED5E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5178A03622076F800087ED5E /* GoogleService-Info.plist */; };
 		5178CCB52196013000FFCA95 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5178CCB42196013000FFCA95 /* AuthService.swift */; };
 		517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */; };
 		517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E74EF21586677005CC8A5 /* AppDelegate.swift */; };
@@ -33,7 +34,6 @@
 		51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1F2161845F00570639 /* taskDetailVC.swift */; };
 		51C1CB2221618C3E00570639 /* logInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB2121618C3E00570639 /* logInVC.swift */; };
 		51C1CB242161903500570639 /* signUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB232161903500570639 /* signUpVC.swift */; };
-		51C5527521769F26006FD951 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 51C5527421769F25006FD951 /* GoogleService-Info.plist */; };
 		51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51D3CB332184959D00097D2F /* MainNavigationController.swift */; };
 		51ECA18F21BF425E007A9A1E /* unusedCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA18E21BF425E007A9A1E /* unusedCode.swift */; };
 		51ECA19121C873B7007A9A1E /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51ECA19021C873B7007A9A1E /* Category.swift */; };
@@ -72,6 +72,7 @@
 		51786875216837CA004CEFAD /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		5178687821683978004CEFAD /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		5178687A2168411E004CEFAD /* taskTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskTableViewCell.swift; sourceTree = "<group>"; };
+		5178A03622076F800087ED5E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = SOURCE_ROOT; };
 		5178CCB42196013000FFCA95 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewCategoryVC.swift; sourceTree = "<group>"; };
 		517E74EC21586677005CC8A5 /* Complete.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Complete.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -97,7 +98,6 @@
 		51C1CB1F2161845F00570639 /* taskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskDetailVC.swift; sourceTree = "<group>"; };
 		51C1CB2121618C3E00570639 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
 		51C1CB232161903500570639 /* signUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = signUpVC.swift; sourceTree = "<group>"; };
-		51C5527421769F25006FD951 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		51D3CB332184959D00097D2F /* MainNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainNavigationController.swift; sourceTree = "<group>"; };
 		51ECA18E21BF425E007A9A1E /* unusedCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = unusedCode.swift; sourceTree = "<group>"; };
 		51ECA19021C873B7007A9A1E /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
@@ -179,7 +179,7 @@
 				517E74FB21586679005CC8A5 /* LaunchScreen.storyboard */,
 				51C24B0721A36B9F00F7BE37 /* Xib Files */,
 				517E74FE21586679005CC8A5 /* Info.plist */,
-				51C5527421769F25006FD951 /* GoogleService-Info.plist */,
+				5178A03622076F800087ED5E /* GoogleService-Info.plist */,
 				517E74F621586677005CC8A5 /* Complete.xcdatamodeld */,
 			);
 			path = Complete;
@@ -389,9 +389,9 @@
 			files = (
 				517E74FD21586679005CC8A5 /* LaunchScreen.storyboard in Resources */,
 				517E74FA21586679005CC8A5 /* Assets.xcassets in Resources */,
+				5178A03722076F800087ED5E /* GoogleService-Info.plist in Resources */,
 				516FABEF21A364110095E23F /* SectionHeader.xib in Resources */,
 				517E74F521586677005CC8A5 /* Main.storyboard in Resources */,
-				51C5527521769F26006FD951 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -670,7 +670,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -696,7 +696,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
