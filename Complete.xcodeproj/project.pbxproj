@@ -30,6 +30,8 @@
 		517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517E75222158674E005CC8A5 /* SWRevealViewController.m */; };
 		517E752921586D47005CC8A5 /* channelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752821586D47005CC8A5 /* channelVC.swift */; };
 		517E752B21586D59005CC8A5 /* taskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752A21586D59005CC8A5 /* taskVC.swift */; };
+		519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519AE8A9220A69520043AAE9 /* PurchaseManager.swift */; };
+		519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */; };
 		51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */; };
 		51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1F2161845F00570639 /* taskDetailVC.swift */; };
 		51C1CB2221618C3E00570639 /* logInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB2121618C3E00570639 /* logInVC.swift */; };
@@ -94,6 +96,8 @@
 		517E75232158674E005CC8A5 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		517E752821586D47005CC8A5 /* channelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelVC.swift; sourceTree = "<group>"; };
 		517E752A21586D59005CC8A5 /* taskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskVC.swift; sourceTree = "<group>"; };
+		519AE8A9220A69520043AAE9 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewTaskPopUpVC.swift; sourceTree = "<group>"; };
 		51C1CB1F2161845F00570639 /* taskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskDetailVC.swift; sourceTree = "<group>"; };
 		51C1CB2121618C3E00570639 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
@@ -113,6 +117,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5CFF44762B3AE86DD06E1A4 /* Pods_Complete.framework in Frameworks */,
+				519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -138,6 +143,7 @@
 			children = (
 				5178687821683978004CEFAD /* DataService.swift */,
 				5178CCB42196013000FFCA95 /* AuthService.swift */,
+				519AE8A9220A69520043AAE9 /* PurchaseManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -273,6 +279,7 @@
 		B8F3FED0AA01928195D2F0CC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */,
 				9A053A2E8752948F48F4B935 /* Pods_Complete.framework */,
 				671F3282260C5EB1B3F26408 /* Pods_CompleteTests.framework */,
 				0819846B329223EDECBFA261 /* Pods_CompleteUITests.framework */,
@@ -351,6 +358,11 @@
 					517E74EB21586677005CC8A5 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 0930;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					517E750221586679005CC8A5 = {
 						CreatedOnToolsVersion = 9.3;
@@ -463,6 +475,7 @@
 			files = (
 				51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */,
 				51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */,
+				519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */,
 				5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */,
 				5178687B2168411E004CEFAD /* taskTableViewCell.swift in Sources */,
 				51F8FB8921B16AC500AF7241 /* channelSectionHeaderViewCell.swift in Sources */,
@@ -670,7 +683,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -696,7 +709,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;

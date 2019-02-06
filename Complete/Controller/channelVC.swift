@@ -58,17 +58,17 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         let alert = UIAlertController(title: "Are you sure you want to leave?", message: "We would love to continue remembering everything so you do not need to!", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Nah, I'll stay!", style: .cancel, handler: nil))
         alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler:  { action in
-            
+
             // Detach Listeners
             DataService.instance.removeChannelListener()
             DataService.instance.removeTaskListener()
             DataService.instance.removeCategoryListener()
-            
+
             // Clear Data
             // Channel VC
             self.selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
             self.allChannels.removeAll()
-            
+
             // Task VC
             self.taskVC.allTasks.removeAll()
             let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
@@ -77,7 +77,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             self.taskVC.allTasks["Short Term"] = [errorTaskST]
             self.taskVC.allTasks["Medium Term"] = [errorTaskMT]
             self.taskVC.allTasks["Long Term"] = [errorTaskLT]
-            
+
             // Task VC update instance variables
             self.taskVC.updateTaskRankList.removeAll()
             self.taskVC.updateTaskCategoryList.removeAll()
@@ -85,23 +85,23 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             self.taskVC.updateCategoryRankList.removeAll()
             self.taskVC.categories.removeAll()
             self.taskVC.categoriesForCurrentChannel.removeAll()
-            
+
             // UPdate all data and titles
             self.taskVC.updateTaskTable()
             self.taskVC.updateChannelLabel()
             self.channelTbl.reloadData()
-            
+
             // Constants
             userID = "Logged Out"
             isNewUser = false
             justLoggedIn = false
-            
+
             // Log out
             AuthService.instance.logOffUser()
-            
+
             // Push to Task VC so when log back in goes to correct page
             self.revealViewController()?.pushFrontViewController(self.taskVC, animated: true)
-            
+
             // Show Log In Page
             self.delegate.toLogIn()
         }))
