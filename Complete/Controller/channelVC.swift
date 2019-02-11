@@ -42,6 +42,17 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     // --- Actions ---
+    // Subscribe user and make purchase
+    @IBAction func subscribeBtnPressed(_ sender: Any) {
+        debugPrint("in add action")
+        PurchaseManager.instance.purchaseSubscription(renewing: "monthly", onComplete: { (success) in
+            debugPrint("call back \(success)")
+            if success {
+                self.taskVC.bannerAdContainerHeightConstraint.constant = CGFloat(0)
+            }
+        })
+    }
+        
     // Show Pop Up to Create New Channel
     @IBAction func showCreateChannelPopUp(_ sender: Any) {
         let createNewChannelPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewChannelPopUpID") as! createNewChannelPopUpVC
@@ -105,7 +116,31 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             // Show Log In Page
             self.delegate.toLogIn()
         }))
-        self.present(alert, animated: true)
+        
+        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
+            // Start Purchase
+            debugPrint("in add action")
+//            PurchaseManager.instance.purchaseSubscription(renewing: "monthly", onComplete: { (success) in
+//                if success {
+//                    self.taskVC.loadBannerView()
+//                }
+//            })
+            // Go Too Subscription Page
+            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+            
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
+            // Restore Purchase if needed
+            PurchaseManager.instance.restorePurchases { (success) in
+                debugPrint("restore completion: \(success)")
+                if success {
+                    self.taskVC.loadBannerView()
+                }
+            }
+        }))
+        
+            self.present(alert, animated: true)
     }
     
     // View All Tasks Button Pressed

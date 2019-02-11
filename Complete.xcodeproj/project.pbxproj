@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51191A222160304900E247CB /* createNewChannelPopUpVC.swift */; };
+		5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33A220E662D003458F8 /* SubscriptionViewController.swift */; };
+		5133C33D220E6996003458F8 /* Slide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33C220E6996003458F8 /* Slide.swift */; };
+		5133C33F220E6A4D003458F8 /* Slide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5133C33E220E6A4D003458F8 /* Slide.xib */; };
 		5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F251216D6E460044880E /* channelTableViewCell.swift */; };
 		514B264621B336E000160477 /* taskSectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */; };
 		515E6E062177D7130038C142 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515E6E052177D7130038C142 /* constants.swift */; };
@@ -66,6 +69,9 @@
 		1C0FED901628125247C82DFC /* Pods-Complete.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.release.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.release.xcconfig"; sourceTree = "<group>"; };
 		4A40451720A70F8082AF2979 /* Pods-Complete.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.debug.xcconfig"; sourceTree = "<group>"; };
 		51191A222160304900E247CB /* createNewChannelPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewChannelPopUpVC.swift; sourceTree = "<group>"; };
+		5133C33A220E662D003458F8 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
+		5133C33C220E6996003458F8 /* Slide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slide.swift; sourceTree = "<group>"; };
+		5133C33E220E6A4D003458F8 /* Slide.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Slide.xib; sourceTree = "<group>"; };
 		5144F251216D6E460044880E /* channelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelTableViewCell.swift; sourceTree = "<group>"; };
 		514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderViewCell.swift; sourceTree = "<group>"; };
 		515E6E052177D7130038C142 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
@@ -232,6 +238,7 @@
 				517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */,
 				51C1CB232161903500570639 /* signUpVC.swift */,
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
+				5133C33A220E662D003458F8 /* SubscriptionViewController.swift */,
 				51D3CB332184959D00097D2F /* MainNavigationController.swift */,
 			);
 			path = Controller;
@@ -245,6 +252,8 @@
 				51ECA19221CB1C5B007A9A1E /* taskTableFooterViewCell.swift */,
 				5144F251216D6E460044880E /* channelTableViewCell.swift */,
 				51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */,
+				5133C33C220E6996003458F8 /* Slide.swift */,
+				5133C33E220E6A4D003458F8 /* Slide.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -404,6 +413,7 @@
 				5178A03722076F800087ED5E /* GoogleService-Info.plist in Resources */,
 				516FABEF21A364110095E23F /* SectionHeader.xib in Resources */,
 				517E74F521586677005CC8A5 /* Main.storyboard in Resources */,
+				5133C33F220E6A4D003458F8 /* Slide.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,6 +483,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */,
 				51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */,
 				51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */,
 				519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */,
@@ -483,6 +494,7 @@
 				51786874216837C1004CEFAD /* Channel.swift in Sources */,
 				5178CCB52196013000FFCA95 /* AuthService.swift in Sources */,
 				517E74F221586677005CC8A5 /* ViewController.swift in Sources */,
+				5133C33D220E6996003458F8 /* Slide.swift in Sources */,
 				517E752B21586D59005CC8A5 /* taskVC.swift in Sources */,
 				517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */,
 				517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */,

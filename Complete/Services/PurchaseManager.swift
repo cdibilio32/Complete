@@ -42,16 +42,20 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
     
     // Apply Purchases
     func purchaseSubscription(renewing:String, onComplete: @escaping CompletionHandler) {
+        debugPrint(SKPaymentQueue.canMakePayments())
+        debugPrint(products.count)
         if SKPaymentQueue.canMakePayments() && products.count > 0 {
             // Store completion handler
             transactionComplete = onComplete
-            
+            debugPrint("in purchase subscription")
             // Get Subscription type and payment
             let payment:SKPayment
             if renewing == "monthly" {
                 payment = SKPayment(product: products[0])
+                debugPrint("in monthly")
             } else {
                 payment = SKPayment(product: products[1])
+                debugPrint("in yearly")
             }
             
             // Start Processing Payment
@@ -65,18 +69,29 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
         }
     }
     
+    // Restore Purchase
+    func restorePurchases(onComplete: @escaping CompletionHandler) {
+        if SKPaymentQueue.canMakePayments() {
+            transactionComplete = onComplete
+            SKPaymentQueue.default().add(self)
+            SKPaymentQueue.default().restoreCompletedTransactions()
+        } else {
+            onComplete(false)
+        }
+    }
+    
     
     
     
     // --- Delegate functions for SKProductRequestDelegate ---
     // Call back when product request is recieved
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
-//        if response.products.count > 0 {
-//            debugPrint("successful product request")
-//            products = response.products
-//        }
-        debugPrint("In product request")
-        debugPrint(response.products.count)
+        if response.products.count > 0 {
+            debugPrint("In product request")
+            debugPrint(response.products.count)
+            debugPrint("successful product request")
+            products = response.products
+        }
     }
     
     // Call back for product request if failed
@@ -90,23 +105,30 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
         for transaction in transactions {
             switch transaction.transactionState {
             case .purchased:
+                debugPrint("case: purchased")
                 SKPaymentQueue.default().finishTransaction(transaction)
                 UserDefaults.standard.set(true, forKey: "subscriber")
                 transactionComplete?(true)
                 break
-            case .purchasing:
-                break
-            case .deferred:
-                break
             case .failed:
+                debugPrint("case: failed")
                 transactionComplete?(false)
-                debugPrint("in failed")
                 break
             case .restored:
+                debugPrint("case: restored")
+                SKPaymentQueue.default().finishTransaction(transaction)
+                UserDefaults.standard.set(true, forKey: "subscriber")
+                transactionComplete?(true)
                 break
+                // Let it go to default for now
+//            case .purchasing:
+//                break
+//            case .deferred:
+//                break
+
             default:
+                debugPrint("case: default")
                 transactionComplete?(false)
-                debugPrint("in default")
                 break
             }
         }

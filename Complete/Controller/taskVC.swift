@@ -376,7 +376,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         noSectionPopUp.isHidden = true
         
         // Banner Ads
-        // Load Banner Ads
         loadBannerView()
     }
     
@@ -399,7 +398,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         }
         else {
             noSectionPopUp.isHidden = true
-            debugPrint(categoriesForCurrentChannel.count)
             return categoriesForCurrentChannel.count
             
         }
@@ -782,12 +780,20 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // Helper function for banner ads
     func loadBannerView() {
-        // Test ID now
-        bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
-        bannerAd.rootViewController = self
-        let request = GADRequest()
-        request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
-        bannerAd.load(request)
+        // Don't display if subscriber
+        if UserDefaults.standard.bool(forKey: "subscriber") {
+            debugPrint("banner view: In subsciber")
+            bannerAd.removeFromSuperview()
+            bannerAdContainerHeightConstraint.constant = CGFloat(0)
+        } else {
+            debugPrint("banner view: In load ad")
+            // Test ID now
+            bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
+            bannerAd.rootViewController = self
+            let request = GADRequest()
+            request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
+            bannerAd.load(request)
+        }
     }
     
     
@@ -1320,7 +1326,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // UPdate navigation bar based on ndevice - update for
     func navigationBarFormatting() {
         if UIDevice.current.modelName.contains("iPhone10") {
-            debugPrint("in iphone10")
             // Top Constraint
             navViewTopConstraint.isActive = false
             navView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
