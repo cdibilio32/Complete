@@ -10,6 +10,7 @@ import UIKit
 
 class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     
+    
     // --- Outlets ---
     @IBOutlet var scrollView: UIScrollView!
     @IBOutlet var subOption1Container: UIView!
@@ -30,6 +31,9 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     // --- Instance Variables
     var slides:[Slide] = []
     var subscription = "annual"
+    var subToChannelVCDelegate:SubscriptionVCToChannelVC?
+    var subToTaskVCDelegate:SubscriptionVCToTaskVC?
+    var cameFromVC:String!
     
     
     
@@ -37,11 +41,20 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     // --- Actions ---
     // Purchase Subscription OPtion
     @IBAction func purchaseBtnPressed(_ sender: Any) {
+        PurchaseManager.instance.purchaseSubscription(renewing: subscription) { (success) in
+            if self.cameFromVC == "channelVC" {
+                self.subToChannelVCDelegate?.updateBannerAds()
+            }
+            else {
+                self.subToTaskVCDelegate?.updateBannerAdsInTask()
+            }
+        }
     }
     
     // Exit Page
     @IBAction func closeBtnPressed(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+        debugPrint("exit")
+        navigationController?.popViewController(animated: true)
     }
     
     // Select Annual Subscription
@@ -191,7 +204,6 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     
     // Set Up Scroll View
     func setUpScrollView(slides:[Slide]) {
-        let SCROLL_HEIGHT = 223
         scrollView.frame = CGRect(x: CGFloat(0), y: CGFloat(0), width: view.frame.width, height: scrollView.frame.height)
         scrollView.contentSize = CGSize(width: view.frame.width*CGFloat(slides.count), height: scrollView.frame.height)
         scrollView.isPagingEnabled = true
@@ -218,4 +230,23 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
         let pageIndex = round(scrollView.contentOffset.x/view.frame.width)
         pageController.currentPage = Int(pageIndex)
     }
+}
+
+
+
+
+
+
+
+
+
+// --- Protocols ---
+// Connection to channelVC (really trying to get to taskVC)
+protocol SubscriptionVCToChannelVC {
+    func updateBannerAds()
+}
+
+// Connection to TaskVC
+protocol  SubscriptionVCToTaskVC {
+    func updateBannerAdsInTask()
 }

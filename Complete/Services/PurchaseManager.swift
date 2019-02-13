@@ -108,6 +108,7 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
                 debugPrint("case: purchased")
                 SKPaymentQueue.default().finishTransaction(transaction)
                 UserDefaults.standard.set(true, forKey: "subscriber")
+                DataService.instance.updateUserSubscription(subValue: true)
                 transactionComplete?(true)
                 break
             case .failed:
@@ -118,6 +119,7 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
                 debugPrint("case: restored")
                 SKPaymentQueue.default().finishTransaction(transaction)
                 UserDefaults.standard.set(true, forKey: "subscriber")
+                DataService.instance.updateUserSubscription(subValue: true)
                 transactionComplete?(true)
                 break
                 // Let it go to default for now

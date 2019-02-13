@@ -13,7 +13,7 @@ protocol ToLogInDelegate {
     func toLogIn()
 }
 
-class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate {
+class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate, SubscriptionVCToChannelVC {
     
     // --- Outlets ---
     @IBOutlet var channelTbl: UITableView!
@@ -39,6 +39,14 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     // Allow log in screen to appear if logged out
     var delegate:ToLogInDelegate!
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // --- Actions ---
@@ -151,6 +159,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     }
     
     
+    
+    
+    
+    
+    
+    
+    
     // --- Load Functions ---
     // view did appear
     override func viewDidAppear(_ animated: Bool) {
@@ -179,6 +194,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         // Load Table
         updateChannelTable()
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     // --- Table View Delegate Functions ---
@@ -305,8 +327,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- Helper Functions ---
     
+    
+    
+    // --- Helper Functions ---
     // Sort Channels
     func sortChannels() {
         allChannels.sort(by: {$0._name < $1._name})
@@ -356,7 +380,25 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- View Helper Functions
+    // --- Segue Functions ---
+    // Prepare
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toSubscribeSegue" {
+            let destinationVC = segue.destination as! SubscriptionViewController
+            destinationVC.subToChannelVCDelegate = self
+            destinationVC.cameFromVC = "channelVC"
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --- View Helper Functions ---
     // UPdate navigation bar based on ndevice - update for
     func navigationBarFormatting() {
         if UIDevice.current.modelName.contains("iPhone10") {
@@ -379,7 +421,8 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- Define Delegate functions of ToTAskVCFromChannelVC ---
+    // --- Define Delegate   ---
+    // --- ToTAskVCFromChannelVC ---
     // go to taskVC after saving channel - need to change current channel and upload new data
     func toTaskVC() {
         // go to task VC
@@ -395,6 +438,15 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     // Have ChannelVC back to normal view
     func brightenTaskVC() {
         taskVC.blackOutView.isHidden = true
+    }
+    
+    
+    
+    
+    // --- SubscriptionToChannelVC ---
+    func updateBannerAds() {
+        debugPrint("in update banner ads")
+        self.taskVC.loadBannerView()
     }
     
     

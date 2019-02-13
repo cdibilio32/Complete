@@ -629,6 +629,7 @@
                         <outlet property="priorityBtn" destination="Io7-A2-ND8" id="0lq-j5-v5t"/>
                         <outlet property="taskTblView" destination="NSQ-o7-J3E" id="S3j-XA-sXG"/>
                         <segue destination="sAv-nN-72X" kind="showDetail" identifier="taskVCToTaskDetailVC" id="XiD-gN-U36"/>
+                        <segue destination="TVR-wK-niQ" kind="show" identifier="toSubscribeFromTaskVC" id="KqS-Mm-O3m"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0sO-gx-xFJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1020,7 +1021,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pgy-yt-JFC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2192.8000000000002" y="541.97901049475263"/>
+            <point key="canvasLocation" x="2374" y="542"/>
         </scene>
         <!--ChannelVC-->
         <scene sceneID="53k-A5-xcs">
@@ -1633,4 +1634,7 @@
         <image name="icons8-slide-up-50" width="37.5" height="37.5"/>
         <image name="smackBurger" width="40" height="40"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="KqS-Mm-O3m"/>
+    </inferredMetricsTieBreakers>
 </document>

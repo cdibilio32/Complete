@@ -10,8 +10,9 @@ import UIKit
 import FirebaseDatabase
 import GoogleMobileAds
 
+var globalTaskVCInstance:taskVC!
 // --- Main taskVC Class ---
-class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADBannerViewDelegate,deleteTaskUpdate, ToLogInDelegate {
+class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADBannerViewDelegate,deleteTaskUpdate, ToLogInDelegate, SubscriptionVCToTaskVC {
     
     // --- Outlets ---
     @IBOutlet weak var menuBtn: UIButton!
@@ -139,7 +140,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             self.present(alert, animated: true)
         }
             
-            // If not allow user to create a new category
+        // If not allow user to create a new category
         else {
             guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewCategoryVC") as? createNewCategoryVC else {return}
             
@@ -179,47 +180,61 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // Pop up to add Task - in section
     @objc func addTaskInTableBtnPressed(sender:UIButton) {
-        // If all channels is selected -> show error message
-        if channelVC.selectedChannel._id == "allTasks" {
-            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
-            
-            // Get according data
-            let currentCategory = categoriesForCurrentChannel[sender.tag]
-            let currentChannelId = currentCategory._channelId
-            let currentChannel = channelVC.allChannels.first(where: {$0._id == currentChannelId})
-            
-            // Pass Data Over to Child View
-            createNewTaskPopUpVC.currentChannel = currentChannel
-            createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
-            createNewTaskPopUpVC.currentLane = selectedLane
-            
-            // Start Pop Up
-            self.addChildViewController(createNewTaskPopUpVC)
-            createNewTaskPopUpVC.view.frame = self.view.frame
-            self.view.addSubview(createNewTaskPopUpVC.view)
-            createNewTaskPopUpVC.didMove(toParentViewController: self)
-            
-            
-//            let alert = UIAlertController(title: "Sorry you can't add a task to the #All channel.", message: "Please select a specific channel to add a task.", preferredStyle: .alert)
-//
-//            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-//
-//            self.present(alert, animated: true)
+        // If not subscriber and has too many tasks, direct to upgrade screen
+        if !UserDefaults.standard.bool(forKey: "subscriber") && totalTaskCount >= taskLimit {
+            let alert = UIAlertController(title: "We are sorry but you have reached your task limit as a basic member.", message: "You can upgrate to JotItt premium for more tasks or to save some money feel free to delete some of your current tasks.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
+                self.performSegue(withIdentifier: "toSubscribeFromTaskVC", sender: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Nah, I'm good with basic membership.", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
         }
-            // If not allow user to create a new task
+            
+        // If subscriber but is over subscriber limit
+        else if UserDefaults.standard.bool(forKey: "subscriber") && totalTaskCount >= taskLimitWithSubscription {
+            // TODO
+            let alert = UIAlertController(title: "We are sorry but you have reached your task limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current tasks", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+        }
+            
+        // Allow to add ads if limits are satisfied
         else {
-            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
-            
-            // Pass Data Over to Child View
-            createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
-            createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
-            createNewTaskPopUpVC.currentLane = selectedLane
-            
-            // Start Pop Up
-            self.addChildViewController(createNewTaskPopUpVC)
-            createNewTaskPopUpVC.view.frame = self.view.frame
-            self.view.addSubview(createNewTaskPopUpVC.view)
-            createNewTaskPopUpVC.didMove(toParentViewController: self)
+            // If all channels is selected -> show error message
+            if channelVC.selectedChannel._id == "allTasks" {
+                guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
+                
+                // Get according data
+                let currentCategory = categoriesForCurrentChannel[sender.tag]
+                let currentChannelId = currentCategory._channelId
+                let currentChannel = channelVC.allChannels.first(where: {$0._id == currentChannelId})
+                
+                // Pass Data Over to Child View
+                createNewTaskPopUpVC.currentChannel = currentChannel
+                createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+                createNewTaskPopUpVC.currentLane = selectedLane
+                
+                // Start Pop Up
+                self.addChildViewController(createNewTaskPopUpVC)
+                createNewTaskPopUpVC.view.frame = self.view.frame
+                self.view.addSubview(createNewTaskPopUpVC.view)
+                createNewTaskPopUpVC.didMove(toParentViewController: self)
+            }
+                // If not allow user to create a new task
+            else {
+                guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewTaskPopUpID") as? createNewTaskPopUpVC else {return}
+                
+                // Pass Data Over to Child View
+                createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
+                createNewTaskPopUpVC.currentCategory = categoriesForCurrentChannel[sender.tag]._id
+                createNewTaskPopUpVC.currentLane = selectedLane
+                
+                // Start Pop Up
+                self.addChildViewController(createNewTaskPopUpVC)
+                createNewTaskPopUpVC.view.frame = self.view.frame
+                self.view.addSubview(createNewTaskPopUpVC.view)
+                createNewTaskPopUpVC.didMove(toParentViewController: self)
+            }
         }
     }
     
@@ -1061,21 +1076,31 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // Prepare for Segue when task is selected
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
-        // Prepare with data for TaskDetailVC
-        if let taskDetailVC = segue.destination as? taskDetailVC {
-            if selectedTask != nil {
-                taskDetailVC.delegate = self
-                taskDetailVC.currentTask = selectedTask
-                taskDetailVC.lanes = lanes
-                taskDetailVC.allTasks = allTasks
-                
-                // Give Sectio Name to taskDetail
-                let categoryId = selectedTask?._categoryId
-                for cat in categories {
-                    if cat._id == categoryId {
-                        taskDetailVC.currentCategoryName = cat._name
+        if segue.identifier == "taskVCToTaskDetailVC" {
+            // Prepare with data for TaskDetailVC
+            if let taskDetailVC = segue.destination as? taskDetailVC {
+                if selectedTask != nil {
+                    taskDetailVC.delegate = self
+                    taskDetailVC.currentTask = selectedTask
+                    taskDetailVC.lanes = lanes
+                    taskDetailVC.allTasks = allTasks
+                    
+                    // Give Sectio Name to taskDetail
+                    let categoryId = selectedTask?._categoryId
+                    for cat in categories {
+                        if cat._id == categoryId {
+                            taskDetailVC.currentCategoryName = cat._name
+                        }
                     }
                 }
+            }
+        }
+        
+        // Prepare Subscription page with data
+        else if segue.identifier == "toSubscribeFromTaskVC" {
+            if let subscriptionVC = segue.destination as? SubscriptionViewController {
+                subscriptionVC.cameFromVC = "taskVC"
+                subscriptionVC.subToTaskVCDelegate = self
             }
         }
     }
@@ -1251,7 +1276,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     
     
-    // --- Helper Function For segment control view
+    // --- Helper Function For segment control view ---
     func formatSegmentControl() {
         let titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributes, for: .normal)
@@ -1265,7 +1290,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     
     // --- Delegate Function deleteTaskUpdate ---
-    // Delete task from allTasks and update table
+    // --- Delete task from allTasks and update table ---
     func deleteTaskAndUpdateTable(task: Task) {
         // Delete from taskVC
         let category = task._categoryId
@@ -1288,7 +1313,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     
     
-    // Delegate functions for ads
+    // --- Delegate functions for ads ---
     /// Tells the delegate an ad request failed.
     func adView(_ bannerView: GADBannerView,
                 didFailToReceiveAdWithError error: GADRequestError) {
@@ -1303,6 +1328,37 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         bannerAdContainerHeightConstraint.constant = CGFloat(60)
     }
     
+    
+    
+    
+    
+    
+    // --- Delegate Function for ToTaskVCFromSubscriptionVC ---
+    // Load Ads in TaskVC
+    func loadAdsFromSubscriptionVC() {
+        loadBannerView()
+    }
+    
+    
+    
+    
+    
+    // --- Delegate Function for SubscriptionVCToTaskVC ---
+    func updateBannerAdsInTask() {
+        loadBannerView()
+    }
+    
+    
+    
+    
+    // --- Delegate Function ToLogInVC ---
+    // Push Log In VC ontop of task VC
+    func toLogIn() {
+        // Safe Present
+        if let logInVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "logInVC") as? logInVC {
+            present(logInVC, animated: true, completion: nil)
+        }
+    }
     
     
     
@@ -1335,18 +1391,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 16).isActive = true
         }
     }
-    
-    
-    
-    // --- Delegate Function ToLogInVC ---
-    // Push Log In VC ontop of task VC
-    func toLogIn() {
-        // Safe Present
-        if let logInVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "logInVC") as? logInVC {
-            present(logInVC, animated: true, completion: nil)
-        }
-    }
 }
+    
+    
+
 
 
 

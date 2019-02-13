@@ -268,6 +268,10 @@ class DataService {
         REF_CHANNELS.child(userID).child(channel._id!).child("rank").setValue(channel._rank)
     }
     
+    // Update user subscription
+    func updateUserSubscription(subValue: Bool) {
+        REF_USERS.child(userID).child("subscriber").setValue(subValue)
+    }
     
     
     
