@@ -156,25 +156,46 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     }
     // Pop up to add Category when btn pressed
     @objc func addCategorToTaskTable(sender:UIButton) {
-        // If all channels is selected -> show error message
-        if channelVC.selectedChannel._id == "allTasks" {
-            let alert = UIAlertController(title: "Sorry you can't add a category to the #All channel.", message: "Please select a specific channel to add a category.", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+        // Direct user to subscription page if is not a subscriber but over category limit
+        if !UserDefaults.standard.bool(forKey: "subscriber") && totalCategoryCount >= categoryLimit {
+            let alert = UIAlertController(title: "We are sorry but you have reached your category limit as a basic member.", message: "You can upgrate to JotItt premium for more categories or to save some money feel free to delete some of your current categories.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
+                self.performSegue(withIdentifier: "toSubscribeFromTaskVC", sender: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Nah, I'm good with basic membership.", style: .cancel, handler: nil))
             self.present(alert, animated: true)
         }
+            
+        // If user is a subscriber but is over limit, have them contact team or delete categories
+        else if UserDefaults.standard.bool(forKey: "subscriber") && totalCategoryCount >= categoryLimitWithSubscription {
+            let alert = UIAlertController(title: "We are sorry but you have reached your category limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current categories", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
+        }
         
-        // If not allow user to create a new category
+        // Let user add category if meets limits
         else {
-            guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewCategoryVC") as? createNewCategoryVC else {return}
+            // If all channels is selected -> show error message
+            if channelVC.selectedChannel._id == "allTasks" {
+                let alert = UIAlertController(title: "Sorry you can't add a category to the #All channel.", message: "Please select a specific channel to add a category.", preferredStyle: .alert)
+                alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+                self.present(alert, animated: true)
+            }
             
-            // Pass Data Over to Child View
-            createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
-            
-            // Start Pop Up
-            self.addChildViewController(createNewTaskPopUpVC)
-            createNewTaskPopUpVC.view.frame = self.view.frame
-            self.view.addSubview(createNewTaskPopUpVC.view)
-            createNewTaskPopUpVC.didMove(toParentViewController: self)
+            // If not allow user to create a new category
+            else {
+                guard let createNewTaskPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewCategoryVC") as? createNewCategoryVC else {return}
+                
+                // Pass Data Over to Child View
+                createNewTaskPopUpVC.currentChannel = channelVC.selectedChannel
+                
+                // Start Pop Up
+                self.addChildViewController(createNewTaskPopUpVC)
+                createNewTaskPopUpVC.view.frame = self.view.frame
+                self.view.addSubview(createNewTaskPopUpVC.view)
+                createNewTaskPopUpVC.didMove(toParentViewController: self)
+            }
         }
     }
     
@@ -192,7 +213,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             
         // If subscriber but is over subscriber limit
         else if UserDefaults.standard.bool(forKey: "subscriber") && totalTaskCount >= taskLimitWithSubscription {
-            // TODO
             let alert = UIAlertController(title: "We are sorry but you have reached your task limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current tasks", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
             self.present(alert, animated: true)

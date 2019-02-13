@@ -63,14 +63,35 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         
     // Show Pop Up to Create New Channel
     @IBAction func showCreateChannelPopUp(_ sender: Any) {
-        let createNewChannelPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewChannelPopUpID") as! createNewChannelPopUpVC
+        // Direct user to subscription page if is not a subscriber but over channel limit
+        if !UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimit {
+            let alert = UIAlertController(title: "We are sorry but you have reached your channel limit as a basic member.", message: "You can upgrate to JotItt premium for more channels or to save some money feel free to delete some of your current channels.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
+                self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Nah, I'm good with basic membership.", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+        }
+            
+        // If user is a subscriber but is over limit, have them contact team or delete channels
+        else if UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimitWithSubscription {
+            let alert = UIAlertController(title: "We are sorry but you have reached your channel limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current categories", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
+        }
         
-        // Assign Delegate
-        createNewChannelPopUpVC.delegate = self
-        self.addChildViewController(createNewChannelPopUpVC)
-        createNewChannelPopUpVC.view.frame = self.view.frame
-        self.view.addSubview(createNewChannelPopUpVC.view)
-        createNewChannelPopUpVC.didMove(toParentViewController: self)
+        // Allow User to create channel if meets limits
+        else {
+            let createNewChannelPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewChannelPopUpID") as! createNewChannelPopUpVC
+            
+            // Assign Delegate
+            createNewChannelPopUpVC.delegate = self
+            self.addChildViewController(createNewChannelPopUpVC)
+            createNewChannelPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewChannelPopUpVC.view)
+            createNewChannelPopUpVC.didMove(toParentViewController: self)
+        }
     }
     
     @IBAction func signOutClicked(_ sender: Any) {
