@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		510EF9922214F98F004B8895 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510EF9912214F98F004B8895 /* Session.swift */; };
+		510EF9952214FB89004B8895 /* PaidSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510EF9942214FB89004B8895 /* PaidSubscription.swift */; };
 		51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51191A222160304900E247CB /* createNewChannelPopUpVC.swift */; };
 		5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33A220E662D003458F8 /* SubscriptionViewController.swift */; };
 		5133C33D220E6996003458F8 /* Slide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33C220E6996003458F8 /* Slide.swift */; };
@@ -33,8 +35,13 @@
 		517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517E75222158674E005CC8A5 /* SWRevealViewController.m */; };
 		517E752921586D47005CC8A5 /* channelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752821586D47005CC8A5 /* channelVC.swift */; };
 		517E752B21586D59005CC8A5 /* taskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752A21586D59005CC8A5 /* taskVC.swift */; };
+		519A0B072219CC7700092940 /* setttingsVCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B062219CC7700092940 /* setttingsVCViewController.swift */; };
+		519A0B09221A376900092940 /* SettingsCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */; };
+		519A0B0B221A377C00092940 /* SettingsHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */; };
 		519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519AE8A9220A69520043AAE9 /* PurchaseManager.swift */; };
 		519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */; };
+		51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */; };
+		51AC045B221B7E5F007B679A /* LogOutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */; };
 		51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */; };
 		51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1F2161845F00570639 /* taskDetailVC.swift */; };
 		51C1CB2221618C3E00570639 /* logInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB2121618C3E00570639 /* logInVC.swift */; };
@@ -68,6 +75,8 @@
 		0819846B329223EDECBFA261 /* Pods_CompleteUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CompleteUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C0FED901628125247C82DFC /* Pods-Complete.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.release.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.release.xcconfig"; sourceTree = "<group>"; };
 		4A40451720A70F8082AF2979 /* Pods-Complete.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.debug.xcconfig"; sourceTree = "<group>"; };
+		510EF9912214F98F004B8895 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		510EF9942214FB89004B8895 /* PaidSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaidSubscription.swift; sourceTree = "<group>"; };
 		51191A222160304900E247CB /* createNewChannelPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewChannelPopUpVC.swift; sourceTree = "<group>"; };
 		5133C33A220E662D003458F8 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
 		5133C33C220E6996003458F8 /* Slide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slide.swift; sourceTree = "<group>"; };
@@ -102,8 +111,13 @@
 		517E75232158674E005CC8A5 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		517E752821586D47005CC8A5 /* channelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelVC.swift; sourceTree = "<group>"; };
 		517E752A21586D59005CC8A5 /* taskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskVC.swift; sourceTree = "<group>"; };
+		519A0B062219CC7700092940 /* setttingsVCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setttingsVCViewController.swift; sourceTree = "<group>"; };
+		519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCellTableViewCell.swift; sourceTree = "<group>"; };
+		519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		519AE8A9220A69520043AAE9 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
 		519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeTableViewCell.swift; sourceTree = "<group>"; };
+		51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogOutTableViewCell.swift; sourceTree = "<group>"; };
 		51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewTaskPopUpVC.swift; sourceTree = "<group>"; };
 		51C1CB1F2161845F00570639 /* taskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskDetailVC.swift; sourceTree = "<group>"; };
 		51C1CB2121618C3E00570639 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
@@ -144,6 +158,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		510EF9932214FB70004B8895 /* IAP */ = {
+			isa = PBXGroup;
+			children = (
+				510EF9912214F98F004B8895 /* Session.swift */,
+				510EF9942214FB89004B8895 /* PaidSubscription.swift */,
+			);
+			path = IAP;
+			sourceTree = "<group>";
+		};
 		517868772168396B004CEFAD /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -240,6 +263,7 @@
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
 				5133C33A220E662D003458F8 /* SubscriptionViewController.swift */,
 				51D3CB332184959D00097D2F /* MainNavigationController.swift */,
+				519A0B062219CC7700092940 /* setttingsVCViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -254,6 +278,7 @@
 				51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */,
 				5133C33C220E6996003458F8 /* Slide.swift */,
 				5133C33E220E6A4D003458F8 /* Slide.xib */,
+				51AC045C221B7E69007B679A /* Settings */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -261,11 +286,23 @@
 		517E752721586D01005CC8A5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				510EF9932214FB70004B8895 /* IAP */,
 				51786873216837C1004CEFAD /* Channel.swift */,
 				51ECA19021C873B7007A9A1E /* Category.swift */,
 				51786875216837CA004CEFAD /* Task.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		51AC045C221B7E69007B679A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */,
+				519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */,
+				51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */,
+				51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		51C24B0721A36B9F00F7BE37 /* Xib Files */ = {
@@ -484,20 +521,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */,
+				510EF9922214F98F004B8895 /* Session.swift in Sources */,
 				51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */,
 				51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */,
 				519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */,
 				5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */,
+				519A0B0B221A377C00092940 /* SettingsHeaderTableViewCell.swift in Sources */,
 				5178687B2168411E004CEFAD /* taskTableViewCell.swift in Sources */,
 				51F8FB8921B16AC500AF7241 /* channelSectionHeaderViewCell.swift in Sources */,
 				5178687921683978004CEFAD /* DataService.swift in Sources */,
 				51786874216837C1004CEFAD /* Channel.swift in Sources */,
+				519A0B072219CC7700092940 /* setttingsVCViewController.swift in Sources */,
 				5178CCB52196013000FFCA95 /* AuthService.swift in Sources */,
 				517E74F221586677005CC8A5 /* ViewController.swift in Sources */,
 				5133C33D220E6996003458F8 /* Slide.swift in Sources */,
+				51AC045B221B7E5F007B679A /* LogOutTableViewCell.swift in Sources */,
+				519A0B09221A376900092940 /* SettingsCellTableViewCell.swift in Sources */,
 				517E752B21586D59005CC8A5 /* taskVC.swift in Sources */,
 				517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */,
 				517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */,
+				510EF9952214FB89004B8895 /* PaidSubscription.swift in Sources */,
 				51C1CB2221618C3E00570639 /* logInVC.swift in Sources */,
 				51C1CB242161903500570639 /* signUpVC.swift in Sources */,
 				51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */,
@@ -510,6 +553,7 @@
 				517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */,
 				51ECA19321CB1C5B007A9A1E /* taskTableFooterViewCell.swift in Sources */,
 				515E6E062177D7130038C142 /* constants.swift in Sources */,
+				51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */,
 				51ECA19121C873B7007A9A1E /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

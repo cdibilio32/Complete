@@ -210,6 +210,10 @@ class DataService {
         
         // Add channel to user under user root
         REF_USERS.child(userID).child("Channels").child("List").child(channelId).setValue(true)
+       // Test
+        REF_USERS.child(userID).child("Channels").observeSingleEvent(of: .value) { (snapshot) in
+            debugPrint(snapshot.hasChild("Total"))
+        }
         
         // Update total channel count
         REF_USERS.child(userID).child("Channels").child("Total").setValue(totalChannelCount)

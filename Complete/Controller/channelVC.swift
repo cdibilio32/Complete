@@ -50,22 +50,11 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     // --- Actions ---
-    // Subscribe user and make purchase
-    @IBAction func subscribeBtnPressed(_ sender: Any) {
-        debugPrint("in add action")
-        PurchaseManager.instance.purchaseSubscription(renewing: "monthly", onComplete: { (success) in
-            debugPrint("call back \(success)")
-            if success {
-                self.taskVC.bannerAdContainerHeightConstraint.constant = CGFloat(0)
-            }
-        })
-    }
-        
     // Show Pop Up to Create New Channel
     @IBAction func showCreateChannelPopUp(_ sender: Any) {
         // Direct user to subscription page if is not a subscriber but over channel limit
         if !UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimit {
-            let alert = UIAlertController(title: "We are sorry but you have reached your channel limit as a basic member.", message: "You can upgrate to JotItt premium for more channels or to save some money feel free to delete some of your current channels.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Channel Limit Reached", message: "You can upgrate to JotItt premium for unlimited channels or delete some of your current channels and save $0.99 per month.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
                 self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
             }))
@@ -75,7 +64,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             
         // If user is a subscriber but is over limit, have them contact team or delete channels
         else if UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimitWithSubscription {
-            let alert = UIAlertController(title: "We are sorry but you have reached your channel limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current categories", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Safety Limit Reached", message: "You have reached the safety limit as a premium member.  Please contact the JotItt support team at this time.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
             self.present(alert, animated: true)
             
@@ -95,8 +84,29 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     }
     
     @IBAction func signOutClicked(_ sender: Any) {
-        let alert = UIAlertController(title: "Are you sure you want to leave?", message: "We would love to continue remembering everything so you do not need to!", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Nah, I'll stay!", style: .cancel, handler: nil))
+        let alert = UIAlertController(title: "Account Options", message: nil, preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "Go Back", style: .cancel, handler: nil))
+        
+        // Subscribe
+        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
+            // Start Purchase
+            debugPrint("in add action")
+            
+            // Go Too Subscription Page
+            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+        }))
+        
+        // Restore
+        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
+            // Restore Purchase if needed
+            PurchaseManager.instance.restorePurchases { (success) in
+                debugPrint("restore completion: \(success)")
+                if success {
+                    self.taskVC.loadBannerView()
+                }
+            }
+        }))
         alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler:  { action in
 
             // Detach Listeners
@@ -146,29 +156,6 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             self.delegate.toLogIn()
         }))
         
-        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
-            // Start Purchase
-            debugPrint("in add action")
-//            PurchaseManager.instance.purchaseSubscription(renewing: "monthly", onComplete: { (success) in
-//                if success {
-//                    self.taskVC.loadBannerView()
-//                }
-//            })
-            // Go Too Subscription Page
-            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
-            
-        }))
-        
-        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
-            // Restore Purchase if needed
-            PurchaseManager.instance.restorePurchases { (success) in
-                debugPrint("restore completion: \(success)")
-                if success {
-                    self.taskVC.loadBannerView()
-                }
-            }
-        }))
-        
             self.present(alert, animated: true)
     }
     
@@ -179,8 +166,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
     }
     
-    
-    
+    // Go to settings page
+    @IBAction func settingsBtnPressed(_ sender: Any) {
+        performSegue(withIdentifier: "channelVCToSettingsVC", sender: nil)
+    }
     
     
     
@@ -408,6 +397,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             let destinationVC = segue.destination as! SubscriptionViewController
             destinationVC.subToChannelVCDelegate = self
             destinationVC.cameFromVC = "channelVC"
+        }
+        
+        else if segue.identifier == "channelVCToSettingsVC" {
+            // TODO
         }
     }
     

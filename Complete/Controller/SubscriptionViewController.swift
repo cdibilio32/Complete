@@ -27,6 +27,9 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet var scrollViewTopConstraint: NSLayoutConstraint!
     @IBOutlet var checkMark1: UIImageView!
     @IBOutlet var checkMark2: UIImageView!
+    @IBOutlet var activitySpinner: UIActivityIndicatorView!
+    @IBOutlet var activitySpinnerContainer: UIView!
+    
     
     // --- Instance Variables
     var slides:[Slide] = []
@@ -41,12 +44,23 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     // --- Actions ---
     // Purchase Subscription OPtion
     @IBAction func purchaseBtnPressed(_ sender: Any) {
-        PurchaseManager.instance.purchaseSubscription(renewing: subscription) { (success) in
-            if self.cameFromVC == "channelVC" {
-                self.subToChannelVCDelegate?.updateBannerAds()
+        // Show Activity Spinner
+        debugPrint("start")
+        
+        PurchaseManager.instance.purchaseSubscription(renewing: subscription, activityIndicator: activitySpinner, activityContainer: activitySpinnerContainer) { (success) in
+            if success {
+                // Update banner ads
+                if self.cameFromVC == "channelVC" {
+                    self.subToChannelVCDelegate?.updateBannerAds()
+                }
+                else {
+                    self.subToTaskVCDelegate?.updateBannerAdsInTask()
+                }
+//                self.activitySpinner.stopAnimating()
+//                self.activitySpinner.isHidden = true
             }
             else {
-                self.subToTaskVCDelegate?.updateBannerAdsInTask()
+                debugPrint("Unsuccessful purchase")
             }
         }
     }
@@ -147,6 +161,17 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
         purchaseButton.layer.borderWidth = 1
         purchaseButton.layer.borderColor = #colorLiteral(red: 0, green: 0.5333333333, blue: 1, alpha: 1)
         purchaseButton.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
+        
+        // Activity Spinner
+        let transform = CGAffineTransform(scaleX: CGFloat(2), y: CGFloat(2))
+        activitySpinner.transform = transform
+        activitySpinner.isHidden = true
+        
+        // Activity Spinner Container
+        activitySpinnerContainer.isHidden = true
+        activitySpinnerContainer.layer.cornerRadius = 10
+        activitySpinnerContainer.layer.borderWidth = 2
+        activitySpinnerContainer.layer.borderColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
     }
     
     // Set Up ScrollView and Pagination
@@ -182,21 +207,21 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     func createSlides() -> [Slide] {
         
         let slide1:Slide = Bundle.main.loadNibNamed("Slide", owner: self, options: nil)?.first as! Slide
-        slide1.iconView.image = UIImage(named: "channel_vc_icon_v2")
-        slide1.titleView.text = "A real-life bear"
-        slide1.descriptionView.text = "Did you know that Winnie the chubby little cubby was based on a real, young bear in London"
+        slide1.iconView.image = UIImage(named: "icons8-data-recovery-filled-100")
+        slide1.titleView.text = "Unlimited Data"
+        slide1.descriptionView.text = "Jot everything down and clear your mind completely."
         slide1.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
         
         let slide2:Slide = Bundle.main.loadNibNamed("Slide", owner: self, options: nil)?.first as! Slide
-        slide2.iconView.image = UIImage(named: "ic_onboarding_1")
-        slide2.titleView.text = "A real-life bear"
-        slide2.descriptionView.text = "Did you know that Winnie the chubby little cubby was based on a real, young bear in London"
+        slide2.iconView.image = UIImage(named: "icons8-no-access-filled-100 (1)")
+        slide2.titleView.text = "No Ads"
+        slide2.descriptionView.text = "Let your mind free without the distraction of ads."
         slide2.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
         
         let slide3:Slide = Bundle.main.loadNibNamed("Slide", owner: self, options: nil)?.first as! Slide
-        slide3.iconView.image = UIImage(named: "ic_onboarding_1")
-        slide3.titleView.text = "A real-life bear"
-        slide3.descriptionView.text = "Did you know that Winnie the chubby little cubby was based on a real, young bear in London"
+        slide3.iconView.image = UIImage(named: "icons8-automation-filled-500")
+        slide3.titleView.text = "Future Features"
+        slide3.descriptionView.text = "Gain access to features coming to JotItt like task sharing and notifications."
         slide3.backgroundColor = #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)
         
         return [slide1, slide2, slide3]

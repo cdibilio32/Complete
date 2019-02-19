@@ -31,6 +31,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var bannerAd: GADBannerView!
     @IBOutlet var bannerAdContainerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var bannerAdContainer: UIView!
+    
     
     // --- Instance Variables ---
     // All Data For User
@@ -60,6 +62,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // Bool is loading or not
     var loading = false
+    
+    // Subscription
+    var currentSessionId: String?
+    var currentSubscription: PaidSubscription?
 
     
     
@@ -158,7 +164,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     @objc func addCategorToTaskTable(sender:UIButton) {
         // Direct user to subscription page if is not a subscriber but over category limit
         if !UserDefaults.standard.bool(forKey: "subscriber") && totalCategoryCount >= categoryLimit {
-            let alert = UIAlertController(title: "We are sorry but you have reached your category limit as a basic member.", message: "You can upgrate to JotItt premium for more categories or to save some money feel free to delete some of your current categories.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Category Limit Reached", message: "You can upgrate to JotItt premium for unlimited categories or delete some of your current categories and save $0.99 per month.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
                 self.performSegue(withIdentifier: "toSubscribeFromTaskVC", sender: nil)
             }))
@@ -168,7 +174,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             
         // If user is a subscriber but is over limit, have them contact team or delete categories
         else if UserDefaults.standard.bool(forKey: "subscriber") && totalCategoryCount >= categoryLimitWithSubscription {
-            let alert = UIAlertController(title: "We are sorry but you have reached your category limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current categories", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Safety Limit Reached", message: "You have reached the safety limit as a premium member.  Please contact the JotItt support team at this time.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
             self.present(alert, animated: true)
             
@@ -203,7 +209,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     @objc func addTaskInTableBtnPressed(sender:UIButton) {
         // If not subscriber and has too many tasks, direct to upgrade screen
         if !UserDefaults.standard.bool(forKey: "subscriber") && totalTaskCount >= taskLimit {
-            let alert = UIAlertController(title: "We are sorry but you have reached your task limit as a basic member.", message: "You can upgrate to JotItt premium for more tasks or to save some money feel free to delete some of your current tasks.", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Task Limit Reached", message: "You can upgrate to JotItt premium for unlimited tasks or delete some of your current tasks and save $0.99 per month.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
                 self.performSegue(withIdentifier: "toSubscribeFromTaskVC", sender: nil)
             }))
@@ -213,7 +219,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             
         // If subscriber but is over subscriber limit
         else if UserDefaults.standard.bool(forKey: "subscriber") && totalTaskCount >= taskLimitWithSubscription {
-            let alert = UIAlertController(title: "We are sorry but you have reached your task limit as a premium member.", message: "You can contact the JotItt support team or to save some money feel free to delete some of your current tasks", preferredStyle: .alert)
+            let alert = UIAlertController(title: "Safety Limit Reached", message: "You have reached the safety limit as a premium member.  Please contact the JotItt support team at this time.", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
             self.present(alert, animated: true)
         }
@@ -370,6 +376,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        //UserDefaults.standard.set(true, forKey: "subscriber")
+        debugPrint("Subscriber: \(UserDefaults.standard.bool(forKey: "subscriber"))")
+        
+        // Check to see if still member
+        checkAndUpdateCurrentSubscriptionStatus()
+        
+        
         // Start Activity Spinner
         let transform = CGAffineTransform(scaleX: CGFloat(2), y: CGFloat(2))
         activityIndicator.transform = transform
@@ -813,7 +826,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     
     
-    // Helper function for banner ads
+    // --- Helper function for banner ads and subscriptions ---
     func loadBannerView() {
         // Don't display if subscriber
         if UserDefaults.standard.bool(forKey: "subscriber") {
@@ -821,8 +834,19 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             bannerAd.removeFromSuperview()
             bannerAdContainerHeightConstraint.constant = CGFloat(0)
         } else {
-            debugPrint("banner view: In load ad")
-            // Test ID now
+            debugPrint("banner view: In load ad - no subscriber")
+            
+            // Add Ads
+            bannerAdContainerHeightConstraint.constant = CGFloat(60)
+            
+            // See if subscription is cancelled
+            // If so, add back banner view to container
+            if bannerAdContainer.subviews.count == 0 {
+                bannerAdContainer.addSubview(bannerAd)
+            }
+            
+            // Request Ad
+            // Right now testing, need to remove
             bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
             bannerAd.rootViewController = self
             let request = GADRequest()
@@ -830,6 +854,50 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             bannerAd.load(request)
         }
     }
+    
+    // Cancel Subscription
+    func cancelSubscription() {
+        debugPrint("Subscription Cancelled")
+        UserDefaults.standard.set(false, forKey: "subscriber")
+        DataService.instance.updateUserSubscription(subValue: false)
+        loadBannerView()
+    }
+    
+    // Check to see current status of subscription
+    func checkAndUpdateCurrentSubscriptionStatus() {
+        // Update if subscriber cancelled subscription
+        PurchaseManager.instance.uploadReceipt { (success, currentSessionId, currentSubscription) in
+            if success {
+                debugPrint("was receipt success: \(success)")
+                debugPrint("session id: \(currentSessionId)")
+                debugPrint("current subscription: \(currentSubscription)")
+                self.currentSessionId = currentSessionId
+                self.currentSubscription = currentSubscription
+                
+                // Update subscription data
+                // If subscription cancelled
+                if currentSubscription == nil {
+                    debugPrint("subscription cancelled because none received")
+                    self.cancelSubscription()
+                }
+                    // Received receipt
+                else {
+                    if (currentSubscription?.expiresDate)! < Date() {
+                        debugPrint("expires by date")
+                        debugPrint(Date())
+                        self.cancelSubscription()
+                    }
+                    else {
+                        debugPrint("Still a subscriber")
+                    }
+                }
+            }
+            else {
+                debugPrint("receipt not successful")
+            }
+        }
+    }
+    
     
     
     
@@ -1175,6 +1243,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         DataService.instance.getAllChannelsForUser(handler: { (channel) in
             // Put in allChannels if not there already
             var inAllChannels = false
+            
             for i in self.channelVC.allChannels {
                 if i._id == channel._id {
                     inAllChannels = true

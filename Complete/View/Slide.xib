@@ -17,17 +17,17 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Tyz-4V-9sK">
-                    <rect key="frame" x="16" y="242.5" width="343" height="182.5"/>
+                    <rect key="frame" x="16" y="255" width="343" height="157.5"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="7ul-5u-AJZ">
-                            <rect key="frame" x="96.5" y="0.0" width="150" height="125"/>
+                            <rect key="frame" x="121.5" y="0.0" width="100" height="100"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="125" id="f57-8i-2Ii"/>
-                                <constraint firstAttribute="width" constant="150" id="lle-SX-h6d"/>
+                                <constraint firstAttribute="height" constant="100" id="f57-8i-2Ii"/>
+                                <constraint firstAttribute="width" constant="100" id="lle-SX-h6d"/>
                             </constraints>
                         </imageView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="1" translatesAutoresizingMaskIntoConstraints="NO" id="7fp-gg-5qt">
-                            <rect key="frame" x="0.0" y="135" width="343" height="47.5"/>
+                            <rect key="frame" x="0.0" y="110" width="343" height="47.5"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I2x-OD-AgS">
                                     <rect key="frame" x="0.0" y="0.0" width="343" height="26.5"/>
@@ -35,7 +35,7 @@
                                     <color key="textColor" red="0.96862745100000003" green="0.97647058819999999" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Gn-aZ-Pcl">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Gn-aZ-Pcl">
                                     <rect key="frame" x="0.0" y="27.5" width="343" height="20"/>
                                     <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="17"/>
                                     <color key="textColor" red="0.96862745100000003" green="0.97647058819999999" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
