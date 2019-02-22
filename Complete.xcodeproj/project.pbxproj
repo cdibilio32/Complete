@@ -42,6 +42,10 @@
 		519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */; };
 		51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */; };
 		51AC045B221B7E5F007B679A /* LogOutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */; };
+		51AC045F221CE743007B679A /* LegalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC045E221CE743007B679A /* LegalVC.swift */; };
+		51AC0468221D7A8E007B679A /* JotItt_Terms_Of_Use.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */; };
+		51AC046A221D7C11007B679A /* JotItt_Privacy_Policy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */; };
+		51AC046C221E28C6007B679A /* JotItt_Subscription_Policy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */; };
 		51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */; };
 		51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1F2161845F00570639 /* taskDetailVC.swift */; };
 		51C1CB2221618C3E00570639 /* logInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB2121618C3E00570639 /* logInVC.swift */; };
@@ -118,6 +122,10 @@
 		519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeTableViewCell.swift; sourceTree = "<group>"; };
 		51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogOutTableViewCell.swift; sourceTree = "<group>"; };
+		51AC045E221CE743007B679A /* LegalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalVC.swift; sourceTree = "<group>"; };
+		51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = JotItt_Terms_Of_Use.rtf; sourceTree = "<group>"; };
+		51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = JotItt_Privacy_Policy.rtf; path = ../../../../../Documents/Complete/Legal/JotItt_Privacy_Policy.rtf; sourceTree = "<group>"; };
+		51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = JotItt_Subscription_Policy.rtf; path = ../../../../../Documents/Complete/Legal/JotItt_Subscription_Policy.rtf; sourceTree = "<group>"; };
 		51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewTaskPopUpVC.swift; sourceTree = "<group>"; };
 		51C1CB1F2161845F00570639 /* taskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskDetailVC.swift; sourceTree = "<group>"; };
 		51C1CB2121618C3E00570639 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
@@ -246,6 +254,7 @@
 				517E75222158674E005CC8A5 /* SWRevealViewController.m */,
 				517E75212158674D005CC8A5 /* Complete-Bridging-Header.h */,
 				515E6E052177D7130038C142 /* constants.swift */,
+				51AC0464221D7395007B679A /* Legal */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -263,7 +272,7 @@
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
 				5133C33A220E662D003458F8 /* SubscriptionViewController.swift */,
 				51D3CB332184959D00097D2F /* MainNavigationController.swift */,
-				519A0B062219CC7700092940 /* setttingsVCViewController.swift */,
+				51AC045D221CE71E007B679A /* Settings */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -303,6 +312,25 @@
 				51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		51AC045D221CE71E007B679A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				519A0B062219CC7700092940 /* setttingsVCViewController.swift */,
+				51AC045E221CE743007B679A /* LegalVC.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		51AC0464221D7395007B679A /* Legal */ = {
+			isa = PBXGroup;
+			children = (
+				51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */,
+				51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */,
+				51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */,
+			);
+			path = Legal;
 			sourceTree = "<group>";
 		};
 		51C24B0721A36B9F00F7BE37 /* Xib Files */ = {
@@ -445,10 +473,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51AC0468221D7A8E007B679A /* JotItt_Terms_Of_Use.rtf in Resources */,
 				517E74FD21586679005CC8A5 /* LaunchScreen.storyboard in Resources */,
+				51AC046C221E28C6007B679A /* JotItt_Subscription_Policy.rtf in Resources */,
 				517E74FA21586679005CC8A5 /* Assets.xcassets in Resources */,
 				5178A03722076F800087ED5E /* GoogleService-Info.plist in Resources */,
 				516FABEF21A364110095E23F /* SectionHeader.xib in Resources */,
+				51AC046A221D7C11007B679A /* JotItt_Privacy_Policy.rtf in Resources */,
 				517E74F521586677005CC8A5 /* Main.storyboard in Resources */,
 				5133C33F220E6A4D003458F8 /* Slide.xib in Resources */,
 			);
@@ -554,6 +585,7 @@
 				51ECA19321CB1C5B007A9A1E /* taskTableFooterViewCell.swift in Sources */,
 				515E6E062177D7130038C142 /* constants.swift in Sources */,
 				51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */,
+				51AC045F221CE743007B679A /* LegalVC.swift in Sources */,
 				51ECA19121C873B7007A9A1E /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

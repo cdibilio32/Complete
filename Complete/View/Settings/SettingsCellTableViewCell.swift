@@ -12,13 +12,22 @@ class SettingsCellTableViewCell: UITableViewCell {
 
     // --- Outlets ---
     @IBOutlet var title: UILabel!
-    
+    @IBOutlet var forwardLbl: UIImageView!
     
     
     
     // --- Functions ---
     func updateCell(currentTitle:String) {
         title.text = currentTitle
+        
+        if currentTitle == "Upgrade To Premium" || currentTitle == "Subscription Details" ||
+            currentTitle == "Privacy Policy" ||
+            currentTitle == "Terms and Conditions" {
+            // Do NOthing
+        }
+        else {
+            forwardLbl.isHidden = true
+        }
     }
     
 

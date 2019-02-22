@@ -269,6 +269,7 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
 // Connection to channelVC (really trying to get to taskVC)
 protocol SubscriptionVCToChannelVC {
     func updateBannerAds()
+    func logOutFromSettings()
 }
 
 // Connection to TaskVC

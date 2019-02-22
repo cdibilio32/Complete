@@ -83,81 +83,30 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         }
     }
     
-    @IBAction func signOutClicked(_ sender: Any) {
-        let alert = UIAlertController(title: "Account Options", message: nil, preferredStyle: .alert)
-        
-        alert.addAction(UIAlertAction(title: "Go Back", style: .cancel, handler: nil))
-        
-        // Subscribe
-        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
-            // Start Purchase
-            debugPrint("in add action")
-            
-            // Go Too Subscription Page
-            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
-        }))
-        
-        // Restore
-        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
-            // Restore Purchase if needed
-            PurchaseManager.instance.restorePurchases { (success) in
-                debugPrint("restore completion: \(success)")
-                if success {
-                    self.taskVC.loadBannerView()
-                }
-            }
-        }))
-        alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler:  { action in
-
-            // Detach Listeners
-            DataService.instance.removeChannelListener()
-            DataService.instance.removeTaskListener()
-            DataService.instance.removeCategoryListener()
-
-            // Clear Data
-            // Channel VC
-            self.selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
-            self.allChannels.removeAll()
-
-            // Task VC
-            self.taskVC.allTasks.removeAll()
-            let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-            let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-            let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-            self.taskVC.allTasks["Short Term"] = [errorTaskST]
-            self.taskVC.allTasks["Medium Term"] = [errorTaskMT]
-            self.taskVC.allTasks["Long Term"] = [errorTaskLT]
-
-            // Task VC update instance variables
-            self.taskVC.updateTaskRankList.removeAll()
-            self.taskVC.updateTaskCategoryList.removeAll()
-            self.taskVC.updateCategoryList.removeAll()
-            self.taskVC.updateCategoryRankList.removeAll()
-            self.taskVC.categories.removeAll()
-            self.taskVC.categoriesForCurrentChannel.removeAll()
-
-            // UPdate all data and titles
-            self.taskVC.updateTaskTable()
-            self.taskVC.updateChannelLabel()
-            self.channelTbl.reloadData()
-
-            // Constants
-            userID = "Logged Out"
-            isNewUser = false
-            justLoggedIn = false
-
-            // Log out
-            AuthService.instance.logOffUser()
-
-            // Push to Task VC so when log back in goes to correct page
-            self.revealViewController()?.pushFrontViewController(self.taskVC, animated: true)
-
-            // Show Log In Page
-            self.delegate.toLogIn()
-        }))
-        
-            self.present(alert, animated: true)
-    }
+//    @IBAction func signOutClicked(_ sender: Any) {
+//        let alert = UIAlertController(title: "Account Options", message: nil, preferredStyle: .alert)
+//        
+//        alert.addAction(UIAlertAction(title: "Go Back", style: .cancel, handler: nil))
+//        
+//        // Subscribe
+//        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
+//            // Start Purchase
+//            debugPrint("in add action")
+//            
+//            // Go Too Subscription Page
+//            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+//        }))
+//        
+//        // Restore
+////        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
+////            self.restorePurchases()
+////        }))
+//        alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler:  { action in
+//            self.logOut()
+//        }))
+//        
+//            self.present(alert, animated: true)
+//    }
     
     // View All Tasks Button Pressed
     @IBAction func viewAllTaksBtnPressed(_ sender: Any) {
@@ -382,6 +331,69 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         }
     }
     
+    // log out of application
+    func logOut() {
+        // Detach Listeners
+        DataService.instance.removeChannelListener()
+        DataService.instance.removeTaskListener()
+        DataService.instance.removeCategoryListener()
+        
+        // Clear Data
+        // Channel VC
+        self.selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
+        self.allChannels.removeAll()
+        
+        // Task VC
+        self.taskVC.allTasks.removeAll()
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        self.taskVC.allTasks["Short Term"] = [errorTaskST]
+        self.taskVC.allTasks["Medium Term"] = [errorTaskMT]
+        self.taskVC.allTasks["Long Term"] = [errorTaskLT]
+        
+        // Task VC update instance variables
+        self.taskVC.updateTaskRankList.removeAll()
+        self.taskVC.updateTaskCategoryList.removeAll()
+        self.taskVC.updateCategoryList.removeAll()
+        self.taskVC.updateCategoryRankList.removeAll()
+        self.taskVC.categories.removeAll()
+        self.taskVC.categoriesForCurrentChannel.removeAll()
+        
+        // UPdate all data and titles
+        self.taskVC.updateTaskTable()
+        self.taskVC.updateChannelLabel()
+        self.channelTbl.reloadData()
+        
+        // Constants
+        userID = "Logged Out"
+        isNewUser = false
+        justLoggedIn = false
+        
+        // Log out
+        AuthService.instance.logOffUser()
+        
+        // Push to Task VC so when log back in goes to correct page
+        self.revealViewController()?.pushFrontViewController(self.taskVC, animated: true)
+        
+        // Show Log In Page
+        self.delegate.toLogIn()
+    }
+    
+    // Restore purchases
+//    func restorePurchases() {
+//        PurchaseManager.instance.restorePurchases { (success) in
+//            debugPrint("restore completion: \(success)")
+//            if success {
+//                self.taskVC.loadBannerView()
+//            }
+//            else {
+//                // To Do - can't restore purchases
+//                debugPrint("No purchases to restore")
+//            }
+//        }
+//    }
+    
     
     
     
@@ -400,7 +412,9 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         }
         
         else if segue.identifier == "channelVCToSettingsVC" {
-            // TODO
+            let destinationVC = segue.destination as! setttingsVCViewController
+            destinationVC.subToChannelVCDelegate = self
+            destinationVC.cameFromVC = "channelVC"
         }
     }
     
@@ -463,6 +477,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         self.taskVC.loadBannerView()
     }
     
+    // Log out from settings -> yes it says Subscription but easier to do this than to create another protocol
+    func logOutFromSettings() {
+        logOut()
+    }
     
     
     

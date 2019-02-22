@@ -89,7 +89,10 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
     }
     
     // Restore Purchase
-    func restorePurchases(onComplete: @escaping CompletionHandler) {
+    func restorePurchases(activityIndicator:UIActivityIndicatorView, activityContainer:UIView, onComplete: @escaping CompletionHandler) {
+        // Set Activity Spinner
+        startActivityIndicator(activityIndicator: activityIndicator, container: activityContainer)
+        
         if SKPaymentQueue.canMakePayments() {
             transactionComplete = onComplete
             SKPaymentQueue.default().add(self)
@@ -137,6 +140,7 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
                 SKPaymentQueue.default().finishTransaction(transaction)
                 UserDefaults.standard.set(true, forKey: "subscriber")
                 DataService.instance.updateUserSubscription(subValue: true)
+                stopActivityIndicator()
                 transactionComplete?(true)
                 break
                 // Let it go to default for now
