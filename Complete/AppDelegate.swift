@@ -26,6 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Admob
         GADMobileAds.configure(withApplicationID: "ca-app-pub-9489732980079265~2694404734")
         
+        // Products From Apple
+        PurchaseManager.instance.fetchProducts()
+        
         // Skip Log in page if logged in
         if Auth.auth().currentUser == nil {
             // Show task VC

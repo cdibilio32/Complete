@@ -7,7 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		510EF9922214F98F004B8895 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510EF9912214F98F004B8895 /* Session.swift */; };
+		510EF9952214FB89004B8895 /* PaidSubscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 510EF9942214FB89004B8895 /* PaidSubscription.swift */; };
 		51191A232160304900E247CB /* createNewChannelPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51191A222160304900E247CB /* createNewChannelPopUpVC.swift */; };
+		5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33A220E662D003458F8 /* SubscriptionViewController.swift */; };
+		5133C33D220E6996003458F8 /* Slide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5133C33C220E6996003458F8 /* Slide.swift */; };
+		5133C33F220E6A4D003458F8 /* Slide.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5133C33E220E6A4D003458F8 /* Slide.xib */; };
 		5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5144F251216D6E460044880E /* channelTableViewCell.swift */; };
 		514B264621B336E000160477 /* taskSectionHeaderViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */; };
 		515E6E062177D7130038C142 /* constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 515E6E052177D7130038C142 /* constants.swift */; };
@@ -30,6 +35,17 @@
 		517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 517E75222158674E005CC8A5 /* SWRevealViewController.m */; };
 		517E752921586D47005CC8A5 /* channelVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752821586D47005CC8A5 /* channelVC.swift */; };
 		517E752B21586D59005CC8A5 /* taskVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 517E752A21586D59005CC8A5 /* taskVC.swift */; };
+		519A0B072219CC7700092940 /* setttingsVCViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B062219CC7700092940 /* setttingsVCViewController.swift */; };
+		519A0B09221A376900092940 /* SettingsCellTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */; };
+		519A0B0B221A377C00092940 /* SettingsHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */; };
+		519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 519AE8A9220A69520043AAE9 /* PurchaseManager.swift */; };
+		519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */; };
+		51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */; };
+		51AC045B221B7E5F007B679A /* LogOutTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */; };
+		51AC045F221CE743007B679A /* LegalVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51AC045E221CE743007B679A /* LegalVC.swift */; };
+		51AC0468221D7A8E007B679A /* JotItt_Terms_Of_Use.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */; };
+		51AC046A221D7C11007B679A /* JotItt_Privacy_Policy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */; };
+		51AC046C221E28C6007B679A /* JotItt_Subscription_Policy.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */; };
 		51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */; };
 		51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB1F2161845F00570639 /* taskDetailVC.swift */; };
 		51C1CB2221618C3E00570639 /* logInVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C1CB2121618C3E00570639 /* logInVC.swift */; };
@@ -63,7 +79,12 @@
 		0819846B329223EDECBFA261 /* Pods_CompleteUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CompleteUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C0FED901628125247C82DFC /* Pods-Complete.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.release.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.release.xcconfig"; sourceTree = "<group>"; };
 		4A40451720A70F8082AF2979 /* Pods-Complete.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Complete.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Complete/Pods-Complete.debug.xcconfig"; sourceTree = "<group>"; };
+		510EF9912214F98F004B8895 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		510EF9942214FB89004B8895 /* PaidSubscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaidSubscription.swift; sourceTree = "<group>"; };
 		51191A222160304900E247CB /* createNewChannelPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewChannelPopUpVC.swift; sourceTree = "<group>"; };
+		5133C33A220E662D003458F8 /* SubscriptionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionViewController.swift; sourceTree = "<group>"; };
+		5133C33C220E6996003458F8 /* Slide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Slide.swift; sourceTree = "<group>"; };
+		5133C33E220E6A4D003458F8 /* Slide.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Slide.xib; sourceTree = "<group>"; };
 		5144F251216D6E460044880E /* channelTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelTableViewCell.swift; sourceTree = "<group>"; };
 		514B264521B336E000160477 /* taskSectionHeaderViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskSectionHeaderViewCell.swift; sourceTree = "<group>"; };
 		515E6E052177D7130038C142 /* constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = constants.swift; sourceTree = "<group>"; };
@@ -94,6 +115,17 @@
 		517E75232158674E005CC8A5 /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
 		517E752821586D47005CC8A5 /* channelVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = channelVC.swift; sourceTree = "<group>"; };
 		517E752A21586D59005CC8A5 /* taskVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskVC.swift; sourceTree = "<group>"; };
+		519A0B062219CC7700092940 /* setttingsVCViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = setttingsVCViewController.swift; sourceTree = "<group>"; };
+		519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCellTableViewCell.swift; sourceTree = "<group>"; };
+		519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsHeaderTableViewCell.swift; sourceTree = "<group>"; };
+		519AE8A9220A69520043AAE9 /* PurchaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseManager.swift; sourceTree = "<group>"; };
+		519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeTableViewCell.swift; sourceTree = "<group>"; };
+		51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogOutTableViewCell.swift; sourceTree = "<group>"; };
+		51AC045E221CE743007B679A /* LegalVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalVC.swift; sourceTree = "<group>"; };
+		51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = JotItt_Terms_Of_Use.rtf; sourceTree = "<group>"; };
+		51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = JotItt_Privacy_Policy.rtf; path = ../../../../../Documents/Complete/Legal/JotItt_Privacy_Policy.rtf; sourceTree = "<group>"; };
+		51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.rtf; name = JotItt_Subscription_Policy.rtf; path = ../../../../../Documents/Complete/Legal/JotItt_Subscription_Policy.rtf; sourceTree = "<group>"; };
 		51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = createNewTaskPopUpVC.swift; sourceTree = "<group>"; };
 		51C1CB1F2161845F00570639 /* taskDetailVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = taskDetailVC.swift; sourceTree = "<group>"; };
 		51C1CB2121618C3E00570639 /* logInVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = logInVC.swift; sourceTree = "<group>"; };
@@ -113,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5CFF44762B3AE86DD06E1A4 /* Pods_Complete.framework in Frameworks */,
+				519AE8AC220AFA2B0043AAE9 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,11 +166,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		510EF9932214FB70004B8895 /* IAP */ = {
+			isa = PBXGroup;
+			children = (
+				510EF9912214F98F004B8895 /* Session.swift */,
+				510EF9942214FB89004B8895 /* PaidSubscription.swift */,
+			);
+			path = IAP;
+			sourceTree = "<group>";
+		};
 		517868772168396B004CEFAD /* Services */ = {
 			isa = PBXGroup;
 			children = (
 				5178687821683978004CEFAD /* DataService.swift */,
 				5178CCB42196013000FFCA95 /* AuthService.swift */,
+				519AE8A9220A69520043AAE9 /* PurchaseManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -211,6 +254,7 @@
 				517E75222158674E005CC8A5 /* SWRevealViewController.m */,
 				517E75212158674D005CC8A5 /* Complete-Bridging-Header.h */,
 				515E6E052177D7130038C142 /* constants.swift */,
+				51AC0464221D7395007B679A /* Legal */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -226,7 +270,9 @@
 				517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */,
 				51C1CB232161903500570639 /* signUpVC.swift */,
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
+				5133C33A220E662D003458F8 /* SubscriptionViewController.swift */,
 				51D3CB332184959D00097D2F /* MainNavigationController.swift */,
+				51AC045D221CE71E007B679A /* Settings */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -239,6 +285,9 @@
 				51ECA19221CB1C5B007A9A1E /* taskTableFooterViewCell.swift */,
 				5144F251216D6E460044880E /* channelTableViewCell.swift */,
 				51F8FB8821B16AC500AF7241 /* channelSectionHeaderViewCell.swift */,
+				5133C33C220E6996003458F8 /* Slide.swift */,
+				5133C33E220E6A4D003458F8 /* Slide.xib */,
+				51AC045C221B7E69007B679A /* Settings */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -246,11 +295,42 @@
 		517E752721586D01005CC8A5 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				510EF9932214FB70004B8895 /* IAP */,
 				51786873216837C1004CEFAD /* Channel.swift */,
 				51ECA19021C873B7007A9A1E /* Category.swift */,
 				51786875216837CA004CEFAD /* Task.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		51AC045C221B7E69007B679A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				519A0B08221A376900092940 /* SettingsCellTableViewCell.swift */,
+				519A0B0A221A377C00092940 /* SettingsHeaderTableViewCell.swift */,
+				51AC0458221B7DAE007B679A /* UpgradeTableViewCell.swift */,
+				51AC045A221B7E5F007B679A /* LogOutTableViewCell.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		51AC045D221CE71E007B679A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				519A0B062219CC7700092940 /* setttingsVCViewController.swift */,
+				51AC045E221CE743007B679A /* LegalVC.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		51AC0464221D7395007B679A /* Legal */ = {
+			isa = PBXGroup;
+			children = (
+				51AC0469221D7C11007B679A /* JotItt_Privacy_Policy.rtf */,
+				51AC0465221D739F007B679A /* JotItt_Terms_Of_Use.rtf */,
+				51AC046B221E28C6007B679A /* JotItt_Subscription_Policy.rtf */,
+			);
+			path = Legal;
 			sourceTree = "<group>";
 		};
 		51C24B0721A36B9F00F7BE37 /* Xib Files */ = {
@@ -273,6 +353,7 @@
 		B8F3FED0AA01928195D2F0CC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				519AE8AB220AFA2B0043AAE9 /* StoreKit.framework */,
 				9A053A2E8752948F48F4B935 /* Pods_Complete.framework */,
 				671F3282260C5EB1B3F26408 /* Pods_CompleteTests.framework */,
 				0819846B329223EDECBFA261 /* Pods_CompleteUITests.framework */,
@@ -351,6 +432,11 @@
 					517E74EB21586677005CC8A5 = {
 						CreatedOnToolsVersion = 9.3;
 						LastSwiftMigration = 0930;
+						SystemCapabilities = {
+							com.apple.InAppPurchase = {
+								enabled = 1;
+							};
+						};
 					};
 					517E750221586679005CC8A5 = {
 						CreatedOnToolsVersion = 9.3;
@@ -387,11 +473,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51AC0468221D7A8E007B679A /* JotItt_Terms_Of_Use.rtf in Resources */,
 				517E74FD21586679005CC8A5 /* LaunchScreen.storyboard in Resources */,
+				51AC046C221E28C6007B679A /* JotItt_Subscription_Policy.rtf in Resources */,
 				517E74FA21586679005CC8A5 /* Assets.xcassets in Resources */,
 				5178A03722076F800087ED5E /* GoogleService-Info.plist in Resources */,
 				516FABEF21A364110095E23F /* SectionHeader.xib in Resources */,
+				51AC046A221D7C11007B679A /* JotItt_Privacy_Policy.rtf in Resources */,
 				517E74F521586677005CC8A5 /* Main.storyboard in Resources */,
+				5133C33F220E6A4D003458F8 /* Slide.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,18 +551,27 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5133C33B220E662D003458F8 /* SubscriptionViewController.swift in Sources */,
+				510EF9922214F98F004B8895 /* Session.swift in Sources */,
 				51D3CB342184959D00097D2F /* MainNavigationController.swift in Sources */,
 				51C1CB202161845F00570639 /* taskDetailVC.swift in Sources */,
+				519AE8AA220A69520043AAE9 /* PurchaseManager.swift in Sources */,
 				5144F252216D6E460044880E /* channelTableViewCell.swift in Sources */,
+				519A0B0B221A377C00092940 /* SettingsHeaderTableViewCell.swift in Sources */,
 				5178687B2168411E004CEFAD /* taskTableViewCell.swift in Sources */,
 				51F8FB8921B16AC500AF7241 /* channelSectionHeaderViewCell.swift in Sources */,
 				5178687921683978004CEFAD /* DataService.swift in Sources */,
 				51786874216837C1004CEFAD /* Channel.swift in Sources */,
+				519A0B072219CC7700092940 /* setttingsVCViewController.swift in Sources */,
 				5178CCB52196013000FFCA95 /* AuthService.swift in Sources */,
 				517E74F221586677005CC8A5 /* ViewController.swift in Sources */,
+				5133C33D220E6996003458F8 /* Slide.swift in Sources */,
+				51AC045B221B7E5F007B679A /* LogOutTableViewCell.swift in Sources */,
+				519A0B09221A376900092940 /* SettingsCellTableViewCell.swift in Sources */,
 				517E752B21586D59005CC8A5 /* taskVC.swift in Sources */,
 				517C4EAF21CB23DB00145315 /* createNewCategoryVC.swift in Sources */,
 				517E74F021586677005CC8A5 /* AppDelegate.swift in Sources */,
+				510EF9952214FB89004B8895 /* PaidSubscription.swift in Sources */,
 				51C1CB2221618C3E00570639 /* logInVC.swift in Sources */,
 				51C1CB242161903500570639 /* signUpVC.swift in Sources */,
 				51C1CB1E21617AB400570639 /* createNewTaskPopUpVC.swift in Sources */,
@@ -485,6 +584,8 @@
 				517E75242158674E005CC8A5 /* SWRevealViewController.m in Sources */,
 				51ECA19321CB1C5B007A9A1E /* taskTableFooterViewCell.swift in Sources */,
 				515E6E062177D7130038C142 /* constants.swift in Sources */,
+				51AC0459221B7DAE007B679A /* UpgradeTableViewCell.swift in Sources */,
+				51AC045F221CE743007B679A /* LegalVC.swift in Sources */,
 				51ECA19121C873B7007A9A1E /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -670,7 +771,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -696,7 +797,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotitt;
+				PRODUCT_BUNDLE_IDENTIFIER = ChuckDibilio.Jotit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Complete/Supporting Files/Complete-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
