@@ -875,30 +875,53 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <accessibility key="accessibilityConfiguration" identifier="blackOutView"/>
                             </view>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="b7x-uh-jbO">
-                                <rect key="frame" x="137.5" y="308.5" width="100" height="50"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="REX-2g-r7C" userLabel="LoadingView">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" alignment="bottom" spacing="-3" translatesAutoresizingMaskIntoConstraints="NO" id="j4q-f1-WPF">
+                                        <rect key="frame" x="120.5" y="290" width="134.5" height="67.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="JotItt" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pE2-eU-3BP">
+                                                <rect key="frame" x="0.0" y="0.0" width="87.5" height="67.5"/>
+                                                <fontDescription key="fontDescription" name="Noteworthy-Light" family="Noteworthy" pointSize="42"/>
+                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="channel_vc_icon_v2" translatesAutoresizingMaskIntoConstraints="NO" id="UBT-bi-ebT">
+                                                <rect key="frame" x="84.5" y="17.5" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="50" id="BhK-5w-nRW"/>
+                                                    <constraint firstAttribute="height" constant="50" id="YKM-3s-2EE"/>
+                                                </constraints>
+                                            </imageView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.53333333329999999" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="50" id="1dc-dg-bTz"/>
-                                    <constraint firstAttribute="width" constant="100" id="Xvx-WQ-kSp"/>
+                                    <constraint firstItem="j4q-f1-WPF" firstAttribute="centerY" secondItem="REX-2g-r7C" secondAttribute="centerY" id="DGd-zm-haL"/>
+                                    <constraint firstItem="j4q-f1-WPF" firstAttribute="centerX" secondItem="REX-2g-r7C" secondAttribute="centerX" id="wZq-ur-o6L"/>
                                 </constraints>
-                            </activityIndicatorView>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.96862745098039216" green="0.96078431372549022" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="tXw-fu-ewh" firstAttribute="top" secondItem="xr0-dl-XN3" secondAttribute="bottom" id="177-Z1-1Qi"/>
                             <constraint firstItem="NSQ-o7-J3E" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="1ie-jv-NMd"/>
                             <constraint firstItem="N0d-iL-s4S" firstAttribute="trailing" secondItem="0aj-nb-HyB" secondAttribute="trailing" id="3h3-mz-Gs6"/>
-                            <constraint firstItem="b7x-uh-jbO" firstAttribute="centerY" secondItem="KUN-jY-4j6" secondAttribute="centerY" id="6QG-Gp-sVd"/>
+                            <constraint firstItem="REX-2g-r7C" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="7Qo-aH-Vto"/>
                             <constraint firstItem="xr0-dl-XN3" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="BaB-ou-wzZ"/>
                             <constraint firstItem="0aj-nb-HyB" firstAttribute="top" secondItem="NSQ-o7-J3E" secondAttribute="bottom" id="Chr-rz-7K2"/>
                             <constraint firstItem="NSQ-o7-J3E" firstAttribute="top" secondItem="tXw-fu-ewh" secondAttribute="top" constant="26" id="DX2-h4-ARw"/>
+                            <constraint firstAttribute="bottom" secondItem="REX-2g-r7C" secondAttribute="bottom" id="G8I-g9-yUm"/>
                             <constraint firstItem="NSQ-o7-J3E" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="GIf-7g-0vM"/>
                             <constraint firstItem="tXw-fu-ewh" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="J8A-dE-3cf"/>
                             <constraint firstItem="hiM-es-mpy" firstAttribute="top" secondItem="tXw-fu-ewh" secondAttribute="bottom" constant="25" id="K8o-EX-lsa"/>
                             <constraint firstItem="tXw-fu-ewh" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="LuA-mR-7jm"/>
+                            <constraint firstItem="REX-2g-r7C" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="OHe-6o-luk"/>
                             <constraint firstItem="hiM-es-mpy" firstAttribute="trailing" secondItem="N0d-iL-s4S" secondAttribute="trailing" id="QcP-T1-7ni"/>
-                            <constraint firstItem="b7x-uh-jbO" firstAttribute="centerX" secondItem="KUN-jY-4j6" secondAttribute="centerX" id="TRh-24-cj0"/>
                             <constraint firstItem="xr0-dl-XN3" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="oLm-8E-tPO"/>
+                            <constraint firstItem="REX-2g-r7C" firstAttribute="top" secondItem="N0d-iL-s4S" secondAttribute="top" id="ok5-kv-h4q"/>
                             <constraint firstItem="hiM-es-mpy" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="seO-qu-csX"/>
                             <constraint firstItem="0aj-nb-HyB" firstAttribute="leading" secondItem="N0d-iL-s4S" secondAttribute="leading" id="uvK-GO-wsO"/>
                             <constraint firstItem="N0d-iL-s4S" firstAttribute="bottom" secondItem="0aj-nb-HyB" secondAttribute="bottom" id="vpC-LM-2t0"/>
@@ -908,7 +931,6 @@
                         <viewLayoutGuide key="safeArea" id="N0d-iL-s4S"/>
                     </view>
                     <connections>
-                        <outlet property="activityIndicator" destination="b7x-uh-jbO" id="vTL-TR-y3X"/>
                         <outlet property="activitySpinner" destination="anm-bE-hga" id="OUk-JZ-mQR"/>
                         <outlet property="bannerAd" destination="WxC-Bi-GcS" id="Uqd-nP-U8T"/>
                         <outlet property="bannerAdContainer" destination="0aj-nb-HyB" id="n17-E2-zFI"/>
@@ -916,6 +938,8 @@
                         <outlet property="blackOutView" destination="anm-bE-hga" id="MsQ-jT-kqi"/>
                         <outlet property="currentChannelLbl" destination="e3S-1d-UCV" id="fCR-TB-IEA"/>
                         <outlet property="laneSegmentControl" destination="tXw-fu-ewh" id="1OD-e3-rc4"/>
+                        <outlet property="loadingView" destination="REX-2g-r7C" id="POi-Gk-azh"/>
+                        <outlet property="loadingViewTopConstraint" destination="ok5-kv-h4q" id="08i-68-gck"/>
                         <outlet property="menuBtn" destination="dek-ui-b3F" id="mWy-vT-qeq"/>
                         <outlet property="navView" destination="xr0-dl-XN3" id="HDG-lD-THd"/>
                         <outlet property="navViewHeightConstraint" destination="sWf-zn-4lF" id="GW8-dV-IaS"/>
@@ -1928,6 +1952,6 @@
         <image name="smackBurger" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="r6y-hi-Jpn"/>
+        <segue reference="KqS-Mm-O3m"/>
     </inferredMetricsTieBreakers>
 </document>

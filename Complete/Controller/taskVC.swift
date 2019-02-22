@@ -32,6 +32,8 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     @IBOutlet var bannerAd: GADBannerView!
     @IBOutlet var bannerAdContainerHeightConstraint: NSLayoutConstraint!
     @IBOutlet var bannerAdContainer: UIView!
+    @IBOutlet var loadingView: UIView!
+    @IBOutlet var loadingViewTopConstraint: NSLayoutConstraint!
     
     
     // --- Instance Variables ---
@@ -382,12 +384,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         // Check to see if still member
         checkAndUpdateCurrentSubscriptionStatus()
         
-        
-        // Start Activity Spinner
-        let transform = CGAffineTransform(scaleX: CGFloat(2), y: CGFloat(2))
-        activityIndicator.transform = transform
-        activityIndicator.startAnimating()
-        
         // Set table to not editting at first
         taskTblView.isEditing = false
         
@@ -419,6 +415,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         updatePriorityBtnView()
         formatNoSectionPopUp()
         navigationBarFormatting()
+        loadingScreenFormatting()
         
         // Hide no category pop up
         noSectionPopUp.isHidden = true
@@ -1283,9 +1280,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             // Filter tasks and update table
             self.updateTaskTable()
             
-            // Update indication spinner
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
+            // Hide Loading Screen
+            UIView.animate(withDuration: 0.25, delay: 1, options: .curveEaseInOut, animations: {
+                self.loadingView.alpha = 0
+            }, completion: nil)
         })
         
         // Get Total Count for Tasks
@@ -1478,6 +1476,14 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             // Height
             navViewHeightConstraint.isActive = false
             navView.heightAnchor.constraint(equalToConstant: navView.frame.size.height + 16).isActive = true
+        }
+    }
+    
+    // Update loading screen format
+    func loadingScreenFormatting() {
+        if UIDevice.current.modelName.contains("iPhone10") {
+            loadingViewTopConstraint.isActive = false
+            loadingView.topAnchor.constraint(equalTo: topLayoutGuide.topAnchor).isActive = true
         }
     }
 }

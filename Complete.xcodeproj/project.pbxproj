@@ -262,12 +262,12 @@
 		517E752521586CEF005CC8A5 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				517E752A21586D59005CC8A5 /* taskVC.swift */,
+				51C1CB1F2161845F00570639 /* taskDetailVC.swift */,
+				51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */,
+				517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */,
 				517E752821586D47005CC8A5 /* channelVC.swift */,
 				51191A222160304900E247CB /* createNewChannelPopUpVC.swift */,
-				517E752A21586D59005CC8A5 /* taskVC.swift */,
-				51C1CB1D21617AB400570639 /* createNewTaskPopUpVC.swift */,
-				51C1CB1F2161845F00570639 /* taskDetailVC.swift */,
-				517C4EAE21CB23DB00145315 /* createNewCategoryVC.swift */,
 				51C1CB232161903500570639 /* signUpVC.swift */,
 				51C1CB2121618C3E00570639 /* logInVC.swift */,
 				5133C33A220E662D003458F8 /* SubscriptionViewController.swift */,
