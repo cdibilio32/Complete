@@ -830,6 +830,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         bannerAd.adUnitID = "ca-app-pub-5383101165774401/3144244729"
         bannerAd.rootViewController = self
         bannerAd.load(GADRequest())
+        
         // Don't display if subscriber
         if UserDefaults.standard.bool(forKey: "subscriber") {
             debugPrint("banner view: In subsciber")
@@ -852,7 +853,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
             bannerAd.rootViewController = self
             let request = GADRequest()
-            request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
             bannerAd.load(request)
         }
     }
