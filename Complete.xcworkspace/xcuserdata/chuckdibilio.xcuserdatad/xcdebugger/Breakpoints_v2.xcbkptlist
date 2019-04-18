@@ -26,21 +26,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Complete/Controller/taskVC.swift"
-<<<<<<< HEAD
-            timestampString = "570911701.9388649"
+            timestampString = "577291253.0103281"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "413"
-            endingLineNumber = "413"
-=======
-            timestampString = "577238409.514333"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "455"
-            endingLineNumber = "455"
->>>>>>> testing
-            landmarkName = "taskVC"
-            landmarkType = "3">
+            startingLineNumber = "456"
+            endingLineNumber = "456"
+            landmarkName = "tableView(_:heightForHeaderInSection:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

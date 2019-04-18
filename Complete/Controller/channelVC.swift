@@ -80,6 +80,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             createNewChannelPopUpVC.view.frame = self.view.frame
             self.view.addSubview(createNewChannelPopUpVC.view)
             createNewChannelPopUpVC.didMove(toParentViewController: self)
+            
+            // Remove ability to slide to task vc
+            // enabled when channel vc does appear
+            disableSlideGestures()
         }
     }
     
@@ -512,5 +516,24 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
             return channel._name.lowercased().contains(searchText.lowercased())
         })
         updateChannelTable()
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --- Helper Functions for Slide Gestures
+    func disableSlideGestures() {
+        self.taskVC.view.gestureRecognizers?[0].isEnabled = false
+        self.taskVC.view.gestureRecognizers?[1].isEnabled = false
+    }
+    
+    func enableSlideGestures() {
+        self.taskVC.view.gestureRecognizers?[0].isEnabled = true
+        self.taskVC.view.gestureRecognizers?[1].isEnabled = true
     }
 }

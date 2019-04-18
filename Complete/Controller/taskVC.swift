@@ -397,6 +397,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         // SWViewController Swipe Right
         menuBtn.addTarget(self.revealViewController(), action: #selector(SWRevealViewController.revealToggle(_:)), for: .touchUpInside)
         self.view.addGestureRecognizer(self.revealViewController().panGestureRecognizer())
+    
         self.view.addGestureRecognizer(self.revealViewController().tapGestureRecognizer())
         
         // Delegates
@@ -825,12 +826,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // --- Helper function for banner ads and subscriptions ---
     func loadBannerView() {
-<<<<<<< HEAD
         // Test ID now
         bannerAd.adUnitID = "ca-app-pub-5383101165774401/3144244729"
         bannerAd.rootViewController = self
         bannerAd.load(GADRequest())
-=======
         // Don't display if subscriber
         if UserDefaults.standard.bool(forKey: "subscriber") {
             debugPrint("banner view: In subsciber")
@@ -856,7 +855,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
             bannerAd.load(request)
         }
->>>>>>> testing
     }
     
     // Cancel Subscription

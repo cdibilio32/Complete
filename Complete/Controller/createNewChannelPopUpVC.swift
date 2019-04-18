@@ -129,6 +129,8 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
     func closePopUp() {
         delegate.brightenTaskVC()
         self.view.removeFromSuperview()
+        let channelVC = self.parent as! channelVC
+        channelVC.enableSlideGestures()
     }
     
     // Take away error message when user puts name in
