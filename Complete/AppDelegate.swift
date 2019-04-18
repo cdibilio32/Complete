@@ -24,7 +24,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         
         // Admob
-        GADMobileAds.configure(withApplicationID: "ca-app-pub-5383101165774401~1391043887")
+        GADMobileAds.configure(withApplicationID: "ca-app-pub-9489732980079265~2694404734")
+        
+        // Products From Apple
+        PurchaseManager.instance.fetchProducts()
         
         // Skip Log in page if logged in
         if Auth.auth().currentUser == nil {

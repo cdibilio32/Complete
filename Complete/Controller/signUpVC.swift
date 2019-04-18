@@ -18,7 +18,8 @@ class signUpVC: UIViewController {
     @IBOutlet var confirmPWTxtLbl: UITextField!
     @IBOutlet var errorMsg: UILabel!
     @IBOutlet var signUpBtn: UIButton!
-    
+    @IBOutlet var signUpBtnBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var titleTopConstraint: NSLayoutConstraint!
     
     
     // --- Actions ---
@@ -80,5 +81,36 @@ class signUpVC: UIViewController {
         
         // Format Sign Up Button
         signUpBtn.layer.cornerRadius = 10.0
+        
+        // Listener for keyboard to adjust height of sign up
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSignUPButtonHeight(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(decreaseSignUpButtonHeight(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        // Update bottom constraint
+        signUpBtnBottomConstraint.isActive = false
+    }
+    
+    
+    
+    
+    // --- Listener Functions ---
+    // Keyboard appears
+    @objc func updateSignUPButtonHeight(notification:NSNotification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            
+            // Constraints
+            titleTopConstraint.isActive = false
+            signUpBtnBottomConstraint.isActive = true
+            signUpBtnBottomConstraint.constant = keyboardHeight + 5.0
+        }
+    }
+    
+    // Keyboard dissapears
+    @objc func decreaseSignUpButtonHeight(notification:NSNotification) {
+        // Fix constraints
+        titleTopConstraint.isActive = true
+        signUpBtnBottomConstraint.isActive = false
     }
 }

@@ -98,7 +98,8 @@ class createNewChannelPopUpVC: UIViewController, UITextFieldDelegate {
         newChannelNameField.becomeFirstResponder()
         
         // Dismiss Keyboard
-        self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
+        // *taken out for design purposes*
+        //self.view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard)))
         
         // Set Up Notifications for Keyboard
         NotificationCenter.default.addObserver(self, selector: #selector(self.keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)

@@ -162,6 +162,9 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         
         // Format navigation bar
         navigationBarFormatting()
+        
+        // Allow user to put links in task description
+        configureTextView()
     }
     
     
@@ -173,7 +176,7 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
         if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue  {
             // Adjust Keyboard
             let keyboardHeight = keyboardFrame.cgRectValue.height
-            saveBtnBottomConstraint.constant = keyboardHeight - CGFloat(25)
+            saveBtnBottomConstraint.constant = keyboardHeight + CGFloat(5)
         }
         
         // Progress Items
@@ -245,8 +248,42 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     
     
     
+    // --- URL Detection ---
+    func detectURL(text:String) -> [NSTextCheckingResult] {
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let matches = detector.matches(in: text, options: [], range: NSRange(location: 0, length: text.utf16.count))
+        return matches
+    }
+    
+    // Implement URL
+    func implementURL(matches:[NSTextCheckingResult], taskDesription:NSMutableAttributedString) -> NSMutableAttributedString {
+        for match in matches {
+            taskDesription.addAttribute(.link, value: match.url, range: match.range)
+        }
+        return taskDesription
+    }
+    
+    
+    
+    
+    // --- UITextView ---
+    func configureTextView() {
+        // Set Up Gesture Recognizer
+        var recognizer:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(taskDescriptionTapped(textViewTapped:)))
+        recognizer.numberOfTapsRequired = 1
+        taskNotes.addGestureRecognizer(recognizer)
+    }
+    @objc func taskDescriptionTapped(textViewTapped:UITapGestureRecognizer) {
+        taskNotes.isEditable = true
+        taskNotes.becomeFirstResponder()
+    }
+    
+    
+    
+    
+    
     // --- Delegate ---
-    // UITextView
+    // --- UITextView ---
     // Make Placeholder text in description
     // Began editting
     func textViewDidBeginEditing(_ textView: UITextView) {
@@ -257,13 +294,40 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     }
     // Stopped editting
     func textViewDidEndEditing(_ textView: UITextView) {
+        // Add placeholder text
         if textView.text.isEmpty {
             textView.text = taskDescPHForTaskDetail
             textView.textColor = UIColor.lightGray
         }
+        
+        // Make uneditable when exited out
+        textView.isEditable = false
     }
     
-    // UITextField
+    // Is Edditing
+    func textViewDidChangeSelection(_ textView: UITextView) {
+        // Get Text
+        let attributedString = textView.attributedText
+        let mutableAttributedString = NSMutableAttributedString(attributedString: attributedString!)
+        
+        // Detect and embed URL
+        let matches = detectURL(text: textView.text)
+        let responseText = implementURL(matches: matches, taskDesription: mutableAttributedString)
+        
+        // Set Text with URL
+        textView.attributedText = responseText
+    }
+    
+    // Allow interaction with URL
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return true
+    }
+    
+    
+    
+    
+    
+    // --- UITextField ----
     func textFieldDidBeginEditing(_ textField: UITextField) {
         if !errorMsg.isHidden {
             errorMsg.isHidden = true

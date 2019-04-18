@@ -13,7 +13,7 @@ protocol ToLogInDelegate {
     func toLogIn()
 }
 
-class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate {
+class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, ToTaskVCFromChannelVC, UISearchBarDelegate, SubscriptionVCToChannelVC {
     
     // --- Outlets ---
     @IBOutlet var channelTbl: UITableView!
@@ -25,6 +25,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     @IBOutlet var navViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var searchBarCenterY: NSLayoutConstraint!
     @IBOutlet var searchBarBottomContraint: NSLayoutConstraint!
+    @IBOutlet var signOutBtn: UIButton!
     
     
     // --- Instance Variables ---
@@ -40,66 +41,72 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     var delegate:ToLogInDelegate!
     
     
+    
+    
+    
+    
+    
+    
+    
+    
     // --- Actions ---
     // Show Pop Up to Create New Channel
     @IBAction func showCreateChannelPopUp(_ sender: Any) {
-        let createNewChannelPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewChannelPopUpID") as! createNewChannelPopUpVC
+        // Direct user to subscription page if is not a subscriber but over channel limit
+        if !UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimit {
+            let alert = UIAlertController(title: "Channel Limit Reached", message: "You can upgrate to JotItt premium for unlimited channels or delete some of your current channels and save $0.99 per month.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "View Upgrade Options", style: .default, handler:  { action in
+                self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+            }))
+            alert.addAction(UIAlertAction(title: "Nah, I'm good with basic membership.", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+        }
+            
+        // If user is a subscriber but is over limit, have them contact team or delete channels
+        else if UserDefaults.standard.bool(forKey: "subscriber") && totalChannelCount >= channelLimitWithSubscription {
+            let alert = UIAlertController(title: "Safety Limit Reached", message: "You have reached the safety limit as a premium member.  Please contact the JotItt support team at this time.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Return", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
+        }
         
-        // Assign Delegate
-        createNewChannelPopUpVC.delegate = self
-        self.addChildViewController(createNewChannelPopUpVC)
-        createNewChannelPopUpVC.view.frame = self.view.frame
-        self.view.addSubview(createNewChannelPopUpVC.view)
-        createNewChannelPopUpVC.didMove(toParentViewController: self)
+        // Allow User to create channel if meets limits
+        else {
+            let createNewChannelPopUpVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "createNewChannelPopUpID") as! createNewChannelPopUpVC
+            
+            // Assign Delegate
+            createNewChannelPopUpVC.delegate = self
+            self.addChildViewController(createNewChannelPopUpVC)
+            createNewChannelPopUpVC.view.frame = self.view.frame
+            self.view.addSubview(createNewChannelPopUpVC.view)
+            createNewChannelPopUpVC.didMove(toParentViewController: self)
+        }
     }
     
-    @IBAction func signOutClicked(_ sender: Any) {
-        // Detach Listeners
-        DataService.instance.removeChannelListener()
-        DataService.instance.removeTaskListener()
-        DataService.instance.removeCategoryListener()
-        
-        // Clear Data
-        // Channel VC
-        selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
-        allChannels.removeAll()
-        
-        // Task VC
-        taskVC.allTasks.removeAll()
-        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
-        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
-        taskVC.allTasks["Short Term"] = [errorTaskST]
-        taskVC.allTasks["Medium Term"] = [errorTaskMT]
-        taskVC.allTasks["Long Term"] = [errorTaskLT]
-        
-        // Task VC update instance variables
-        taskVC.updateTaskRankList.removeAll()
-        taskVC.updateTaskCategoryList.removeAll()
-        taskVC.updateCategoryList.removeAll()
-        taskVC.updateCategoryRankList.removeAll()
-        taskVC.categories.removeAll()
-        taskVC.categoriesForCurrentChannel.removeAll()
-        
-        // UPdate all data and titles
-        taskVC.updateTaskTable()
-        taskVC.updateChannelLabel()
-        channelTbl.reloadData()
-        
-        // Constants
-        userID = "Logged Out"
-        isNewUser = false
-        justLoggedIn = false
-        
-        // Log out
-        AuthService.instance.logOffUser()
-        
-        // Push to Task VC so when log back in goes to correct page
-        self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
-        
-        // Show Log In Page
-        delegate.toLogIn()
-    }
+//    @IBAction func signOutClicked(_ sender: Any) {
+//        let alert = UIAlertController(title: "Account Options", message: nil, preferredStyle: .alert)
+//        
+//        alert.addAction(UIAlertAction(title: "Go Back", style: .cancel, handler: nil))
+//        
+//        // Subscribe
+//        alert.addAction(UIAlertAction(title: "Update to JotItt Premium", style: .default, handler: { (alert) in
+//            // Start Purchase
+//            debugPrint("in add action")
+//            
+//            // Go Too Subscription Page
+//            self.performSegue(withIdentifier: "toSubscribeSegue", sender: nil)
+//        }))
+//        
+//        // Restore
+////        alert.addAction(UIAlertAction(title: "Restore Subscription", style: .default, handler: { (alert) in
+////            self.restorePurchases()
+////        }))
+//        alert.addAction(UIAlertAction(title: "Log Out", style: .default, handler:  { action in
+//            self.logOut()
+//        }))
+//        
+//            self.present(alert, animated: true)
+//    }
     
     // View All Tasks Button Pressed
     @IBAction func viewAllTaksBtnPressed(_ sender: Any) {
@@ -107,6 +114,15 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         updateChannelDatainTaskVC()
         self.revealViewController()?.pushFrontViewController(taskVC, animated: true)
     }
+    
+    // Go to settings page
+    @IBAction func settingsBtnPressed(_ sender: Any) {
+        performSegue(withIdentifier: "channelVCToSettingsVC", sender: nil)
+    }
+    
+    
+    
+    
     
     
     // --- Load Functions ---
@@ -137,6 +153,13 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         // Load Table
         updateChannelTable()
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     // --- Table View Delegate Functions ---
@@ -263,8 +286,10 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- Helper Functions ---
     
+    
+    
+    // --- Helper Functions ---
     // Sort Channels
     func sortChannels() {
         allChannels.sort(by: {$0._name < $1._name})
@@ -306,6 +331,68 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         }
     }
     
+    // log out of application
+    func logOut() {
+        // Detach Listeners
+        DataService.instance.removeChannelListener()
+        DataService.instance.removeTaskListener()
+        DataService.instance.removeCategoryListener()
+        
+        // Clear Data
+        // Channel VC
+        self.selectedChannel = Channel(name: "All Tasks", id: "allTasks", date: Date().description, rank: -1)
+        self.allChannels.removeAll()
+        
+        // Task VC
+        self.taskVC.allTasks.removeAll()
+        let errorTaskST = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank:-1)
+        let errorTaskMT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        let errorTaskLT = Task(name: "(No Tasks Listed)", id: "Error Task", description: "Error Task", categoryId: "Error Task", lane: "Error Task", channelID: "Error Task", userID: "Error Task", date:"Error Task", rank: -1)
+        self.taskVC.allTasks["Short Term"] = [errorTaskST]
+        self.taskVC.allTasks["Medium Term"] = [errorTaskMT]
+        self.taskVC.allTasks["Long Term"] = [errorTaskLT]
+        
+        // Task VC update instance variables
+        self.taskVC.updateTaskRankList.removeAll()
+        self.taskVC.updateTaskCategoryList.removeAll()
+        self.taskVC.updateCategoryList.removeAll()
+        self.taskVC.updateCategoryRankList.removeAll()
+        self.taskVC.categories.removeAll()
+        self.taskVC.categoriesForCurrentChannel.removeAll()
+        
+        // UPdate all data and titles
+        self.taskVC.updateTaskTable()
+        self.taskVC.updateChannelLabel()
+        self.channelTbl.reloadData()
+        
+        // Constants
+        userID = "Logged Out"
+        isNewUser = false
+        justLoggedIn = false
+        
+        // Log out
+        AuthService.instance.logOffUser()
+        
+        // Push to Task VC so when log back in goes to correct page
+        self.revealViewController()?.pushFrontViewController(self.taskVC, animated: true)
+        
+        // Show Log In Page
+        self.delegate.toLogIn()
+    }
+    
+    // Restore purchases
+//    func restorePurchases() {
+//        PurchaseManager.instance.restorePurchases { (success) in
+//            debugPrint("restore completion: \(success)")
+//            if success {
+//                self.taskVC.loadBannerView()
+//            }
+//            else {
+//                // To Do - can't restore purchases
+//                debugPrint("No purchases to restore")
+//            }
+//        }
+//    }
     
     
     
@@ -314,7 +401,32 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- View Helper Functions
+    
+    // --- Segue Functions ---
+    // Prepare
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toSubscribeSegue" {
+            let destinationVC = segue.destination as! SubscriptionViewController
+            destinationVC.subToChannelVCDelegate = self
+            destinationVC.cameFromVC = "channelVC"
+        }
+        
+        else if segue.identifier == "channelVCToSettingsVC" {
+            let destinationVC = segue.destination as! setttingsVCViewController
+            destinationVC.subToChannelVCDelegate = self
+            destinationVC.cameFromVC = "channelVC"
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // --- View Helper Functions ---
     // UPdate navigation bar based on ndevice - update for
     func navigationBarFormatting() {
         if UIDevice.current.modelName.contains("iPhone10") {
@@ -337,7 +449,8 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
     
     
     
-    // --- Define Delegate functions of ToTAskVCFromChannelVC ---
+    // --- Define Delegate   ---
+    // --- ToTAskVCFromChannelVC ---
     // go to taskVC after saving channel - need to change current channel and upload new data
     func toTaskVC() {
         // go to task VC
@@ -355,6 +468,19 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         taskVC.blackOutView.isHidden = true
     }
     
+    
+    
+    
+    // --- SubscriptionToChannelVC ---
+    func updateBannerAds() {
+        debugPrint("in update banner ads")
+        self.taskVC.loadBannerView()
+    }
+    
+    // Log out from settings -> yes it says Subscription but easier to do this than to create another protocol
+    func logOutFromSettings() {
+        logOut()
+    }
     
     
     

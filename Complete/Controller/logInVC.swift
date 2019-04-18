@@ -17,6 +17,9 @@ class logInVC: UIViewController {
     @IBOutlet var passwordTxtField: UITextField!
     @IBOutlet var errorMsgLbl: UILabel!
     @IBOutlet var logInBtn: UIButton!
+    @IBOutlet var topConstraint: NSLayoutConstraint!
+    @IBOutlet var bottomConstraint: NSLayoutConstraint!
+    
     
     // --- Actions ---
     // Log In User
@@ -58,5 +61,35 @@ class logInVC: UIViewController {
         
         // Format Log In button
         logInBtn.layer.cornerRadius = 10.0
+        
+        // Fix alignment of screen with keyboard showing
+        // Listener for keyboard to adjust height of sign up
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardAppears(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDissapears(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        bottomConstraint.isActive = false
+    }
+    
+    
+    
+    
+    // --- Helper functions ---
+    @objc func keyboardAppears(notification:NSNotification) {
+        if let keyboardFrame = notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardHeight = keyboardFrame.cgRectValue.height
+            
+            // Constraints
+            topConstraint.isActive = false
+            bottomConstraint.isActive = true
+            bottomConstraint.constant = keyboardHeight + 5.0
+        }
+    }
+    
+    // Keyboard dissapears
+    @objc func keyboardDissapears(notification:NSNotification) {
+        // Fix constraints
+        topConstraint.isActive = true
+        bottomConstraint.isActive = false
     }
 }
