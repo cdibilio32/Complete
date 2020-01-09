@@ -960,6 +960,10 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // Switch TAsk Ranks
     func switchTaskRanks(task1: Task, task2: Task, section: Int, task1Index:Int, task2Index:Int) {
+        debugPrint("---")
+        debugPrint("\(task1._name) : \(task1._name)")
+        debugPrint("\(task2._name) : \(task2._name)")
+        
         // Get data
         let currentCategoryId = categoriesForCurrentChannel[section]._id
         var taskArray = allTasks[currentCategoryId!]
@@ -1196,6 +1200,15 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // --- Helper function for Table Function ---
     // Update Task and Channel for Table
     func updateTaskTable() {
+//        debugPrint("-----")
+//        debugPrint("Before")
+//        for (cat, array) in allTasks {
+//            for task in array {
+//                if task._channelID == "-LTS4guOyZ1Qg2SWR_BF" && task._categoryId == "LUAX9zwTutyh4ECyLrI" {
+//                    debugPrint("\(task._name) : \(task._rank)")
+//                }
+//            }
+//        }
         
         // Display catgories for current channel
         sortCategories()
