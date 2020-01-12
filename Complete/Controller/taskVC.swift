@@ -53,7 +53,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // Class to pass data to Channel vc
     var channelVC:channelVC!
     
-    // Uppdated taska and categories for drag and drop
+    // Uppdated tasks and categories for drag and drop
     var updateTaskRankList = [Task]()
     var updateTaskCategoryList = [Task]()
     var updateCategoryList = [Category]()
@@ -344,6 +344,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // --- Load Functions ---
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        debugPrint("view did appear")
         // Handle logging in and new use sign ups
         // New User
         if isNewUser && !loading {
@@ -362,6 +363,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             loadApplicationData()
         }
         
+        // Load Banner Ad
+//        if userID != "Logged Out" {
+//            debugPrint("in load banner ad in load did appear")
+//            UserDefaults.standard.set(true, forKey: "subscriber")
+//            checkAndUpdateCurrentSubscriptionStatus()
+//        }
+//        
         // If new task or category is added
         if newTaskOrCategoryCreated {
             newTaskOrCategoryCreated = false
@@ -378,11 +386,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        //UserDefaults.standard.set(true, forKey: "subscriber")
-        debugPrint("Subscriber: \(UserDefaults.standard.bool(forKey: "subscriber"))")
-        
-        // Check to see if still member
-        checkAndUpdateCurrentSubscriptionStatus()
+        debugPrint("view did load")
         
         // Set table to not editting at first
         taskTblView.isEditing = false
@@ -410,7 +414,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         self.navigationController?.setNavigationBarHidden(true  , animated: true)
         
         // Update View
-        // Lane Segment Control font
         formatSegmentControl()
         updatePriorityBtnView()
         formatNoSectionPopUp()
@@ -419,9 +422,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         
         // Hide no category pop up
         noSectionPopUp.isHidden = true
-        
-        // Banner Ads
-        loadBannerView()
     }
     
     
@@ -825,39 +825,58 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // --- Helper function for banner ads and subscriptions ---
     func loadBannerView() {
-        // Don't display if subscriber
+        // If Subscriber - Remove Banner
         if UserDefaults.standard.bool(forKey: "subscriber") {
-            debugPrint("banner view: In subsciber")
-            bannerAd.removeFromSuperview()
-            bannerAdContainerHeightConstraint.constant = CGFloat(0)
-        } else {
+            debugPrint("banner view: Is subsciber")
+            DispatchQueue.main.async {
+                self.bannerAd.removeFromSuperview()
+                self.bannerAdContainerHeightConstraint.constant = CGFloat(0)
+            }
+        }
+            
+        // If NOT a Subscriber - Load Banner
+        else {
             debugPrint("banner view: In load ad - no subscriber")
-            
-            // Add Ads
-            bannerAdContainerHeightConstraint.constant = CGFloat(60)
-            
-            // See if subscription is cancelled
-            // If so, add back banner view to container
-            if bannerAdContainer.subviews.count == 0 {
-                bannerAdContainer.addSubview(bannerAd)
+            if bannerAdContainerHeightConstraint.constant != CGFloat(60) {
+                DispatchQueue.main.async {
+                    self.bannerAdContainerHeightConstraint.constant = CGFloat(60)
+                }
             }
             
-            // Request Ad
-            // Right now testing, need to remove
-            bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
-            bannerAd.rootViewController = self
-            let request = GADRequest()
-            request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
-            bannerAd.load(request)
+            // Add Banner Back To Page
+            DispatchQueue.main.async {
+                if self.bannerAdContainer.subviews.count == 0 {
+                    debugPrint("Add banner back to page")
+                    self.bannerAdContainer.addSubview(self.bannerAd)
+                }
+                // Request Ad
+                // Right now testing, need to remove!!!!!1
+                self.bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
+                self.bannerAd.rootViewController = self
+                let request = GADRequest()
+                request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
+                self.bannerAd.load(request)
+            }
         }
+    }
+    
+    // Activate Subscription
+    func activateSubscription(currentSessionId:String, currentSubscription:PaidSubscription?) {
+        UserDefaults.standard.set(true, forKey: "subscriber")
+        DataService.instance.updateUserSubscription(subValue: true)
+        self.currentSessionId = currentSessionId
+        
+        if let currentSubscriptionReal = currentSubscription {
+            self.currentSubscription = currentSubscription
+        }
+        self.currentSubscription = nil
+        
     }
     
     // Cancel Subscription
     func cancelSubscription() {
-        debugPrint("Subscription Cancelled")
         UserDefaults.standard.set(false, forKey: "subscriber")
         DataService.instance.updateUserSubscription(subValue: false)
-        loadBannerView()
     }
     
     // Check to see current status of subscription
@@ -868,29 +887,30 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 debugPrint("was receipt success: \(success)")
                 debugPrint("session id: \(currentSessionId)")
                 debugPrint("current subscription: \(currentSubscription)")
-                self.currentSessionId = currentSessionId
-                self.currentSubscription = currentSubscription
                 
-                // Update subscription data
-                // If subscription cancelled
+                // Update if user has a subscription
+                // Never subscriped
                 if currentSubscription == nil {
-                    debugPrint("subscription cancelled because none received")
+                    debugPrint("Subscription: Never a Subscriber.")
                     self.cancelSubscription()
                 }
-                    // Received receipt
                 else {
+                    // Subscription Exipired
                     if (currentSubscription?.expiresDate)! < Date() {
-                        debugPrint("expires by date")
+                        debugPrint("Subscription: Expired")
                         debugPrint(Date())
                         self.cancelSubscription()
                     }
+                    // Still A Subscriber
                     else {
-                        debugPrint("Still a subscriber")
+                        debugPrint("Subscription: Active")
+                        self.activateSubscription(currentSessionId: currentSessionId, currentSubscription: currentSubscription)
                     }
                 }
+                self.loadBannerView()
             }
             else {
-                debugPrint("receipt not successful")
+                debugPrint("Subscription: receipt not successful")
             }
         }
     }
