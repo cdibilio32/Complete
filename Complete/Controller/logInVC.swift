@@ -31,6 +31,7 @@ class logInVC: UIViewController {
                     justLoggedIn = true
                     // Set Up Database for user
                     self.dismiss(animated: true, completion: nil)
+                    debugPrint("success login")
                 }
                 else {
                     self.errorMsgLbl.text = String(describing: error!.localizedDescription)

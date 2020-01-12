@@ -44,8 +44,6 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     // --- Actions ---
     // Purchase Subscription OPtion
     @IBAction func purchaseBtnPressed(_ sender: Any) {
-        // Show Activity Spinner
-        debugPrint("start")
         
         PurchaseManager.instance.purchaseSubscription(renewing: subscription, activityIndicator: activitySpinner, activityContainer: activitySpinnerContainer) { (success) in
             if success {
