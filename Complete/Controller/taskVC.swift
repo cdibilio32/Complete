@@ -364,12 +364,12 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         }
         
         // Load Banner Ad
-//        if userID != "Logged Out" {
-//            debugPrint("in load banner ad in load did appear")
-//            UserDefaults.standard.set(true, forKey: "subscriber")
-//            checkAndUpdateCurrentSubscriptionStatus()
-//        }
-//        
+        if userID != "Logged Out" {
+            debugPrint("in load banner ad in load did appear")
+            UserDefaults.standard.set(true, forKey: "subscriber")
+            checkAndUpdateCurrentSubscriptionStatus()
+        }
+        
         // If new task or category is added
         if newTaskOrCategoryCreated {
             newTaskOrCategoryCreated = false
@@ -826,16 +826,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     
     // --- Helper function for banner ads and subscriptions ---
     func loadBannerView() {
-<<<<<<< HEAD
         // Test ID now
         bannerAd.adUnitID = "ca-app-pub-5383101165774401/3144244729"
         bannerAd.rootViewController = self
         bannerAd.load(GADRequest())
         
         // Don't display if subscriber
-=======
         // If Subscriber - Remove Banner
->>>>>>> testing
         if UserDefaults.standard.bool(forKey: "subscriber") {
             debugPrint("banner view: Is subsciber")
             DispatchQueue.main.async {
@@ -853,14 +850,13 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 }
             }
             
-<<<<<<< HEAD
             // Request Ad
             // Right now testing, need to remove
             bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
             bannerAd.rootViewController = self
             let request = GADRequest()
             bannerAd.load(request)
-=======
+
             // Add Banner Back To Page
             DispatchQueue.main.async {
                 if self.bannerAdContainer.subviews.count == 0 {
@@ -875,7 +871,6 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
                 self.bannerAd.load(request)
             }
->>>>>>> testing
         }
     }
     
