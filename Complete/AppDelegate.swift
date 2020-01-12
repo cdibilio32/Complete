@@ -38,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             window?.rootViewController?.present(logInVC, animated: true, completion: nil)
         }
         else {
-            debugPrint("in else")
             // Set User ID
             userID = (Auth.auth().currentUser?.uid)!
             justLoggedIn = true
