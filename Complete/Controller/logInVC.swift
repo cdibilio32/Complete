@@ -30,7 +30,7 @@ class logInVC: UIViewController {
                     userID = (Auth.auth().currentUser?.uid)!
                     justLoggedIn = true
                     // Set Up Database for user
-                    self.dismiss(animated: true, completion: nil)
+                    self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
                     debugPrint("success login")
                 }
                 else {

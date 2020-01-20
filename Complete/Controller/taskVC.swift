@@ -364,12 +364,12 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
         }
         
         // Load Banner Ad
-//        if userID != "Logged Out" {
-//            debugPrint("in load banner ad in load did appear")
-//            UserDefaults.standard.set(true, forKey: "subscriber")
-//            checkAndUpdateCurrentSubscriptionStatus()
-//        }
-//        
+        if userID != "Logged Out" {
+            debugPrint("in load banner ad in load did appear")
+            UserDefaults.standard.set(true, forKey: "subscriber")
+            checkAndUpdateCurrentSubscriptionStatus()
+        }
+        
         // If new task or category is added
         if newTaskOrCategoryCreated {
             newTaskOrCategoryCreated = false

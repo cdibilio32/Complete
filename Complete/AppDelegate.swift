@@ -36,6 +36,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let logInVC = storyboard.instantiateViewController(withIdentifier: "logInVC")
             window?.makeKeyAndVisible()
             window?.rootViewController?.present(logInVC, animated: true, completion: nil)
+            
+            debugPrint(String(describing: window?.rootViewController))
+            
         }
         else {
             // Set User ID
