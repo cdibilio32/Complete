@@ -566,6 +566,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             
             // If not error task perform segue
             if selectedTask?._id != "Error Task" {
+                // Send Data to Task Detail Page
                 performSegue(withIdentifier: "taskVCToTaskDetailVC", sender: nil)
             }
         }
@@ -854,7 +855,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 self.bannerAd.adUnitID = "ca-app-pub-9489732980079265/7602529757"
                 self.bannerAd.rootViewController = self
                 let request = GADRequest()
-                request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
+                //request.testDevices = [ "167eaa51497ced63b2cf31912f7d2cab" ]
                 self.bannerAd.load(request)
             }
         }
@@ -1399,8 +1400,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // --- Helper Function For segment control view ---
     func formatSegmentControl() {
         let titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        let titleTextAttributeHighlight = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)]
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributes, for: .normal)
-        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributes, for: .selected)
+        UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributeHighlight, for: .selected)
     }
     
 
@@ -1474,10 +1476,9 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
     // --- Delegate Function ToLogInVC ---
     // Push Log In VC ontop of task VC
     func toLogIn() {
-        // Safe Present
-        if let logInVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "logInVC") as? logInVC {
-            present(logInVC, animated: true, completion: nil)
-        }
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let logInVC = storyboard.instantiateViewController(withIdentifier: "logInVC")
+        self.navigationController?.pushViewController(logInVC, animated: true)
     }
     
     

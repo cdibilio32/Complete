@@ -34,10 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             // Show task VC
             let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
             let logInVC = storyboard.instantiateViewController(withIdentifier: "logInVC")
-            window?.makeKeyAndVisible()
-            window?.rootViewController?.present(logInVC, animated: true, completion: nil)
+            let rootViewController = self.window!.rootViewController as! UINavigationController;
+            rootViewController.pushViewController(logInVC, animated: true);
             
-            debugPrint(String(describing: window?.rootViewController))
             
         }
         else {

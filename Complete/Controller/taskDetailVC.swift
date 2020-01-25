@@ -225,7 +225,7 @@ class taskDetailVC: UIViewController, UITextViewDelegate, UITextFieldDelegate {
     
     // Seg Controller Format
     func formatSegmentControl() {
-        let titleTextAttributesWhenSelected = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        let titleTextAttributesWhenSelected = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.1764705882, green: 0.6156862745, blue: 1, alpha: 1)]
         let titleTextAttributesWhenNotSelected = [NSAttributedStringKey.foregroundColor: #colorLiteral(red: 0.3294117647, green: 0.6862745098, blue: 1, alpha: 1)]
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenNotSelected, for: .normal)
         UISegmentedControl.appearance().setTitleTextAttributes(titleTextAttributesWhenSelected, for: .selected)

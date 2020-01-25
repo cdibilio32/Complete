@@ -45,6 +45,7 @@ class setttingsVCViewController: UIViewController, UITableViewDelegate, UITableV
     
     // Log Out
     @IBAction func logOutBtnPressed(_ sender: Any) {
+        // Need to erase data
         subToChannelVCDelegate.logOutFromSettings()
     }
     

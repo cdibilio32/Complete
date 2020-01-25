@@ -8,6 +8,16 @@
 
 import Foundation
 
+
+
+// --- Set up login screen when user was not logged in in app delegate ---
+//            window?.makeKeyAndVisible()
+//            window?.rootViewController?.present(logInVC, animated: true, completion: nil)
+
+
+
+
+
 // --- Long Gesture to move cells ---
 //// Set up long press gesture recognizer for drag and drop feature
 //let longPress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(longPress:)))

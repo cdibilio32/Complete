@@ -364,6 +364,7 @@ class channelVC: UIViewController, UITableViewDataSource, UITableViewDelegate, T
         self.taskVC.updateTaskTable()
         self.taskVC.updateChannelLabel()
         self.channelTbl.reloadData()
+        self.taskVC.loadingView.alpha = 1
         
         // Constants
         userID = "Logged Out"

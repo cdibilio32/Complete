@@ -30,7 +30,11 @@ class logInVC: UIViewController {
                     userID = (Auth.auth().currentUser?.uid)!
                     justLoggedIn = true
                     // Set Up Database for user
-                    self.view.window!.rootViewController?.dismiss(animated: true, completion: nil)
+//                    let rootViewController = self.view.window?.rootViewController as! UINavigationController;
+//                    for w in rootViewController.viewControllers {
+//                        debugPrint(String(describing: w))
+//                    }
+                    self.navigationController?.popToRootViewController(animated: true)
                     debugPrint("success login")
                 }
                 else {
