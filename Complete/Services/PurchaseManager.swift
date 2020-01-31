@@ -179,9 +179,13 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
                     
                 case .failure(let error):
                     print("🚫 Receipt Upload Failed: \(error)")
-                    completion?(false, "nil", PaidSubscription(json: ["nil":"nil"])!)
+                    completion?(false, "nil", PaidSubscription(json: ["nil":"nil"]))
                 }
             }
+        } else {
+            // If receipt data returns nill, show unsucessful
+            debugPrint("receipt data was nil, in completion fail")
+            completion?(false, "nil", PaidSubscription(json: ["nil":"nil"]))
         }
     }
     
@@ -194,7 +198,7 @@ class PurchaseManager: NSObject, SKProductsRequestDelegate, SKPaymentTransaction
         ]
         let bodyData = try! JSONSerialization.data(withJSONObject: body, options: [])
         
-        let url = URL(string: "https://sandbox.itunes.apple.com/verifyReceipt")!
+        let url = URL(string: "https://buy.itunes.apple.com/verifyReceipt")!
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.httpBody = bodyData

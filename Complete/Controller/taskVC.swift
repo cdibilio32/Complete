@@ -887,7 +887,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
             if success {
                 debugPrint("was receipt success: \(success)")
                 debugPrint("session id: \(currentSessionId)")
-                debugPrint("current subscription: \(currentSubscription)")
+                debugPrint("current subscription: \(String(describing: currentSubscription))")
                 
                 // Update if user has a subscription
                 // Never subscriped
@@ -911,6 +911,7 @@ class taskVC: UIViewController, UITableViewDataSource, UITableViewDelegate, GADB
                 self.loadBannerView()
             }
             else {
+                self.cancelSubscription()
                 debugPrint("Subscription: receipt not successful")
             }
         }
