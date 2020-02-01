@@ -109,6 +109,8 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
     
     
     
+    
+    
     // --- Load Functions ---
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -234,6 +236,23 @@ class SubscriptionViewController: UIViewController, UIScrollViewDelegate {
         for i in 0 ..< slides.count {
             slides[i].frame = CGRect(x: view.frame.width * CGFloat(i), y: CGFloat(0), width: view.frame.width, height: scrollView.frame.height)
             scrollView.addSubview(slides[i])
+        }
+    }
+    
+    
+    
+    
+    // --- Segueus ---
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "subToLegalForTOC" {
+            let destinationVC = segue.destination as! LegalVC
+            destinationVC.sectionTitle = "Terms and Conditions"
+            debugPrint("Sub - prepare - TOC")
+        }
+        else if segue.identifier == "subToLegalForPP" {
+            let destinationVC = segue.destination as! LegalVC
+            destinationVC.sectionTitle = "Privacy Policy"
+            debugPrint("Sub - prepare - TOC")
         }
     }
     
